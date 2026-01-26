@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="MusRoyalePC.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1600">
+
+    <Grid>
+        
+
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <Image Source="/Assets/logo.png" Width="180" Height="180" Margin="0,0,0,30"/>
+
+            <Border Background="#FDF6E3" CornerRadius="45" Width="420" Padding="40,55">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="0" Opacity="0.2"/>
+                </Border.Effect>
+
+                <StackPanel>
+                    <TextBlock Text="MUS ROYALE" FontSize="38" FontWeight="Bold" 
+                               Foreground="#3C2822" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Sartu jokoan" FontSize="16" Foreground="#8D7A71" 
+                               HorizontalAlignment="Center" Margin="0,0,0,45"/>
+
+                    <Border BorderBrush="#8D7A71" BorderThickness="1.5" CornerRadius="18" Height="65" Margin="0,0,0,18">
+                        <TextBox x:Name="TxtUser" Background="Transparent" BorderThickness="0" 
+                                 VerticalContentAlignment="Center" Padding="20,0" FontSize="18"
+                                 Foreground="#3C2822" CaretBrush="#3C2822"/>
+                    </Border>
+
+                    <Border BorderBrush="#8D7A71" BorderThickness="1.5" CornerRadius="18" Height="65" Margin="0,0,0,40">
+                        <Grid>
+                            <PasswordBox x:Name="TxtPass" Background="Transparent" BorderThickness="0" 
+                                         VerticalContentAlignment="Center" Padding="20,0" FontSize="18"
+                                         Foreground="#3C2822"/>
+                            <TextBlock Text="👁️" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                       Margin="0,0,20,0" Foreground="#8D7A71" FontSize="20" Cursor="Hand"/>
+                        </Grid>
+                    </Border>
+
+                    <Button x:Name="BtnLogin" Content="SAIOA HASI" Click="BtnLogin_Click"
+                            Background="#3C2822" Foreground="White" FontWeight="Bold" FontSize="20"
+                            Height="70" Cursor="Hand" BorderThickness="0">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="18"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+					<Button Content="¿Ez daukazu konturik? Erregistratu"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#3E2723"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="Register"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

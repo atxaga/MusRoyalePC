@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="MusRoyalePC.Views.RegisterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+    <Grid>
+        <Border Background="#FDF5E6" CornerRadius="30" Width="400" VerticalAlignment="Center" Padding="30" Margin="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Direction="270" Opacity="0.3"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="MUS ROYALE" FontSize="36" FontWeight="Bold" Foreground="#3E2723" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                <TextBlock Text="Erregistratu kontu berria" Foreground="#8D6E63" HorizontalAlignment="Center" Margin="0,0,0,25"/>
+
+                <TextBlock Text="Erabiltzailea" Margin="5,0,0,5" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtUser" Height="45" VerticalContentAlignment="Center" Padding="10" Margin="0,0,0,15" BorderBrush="#D7CCC8"/>
+
+                <TextBlock Text="Posta elektronikoa" Margin="5,0,0,5" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtEmail" Height="45" VerticalContentAlignment="Center" Padding="10" Margin="0,0,0,15" BorderBrush="#D7CCC8"/>
+
+                <TextBlock Text="Pasahitza" Margin="5,0,0,5" FontWeight="SemiBold"/>
+                <PasswordBox x:Name="TxtPass" Height="45" VerticalContentAlignment="Center" Padding="10" Margin="0,0,0,25" BorderBrush="#D7CCC8"/>
+
+                <Button Content="ERREGISTRATU" Click="BtnRegister_Click" Background="#3E2723" Foreground="White" Height="50" FontWeight="Bold" Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Content="Dagoeneko baduzu kontua? Saioa hasi" Background="Transparent" BorderThickness="0" Margin="0,20,0,0" Foreground="#3E2723" 
+                        Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="Login"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

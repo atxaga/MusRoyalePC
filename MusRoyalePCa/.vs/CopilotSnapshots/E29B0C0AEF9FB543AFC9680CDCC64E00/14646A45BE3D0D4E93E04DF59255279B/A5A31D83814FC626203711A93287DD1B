@@ -1,0 +1,12 @@
+﻿using System.Windows.Controls;
+
+namespace MusRoyalePC.Views
+{
+    public partial class BikoteakView : UserControl
+    {
+        public BikoteakView()
+        {
+            InitializeComponent();
+        }
+    }
+}

@@ -1,0 +1,201 @@
+﻿<Window x:Class="MusRoyalePC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Mus Royale" Height="720" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#CCB48A"/>
+        <SolidColorBrush x:Key="PrimaryBrushStrong" Color="#D1B282"/>
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#80333333"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#E95420"/>
+        <SolidColorBrush x:Key="OnlineBrush" Color="#2ECC71"/>
+
+        <!-- Optional wood background. Replace with real image later. -->
+        <LinearGradientBrush x:Key="WoodBg" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#5a3b26" Offset="0"/>
+            <GradientStop Color="#3c2a1e" Offset="1"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#CC000000"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <StackPanel Orientation="Vertical" Margin="4" HorizontalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Tag}" FontSize="18" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{TemplateBinding Content}" FontSize="12" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource WoodBg}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="55*"/>
+            <RowDefinition Height="87*"/>
+            <RowDefinition Height="72"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Grid Grid.Row="0" Background="#40FFFFFF" Margin="8,8,8,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: user and balance -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Margin="0,0,12,0">
+                    <TextBlock Text="{Binding UserName}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock FontSize="11">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource OnlineBrush}"/>
+                                <Setter Property="Text" Value="Online"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOnline}" Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}"/>
+                                        <Setter Property="Text" Value="Offline"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- Balance pill -->
+                <Border Background="#66000000" CornerRadius="16" Padding="8,4" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Margin="4,0" VerticalAlignment="Center">
+                        <TextBlock Text="€" Foreground="Gold" FontWeight="Bold" Margin="0,0,6,0"/>
+                        <TextBlock Text="{Binding Balance, StringFormat={}{0:0} €}" Foreground="White"/>
+                        <Button Content="+" Command="{Binding IncrementBalanceCommand}"
+                                Background="{StaticResource PrimaryBrush}" Foreground="Black"
+                                BorderThickness="0" Padding="6,0" Margin="6,0,0,0" Cursor="Hand"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Right: actions -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="⚙" ToolTip="Settings"
+                        Command="{Binding OpenSettingsCommand}"
+                        Background="#20FFFFFF" Foreground="White" BorderThickness="0" Padding="8" Cursor="Hand"/>
+                <Button Content="⏻" ToolTip="Power Off" Margin="8,0,0,0"
+                        Command="{Binding PowerOffCommand}"
+                        Background="#20FFFFFF" Foreground="{StaticResource AccentBrush}" BorderThickness="0" Padding="8" Cursor="Hand"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Center: text + emblem placeholder -->
+        <Grid Grid.Row="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Deslizatu mota aldatzeko"
+                       Foreground="White" FontSize="16"
+                       HorizontalAlignment="Center" Margin="0,24,0,12"/>
+
+            <Border Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="#10FFFFFF" CornerRadius="200" Padding="12">
+                <Viewbox Width="260" Height="260">
+                    <TextBlock Text="EMBLEM" Foreground="White" FontSize="24"/>
+                </Viewbox>
+            </Border>
+        </Grid>
+
+        <!-- Bottom nav -->
+        <Border Grid.Row="2" Background="{StaticResource PrimaryBrushStrong}" CornerRadius="12,12,0,0" Margin="0,348,0,0" Grid.RowSpan="2">
+            <UniformGrid Rows="1" Columns="5" Margin="8">
+                <Button Style="{StaticResource NavButtonStyle}"
+                        Tag="👥" Content="Friends"
+                        Command="{Binding NavigateCommand}" CommandParameter="Friends">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTab}" Value="Friends">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#30FFFFFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Style="{StaticResource NavButtonStyle}"
+                        Tag="💬" Content="Chat"
+                        CommandParameter="Chat" Command="{Binding NavigateCommand}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTab}" Value="Chat">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#30FFFFFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Style="{StaticResource NavButtonStyle}"
+                        Tag="🏠" Content="Home"
+                        CommandParameter="Home" Command="{Binding NavigateCommand}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTab}" Value="Home">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#30FFFFFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Style="{StaticResource NavButtonStyle}"
+                        Tag="🧑‍🤝‍🧑" Content="Group"
+                        CommandParameter="Group" Command="{Binding NavigateCommand}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTab}" Value="Group">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#30FFFFFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Style="{StaticResource NavButtonStyle}"
+                        Tag="🛒" Content="Shop"
+                        CommandParameter="Shop" Command="{Binding NavigateCommand}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTab}" Value="Shop">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#30FFFFFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </UniformGrid>
+        </Border>
+    </Grid>
+</Window>

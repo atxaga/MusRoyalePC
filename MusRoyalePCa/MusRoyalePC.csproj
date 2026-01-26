@@ -1,0 +1,136 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Assets\NewFolder\**" />
+    <EmbeddedResource Remove="Assets\NewFolder\**" />
+    <None Remove="Assets\NewFolder\**" />
+    <Page Remove="Assets\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\BackgroundWood.png" />
+    <None Remove="Assets\Bikoteak.png" />
+    <None Remove="Assets\Cartas\basto1.png" />
+    <None Remove="Assets\Cartas\basto10.png" />
+    <None Remove="Assets\Cartas\basto11.png" />
+    <None Remove="Assets\Cartas\basto12.png" />
+    <None Remove="Assets\Cartas\basto2.png" />
+    <None Remove="Assets\Cartas\basto3.png" />
+    <None Remove="Assets\Cartas\basto4.png" />
+    <None Remove="Assets\Cartas\basto5.png" />
+    <None Remove="Assets\Cartas\basto6.png" />
+    <None Remove="Assets\Cartas\basto7.png" />
+    <None Remove="Assets\Cartas\copa1.png" />
+    <None Remove="Assets\Cartas\copa10.png" />
+    <None Remove="Assets\Cartas\copa11.png" />
+    <None Remove="Assets\Cartas\copa12.png" />
+    <None Remove="Assets\Cartas\copa2.png" />
+    <None Remove="Assets\Cartas\copa3.png" />
+    <None Remove="Assets\Cartas\copa4.png" />
+    <None Remove="Assets\Cartas\copa5.png" />
+    <None Remove="Assets\Cartas\copa6.png" />
+    <None Remove="Assets\Cartas\copa7.png" />
+    <None Remove="Assets\Cartas\espada1.png" />
+    <None Remove="Assets\Cartas\espada10.png" />
+    <None Remove="Assets\Cartas\espada11.png" />
+    <None Remove="Assets\Cartas\espada12.png" />
+    <None Remove="Assets\Cartas\espada2.png" />
+    <None Remove="Assets\Cartas\espada3.png" />
+    <None Remove="Assets\Cartas\espada4.png" />
+    <None Remove="Assets\Cartas\espada5.png" />
+    <None Remove="Assets\Cartas\espada6.png" />
+    <None Remove="Assets\Cartas\espada7.png" />
+    <None Remove="Assets\Cartas\karta.png" />
+    <None Remove="Assets\Cartas\oro1.png" />
+    <None Remove="Assets\Cartas\oro10.png" />
+    <None Remove="Assets\Cartas\oro11.png" />
+    <None Remove="Assets\Cartas\oro12.png" />
+    <None Remove="Assets\Cartas\oro2.png" />
+    <None Remove="Assets\Cartas\oro3.png" />
+    <None Remove="Assets\Cartas\oro4.png" />
+    <None Remove="Assets\Cartas\oro5.png" />
+    <None Remove="Assets\Cartas\oro6.png" />
+    <None Remove="Assets\Cartas\oro7.png" />
+    <None Remove="Assets\logo.png" />
+    <None Remove="Assets\PartidaAzkarra.png" />
+    <None Remove="Assets\Pribatua.png" />
+    <None Remove="Assets\Tapete.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\BackgroundWood.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Bikoteak.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Cartas\basto1.png" />
+    <Resource Include="Assets\Cartas\basto10.png" />
+    <Resource Include="Assets\Cartas\basto11.png" />
+    <Resource Include="Assets\Cartas\basto12.png" />
+    <Resource Include="Assets\Cartas\basto2.png" />
+    <Resource Include="Assets\Cartas\basto3.png" />
+    <Resource Include="Assets\Cartas\basto4.png" />
+    <Resource Include="Assets\Cartas\basto5.png" />
+    <Resource Include="Assets\Cartas\basto6.png" />
+    <Resource Include="Assets\Cartas\basto7.png" />
+    <Resource Include="Assets\Cartas\copa1.png" />
+    <Resource Include="Assets\Cartas\copa10.png" />
+    <Resource Include="Assets\Cartas\copa11.png" />
+    <Resource Include="Assets\Cartas\copa12.png" />
+    <Resource Include="Assets\Cartas\copa2.png" />
+    <Resource Include="Assets\Cartas\copa3.png" />
+    <Resource Include="Assets\Cartas\copa4.png" />
+    <Resource Include="Assets\Cartas\copa5.png" />
+    <Resource Include="Assets\Cartas\copa6.png" />
+    <Resource Include="Assets\Cartas\copa7.png" />
+    <Resource Include="Assets\Cartas\espada1.png" />
+    <Resource Include="Assets\Cartas\espada10.png" />
+    <Resource Include="Assets\Cartas\espada11.png" />
+    <Resource Include="Assets\Cartas\espada12.png" />
+    <Resource Include="Assets\Cartas\espada2.png" />
+    <Resource Include="Assets\Cartas\espada3.png" />
+    <Resource Include="Assets\Cartas\espada4.png" />
+    <Resource Include="Assets\Cartas\espada5.png" />
+    <Resource Include="Assets\Cartas\espada6.png" />
+    <Resource Include="Assets\Cartas\espada7.png" />
+    <Resource Include="Assets\Cartas\karta.png" />
+    <Resource Include="Assets\Cartas\oro1.png" />
+    <Resource Include="Assets\Cartas\oro10.png" />
+    <Resource Include="Assets\Cartas\oro11.png" />
+    <Resource Include="Assets\Cartas\oro12.png" />
+    <Resource Include="Assets\Cartas\oro2.png" />
+    <Resource Include="Assets\Cartas\oro3.png" />
+    <Resource Include="Assets\Cartas\oro4.png" />
+    <Resource Include="Assets\Cartas\oro5.png" />
+    <Resource Include="Assets\Cartas\oro6.png" />
+    <Resource Include="Assets\Cartas\oro7.png" />
+    <Resource Include="Assets\logo.png" />
+    <Resource Include="Assets\PartidaAzkarra.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Pribatua.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Tapete.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="musroyale-488aa-firebase-adminsdk-fbsvc-3ef71de2cb.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

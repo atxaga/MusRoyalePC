@@ -1,0 +1,12 @@
+﻿using System.Windows.Controls;
+
+namespace MusRoyalePC.Views
+{
+    public partial class PartidaAzkarraView : UserControl
+    {
+        public PartidaAzkarraView()
+        {
+            InitializeComponent();
+        }
+    }
+}

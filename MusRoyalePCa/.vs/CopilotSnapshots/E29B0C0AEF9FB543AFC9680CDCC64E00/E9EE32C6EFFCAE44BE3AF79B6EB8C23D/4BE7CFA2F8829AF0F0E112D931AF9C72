@@ -1,0 +1,139 @@
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using MusRoyalePC.Models;
+using MusRoyalePC.Views;
+
+namespace MusRoyalePC.Controllers
+{
+    public sealed class MainController : INotifyPropertyChanged
+    {
+        private readonly User _user = new()
+        {
+            Name = "iker",
+            IsOnline = true,
+            Balance = 0m
+        };
+
+        private NavTab _selectedTab = NavTab.Home;
+        private UserControl? _currentView;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public string UserName
+        {
+            get => _user.Name;
+            set
+            {
+                if (_user.Name != value)
+                {
+                    _user.Name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsOnline
+        {
+            get => _user.IsOnline;
+            set
+            {
+                if (_user.IsOnline != value)
+                {
+                    _user.IsOnline = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public decimal Balance
+        {
+            get => _user.Balance;
+            set
+            {
+                if (_user.Balance != value)
+                {
+                    _user.Balance = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public NavTab SelectedTab
+        {
+            get => _selectedTab;
+            set
+            {
+                if (_selectedTab != value)
+                {
+                    _selectedTab = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public UserControl? CurrentView
+        {
+            get => _currentView;
+            private set
+            {
+                _currentView = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand IncrementBalanceCommand { get; }
+        public ICommand OpenSettingsCommand { get; }
+        public ICommand PowerOffCommand { get; }
+        public ICommand NavigateCommand { get; }
+        public ICommand SelectModeCommand { get; }
+        public ICommand GoBackCommand { get; }
+
+        public MainController()
+        {
+            IncrementBalanceCommand = new RelayCommand(_ => Balance += 1m);
+            OpenSettingsCommand = new RelayCommand(_ => ShowInfo("Ezarpenak (implementatu)"));
+            PowerOffCommand = new RelayCommand(_ => Application.Current.Shutdown());
+            NavigateCommand = new RelayCommand(param =>
+            {
+                if (param is string s && Enum.TryParse<NavTab>(s, out var tab))
+                {
+                    SelectedTab = tab;
+                    CurrentView = null; // leave home content
+                }
+            });
+            GoBackCommand = new RelayCommand(_ => CurrentView = null);
+            SelectModeCommand = new RelayCommand(param =>
+            {
+                if (param is string mode)
+                {
+                    switch (mode)
+                    {
+                        case "PartidaAzkarra":
+                            CurrentView = new PartidaAzkarraView();
+                            break;
+                        case "Bikoteak":
+                            // TODO: create view
+                            ShowInfo("Bikoteak view falta da");
+                            break;
+                        case "Pribatua":
+                            // TODO: create view
+                            ShowInfo("Pribatua view falta da");
+                            break;
+                    }
+                }
+            });
+        }
+
+        private static void ShowInfo(string message)
+        {
+            MessageBox.Show(message, "MusRoyalePC", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+}

@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="MusRoyalePC.Views.PartidaAzkarraView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="900">
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Back button -->
+        <StackPanel Orientation="Horizontal" Margin="16" Grid.Row="0">
+            <Button Content="← Atzera" Padding="12,6" Cursor="Hand"
+                    Background="#D1B282" Foreground="#222" BorderThickness="0"
+                    Command="{Binding GoBackCommand}" />
+        </StackPanel>
+
+        <!-- Card center -->
+        <Border Grid.Row="1" Margin="32" Background="#E6D5B6" CornerRadius="16"
+                BorderBrush="#C79A58" BorderThickness="2" Padding="24"
+                MaxWidth="900" HorizontalAlignment="Center">
+            <StackPanel>
+                <TextBlock Text="Partida konfigurazioa" FontSize="24" FontWeight="SemiBold" Foreground="#3A2C20"/>
+                <TextBlock Text="Partida beste jokalarien aurka edo IAren aurka" FontSize="12" Margin="0,4,0,16" Foreground="#806b5a"/>
+
+                <!-- Online vs IA toggle -->
+                <Grid Margin="0,8" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.ColumnSpan="2" Background="#5A3B26" CornerRadius="20"/>
+                    <Border Grid.Column="0" Background="#E6D5B6" CornerRadius="20" Margin="4"/>
+                    <DockPanel Grid.Column="0" LastChildFill="True" Margin="12,0">
+                        <TextBlock Text="Online" VerticalAlignment="Center" Foreground="#3A2C20" FontWeight="Bold"/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1" Margin="12,0">
+                        <TextBlock Text="vs IA" VerticalAlignment="Center" Foreground="#EFEFEF"/>
+                    </DockPanel>
+                </Grid>
+
+                <Separator Margin="0,16" Opacity="0.4"/>
+
+                <!-- Mode select -->
+                <TextBlock Text="Modalitatea aukeratu" FontSize="18" FontWeight="SemiBold" Foreground="#3A2C20"/>
+                <TextBlock Text="Partida mota aukeratu" FontSize="12" Margin="0,4,0,12" Foreground="#806b5a"/>
+                <Grid Margin="0,8" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.ColumnSpan="2" Background="#5A3B26" CornerRadius="20"/>
+                    <Border Grid.Column="0" Background="#E6D5B6" CornerRadius="20" Margin="4"/>
+                    <DockPanel Grid.Column="0" LastChildFill="True" Margin="12,0">
+                        <TextBlock Text="4 Errege" VerticalAlignment="Center" Foreground="#3A2C20" FontWeight="Bold"/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1" Margin="12,0">
+                        <TextBlock Text="8 Errege" VerticalAlignment="Center" Foreground="#EFEFEF"/>
+                    </DockPanel>
+                </Grid>
+
+                <Separator Margin="0,16" Opacity="0.4"/>
+
+                <!-- Bet amount input -->
+                <TextBlock Text="Apostua ezarri" FontSize="18" FontWeight="SemiBold" Foreground="#3A2C20"/>
+                <TextBlock Text="Kantitatea idatzi" FontSize="12" Margin="0,4,0,12" Foreground="#806b5a"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="1" Background="#5A3B26" CornerRadius="20" Padding="2" >
+                        <TextBox Height="36" MinWidth="240"
+                                 Margin="6,2" VerticalContentAlignment="Center"
+                                 Background="#E6D5B6" Foreground="#3A2C20"
+                                 BorderThickness="0" CaretBrush="#3A2C20"
+                                 TextAlignment="Center"
+                                 Text="{Binding BetAmount, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0}}"
+                                 PreviewTextInput="TextBox_PreviewTextInput"/>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Play button bottom -->
+        <Border Grid.Row="2" Margin="20" CornerRadius="18" Background="#D1B282" HorizontalAlignment="Center" MaxWidth="800">
+            <Button Content="Jokatu" FontSize="18" Padding="12" BorderThickness="0" Background="Transparent"/>
+        </Border>
+    </Grid>
+</UserControl>
