@@ -1,113 +1,145 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\MusRoyalePC\\",
+  "WorkspaceRootPath": "D:\\MusRoyalePC\\MusRoyalePCa\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\bikoteakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\bikoteakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\models\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:models\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\partidaview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\partidaview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\services\\musclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:services\\musclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\bikoteakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\bikoteakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\bikoteakview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\bikoteakview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\controllers\\maincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:controllers\\maincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\services\\firestoreservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:services\\firestoreservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\lagunakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\lagunakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\lagunakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\models\\lagunakviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:models\\lagunakviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\lagunakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\lagunakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\registerview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\registerview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\registerview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\registerview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\models\\navtab.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:models\\navtab.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\infrastructure\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:infrastructure\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\infrastructure\\halfwidthconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:infrastructure\\halfwidthconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\partidaazkarraview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\partidaazkarraview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaazkarraview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\partidaazkarraview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\registerview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\registerview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\pribatuaview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\pribatuaview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\bikoteakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\bikoteakview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\partidaview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\lagunakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\lagunakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\models\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:models\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\musroyalepc.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:musroyalepc.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\services\\musclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:services\\musclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\models\\usersession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:models\\usersession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\assets\\ava4.png||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assets\\ava4.png||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\assets\\ava3.png||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assets\\ava3.png||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\assets\\ava1.png||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assets\\ava1.png||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\models\\navtab.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:models\\navtab.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\partidaazkarraview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaazkarraview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\views\\partidaazkarraview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaazkarraview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\assets\\fondoheader.png||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assets\\fondoheader.png||{177559E0-D141-11D0-92DF-00A0C9138C45}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\assets\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\assets\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assets\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\services\\firestoreservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:services\\firestoreservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj.user||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MusRoyalePC.csproj.user||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\partidaview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\bikoteakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\bikoteakview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\bikoteakview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\bikoteakview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\controllers\\maincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:controllers\\maincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\registerview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\registerview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\infrastructure\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:infrastructure\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\infrastructure\\halfwidthconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:infrastructure\\halfwidthconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\views\\partidaazkarraview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:views\\partidaazkarraview.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|d:\\musroyalepc\\musroyalepca\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6523E050-236B-48B9-A5F0-4B5875DA254B}|MusRoyalePC.csproj|solutionrelative:app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -118,15 +150,76 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
+              "Title": "PribatuaView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PribatuaView.xaml",
+              "RelativeDocumentMoniker": "Views\\PribatuaView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PribatuaView.xaml",
+              "RelativeToolTip": "Views\\PribatuaView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-27T08:22:09.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LagunakView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LagunakView.xaml",
+              "RelativeDocumentMoniker": "Views\\LagunakView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LagunakView.xaml",
+              "RelativeToolTip": "Views\\LagunakView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-16T10:37:20.433Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LoginView.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LoginView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\LoginView.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LoginView.xaml.cs",
+              "RelativeToolTip": "Views\\LoginView.xaml.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAowDMAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T11:09:35.62Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PartidaView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaView.xaml",
+              "RelativeDocumentMoniker": "Views\\PartidaView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaView.xaml",
+              "RelativeToolTip": "Views\\PartidaView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-23T09:14:58.68Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PartidaAzkarraView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaAzkarraView.xaml",
+              "RelativeDocumentMoniker": "Views\\PartidaAzkarraView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaAzkarraView.xaml",
+              "RelativeToolTip": "Views\\PartidaAzkarraView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-09T09:34:10.817Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "BikoteakView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\BikoteakView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\BikoteakView.xaml",
               "RelativeDocumentMoniker": "Views\\BikoteakView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\BikoteakView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\BikoteakView.xaml",
               "RelativeToolTip": "Views\\BikoteakView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-01-23T09:23:59.671Z",
@@ -134,199 +227,178 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "BikoteakView.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\BikoteakView.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\BikoteakView.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\BikoteakView.xaml.cs",
-              "RelativeToolTip": "Views\\BikoteakView.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-23T09:23:43.593Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "PartidaView.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\PartidaView.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\PartidaView.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\PartidaView.xaml.cs",
-              "RelativeToolTip": "Views\\PartidaView.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF8AAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-23T09:15:28.19Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PartidaView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\PartidaView.xaml",
-              "RelativeDocumentMoniker": "Views\\PartidaView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\PartidaView.xaml",
-              "RelativeToolTip": "Views\\PartidaView.xaml",
+              "DocumentIndex": 1,
+              "Title": "LoginView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LoginView.xaml",
+              "RelativeDocumentMoniker": "Views\\LoginView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LoginView.xaml",
+              "RelativeToolTip": "Views\\LoginView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-23T09:14:58.68Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MusClientService.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Services\\MusClientService.cs",
-              "RelativeDocumentMoniker": "Services\\MusClientService.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Services\\MusClientService.cs",
-              "RelativeToolTip": "Services\\MusClientService.cs",
-              "ViewState": "AgIAAFwAAAAAAAAAAAAwwF8AAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-23T08:01:14.022Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "FirestoreService.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Services\\FirestoreService.cs",
-              "RelativeDocumentMoniker": "Services\\FirestoreService.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Services\\FirestoreService.cs",
-              "RelativeToolTip": "Services\\FirestoreService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-23T08:01:08.145Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "MainController.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Controllers\\MainController.cs",
-              "RelativeDocumentMoniker": "Controllers\\MainController.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Controllers\\MainController.cs",
-              "RelativeToolTip": "Controllers\\MainController.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAQwBAAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T10:22:22.392Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "LagunakView.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\LagunakView.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\LagunakView.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\LagunakView.xaml.cs",
-              "RelativeToolTip": "Views\\LagunakView.xaml.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAADwv0IAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-16T10:37:23.45Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "LagunakView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\LagunakView.xaml",
-              "RelativeDocumentMoniker": "Views\\LagunakView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\LagunakView.xaml",
-              "RelativeToolTip": "Views\\LagunakView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-16T10:37:20.433Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "LagunakViewModel.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Models\\LagunakViewModel.cs",
-              "RelativeDocumentMoniker": "Models\\LagunakViewModel.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Models\\LagunakViewModel.cs",
-              "RelativeToolTip": "Models\\LagunakViewModel.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwCgAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-16T10:33:45.415Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "MainWindow.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\MainWindow.xaml",
-              "RelativeToolTip": "MainWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-16T10:30:24.502Z",
+              "WhenOpened": "2026-01-16T10:25:05.607Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 10,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-16T10:30:24.502Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "RegisterView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\RegisterView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\RegisterView.xaml",
               "RelativeDocumentMoniker": "Views\\RegisterView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\RegisterView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\RegisterView.xaml",
               "RelativeToolTip": "Views\\RegisterView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-16T10:28:31.02Z"
+              "WhenOpened": "2026-01-16T10:28:31.02Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\LoginView.xaml",
-              "RelativeDocumentMoniker": "Views\\LoginView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\LoginView.xaml",
-              "RelativeToolTip": "Views\\LoginView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-16T10:25:05.607Z"
+              "DocumentIndex": 11,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T09:44:32.705Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 12,
+              "Title": "MusRoyalePC",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj",
+              "RelativeDocumentMoniker": "MusRoyalePC.csproj",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj",
+              "RelativeToolTip": "MusRoyalePC.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-26T12:27:08.299Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ava4.png - PNG [148x165, 32 bit, PNG]",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\ava4.png",
+              "RelativeDocumentMoniker": "Assets\\ava4.png",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\ava4.png - PNG [148x165, 32 bit, PNG]",
+              "RelativeToolTip": "Assets\\ava4.png - PNG [148x165, 32 bit, PNG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2026-01-26T11:46:50.145Z",
+              "EditorCaption": " - PNG [148x165, 32 bit, PNG]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LagunakView.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LagunakView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\LagunakView.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\LagunakView.xaml.cs",
+              "RelativeToolTip": "Views\\LagunakView.xaml.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAA5wCEAAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-16T10:37:23.45Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "MainViewModel.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Models\\MainViewModel.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Models\\MainViewModel.cs",
               "RelativeDocumentMoniker": "Models\\MainViewModel.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Models\\MainViewModel.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Models\\MainViewModel.cs",
               "RelativeToolTip": "Models\\MainViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAACQAAAAAAAAAAAAIwDsAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-16T10:17:17.359Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "RegisterView.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\RegisterView.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\RegisterView.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\RegisterView.xaml.cs",
-              "RelativeToolTip": "Views\\RegisterView.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAASAAAAAAAAAA==",
+              "DocumentIndex": 13,
+              "Title": "MusClientService.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Services\\MusClientService.cs",
+              "RelativeDocumentMoniker": "Services\\MusClientService.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Services\\MusClientService.cs",
+              "RelativeToolTip": "Services\\MusClientService.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAYwC4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-16T10:08:37.009Z"
+              "WhenOpened": "2026-01-23T08:01:14.022Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "BikoteakView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\BikoteakView.xaml",
-              "RelativeDocumentMoniker": "Views\\BikoteakView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\BikoteakView.xaml",
-              "RelativeToolTip": "Views\\BikoteakView.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-09T10:33:29.325Z"
+              "DocumentIndex": 14,
+              "Title": "UserSession.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Models\\UserSession.cs",
+              "RelativeDocumentMoniker": "Models\\UserSession.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Models\\UserSession.cs",
+              "RelativeToolTip": "Models\\UserSession.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T11:44:22.814Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ava1.png - PNG [137x135, 32 bit, PNG]",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\ava1.png",
+              "RelativeDocumentMoniker": "Assets\\ava1.png",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\ava1.png - PNG [137x135, 32 bit, PNG]",
+              "RelativeToolTip": "Assets\\ava1.png - PNG [137x135, 32 bit, PNG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2026-01-26T11:46:17.799Z",
+              "EditorCaption": " - PNG [137x135, 32 bit, PNG]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "ava3.png - PNG [141x155, 32 bit, PNG]",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\ava3.png",
+              "RelativeDocumentMoniker": "Assets\\ava3.png",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\ava3.png - PNG [141x155, 32 bit, PNG]",
+              "RelativeToolTip": "Assets\\ava3.png - PNG [141x155, 32 bit, PNG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2026-01-26T11:46:42.002Z",
+              "EditorCaption": " - PNG [141x155, 32 bit, PNG]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "NavTab.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Models\\NavTab.cs",
+              "RelativeDocumentMoniker": "Models\\NavTab.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Models\\NavTab.cs",
+              "RelativeToolTip": "Models\\NavTab.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T09:26:18.07Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 20,
-              "Title": "HalfWidthConverter.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Infrastructure\\HalfWidthConverter.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\HalfWidthConverter.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Infrastructure\\HalfWidthConverter.cs",
-              "RelativeToolTip": "Infrastructure\\HalfWidthConverter.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-09T10:16:50.106Z"
+              "Title": "fondoheader.png - PNG [1024x852, 32 bit, PNG]",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\fondoheader.png",
+              "RelativeDocumentMoniker": "Assets\\fondoheader.png",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\fondoheader.png - PNG [1024x852, 32 bit, PNG]",
+              "RelativeToolTip": "Assets\\fondoheader.png - PNG [1024x852, 32 bit, PNG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2026-01-26T11:07:16.489Z",
+              "EditorCaption": " - PNG [1024x852, 32 bit, PNG]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 19,
               "Title": "PartidaAzkarraView.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\PartidaAzkarraView.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaAzkarraView.xaml.cs",
               "RelativeDocumentMoniker": "Views\\PartidaAzkarraView.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\PartidaAzkarraView.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaAzkarraView.xaml.cs",
               "RelativeToolTip": "Views\\PartidaAzkarraView.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -335,32 +407,10 @@
             {
               "$type": "Document",
               "DocumentIndex": 21,
-              "Title": "PartidaAzkarraView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\PartidaAzkarraView.xaml",
-              "RelativeDocumentMoniker": "Views\\PartidaAzkarraView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\PartidaAzkarraView.xaml",
-              "RelativeToolTip": "Views\\PartidaAzkarraView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-09T09:34:10.817Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "PartidaAzkarraView.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Views\\PartidaAzkarraView.xaml",
-              "RelativeDocumentMoniker": "Views\\PartidaAzkarraView.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\Views\\PartidaAzkarraView.xaml",
-              "RelativeToolTip": "Views\\PartidaAzkarraView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-09T09:30:16.57Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
               "Title": "README.txt",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Assets\\README.txt",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\README.txt",
               "RelativeDocumentMoniker": "Assets\\README.txt",
-              "ToolTip": "D:\\MusRoyalePC\\Assets\\README.txt",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Assets\\README.txt",
               "RelativeToolTip": "Assets\\README.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
@@ -368,11 +418,118 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
+              "Title": "FirestoreService.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Services\\FirestoreService.cs",
+              "RelativeDocumentMoniker": "Services\\FirestoreService.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Services\\FirestoreService.cs",
+              "RelativeToolTip": "Services\\FirestoreService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T08:01:08.145Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "MusRoyalePC.csproj.user",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj.user",
+              "RelativeDocumentMoniker": "MusRoyalePC.csproj.user",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj.user",
+              "RelativeToolTip": "MusRoyalePC.csproj.user",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003464|",
+              "WhenOpened": "2026-01-26T10:38:52.917Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "BikoteakView.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\BikoteakView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\BikoteakView.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\BikoteakView.xaml.cs",
+              "RelativeToolTip": "Views\\BikoteakView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T09:23:43.593Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "PartidaView.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\PartidaView.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaView.xaml.cs",
+              "RelativeToolTip": "Views\\PartidaView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF8AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T09:15:28.19Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "MainController.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Controllers\\MainController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MainController.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Controllers\\MainController.cs",
+              "RelativeToolTip": "Controllers\\MainController.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAQwBAAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-19T10:22:22.392Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "RegisterView.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\RegisterView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\RegisterView.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\RegisterView.xaml.cs",
+              "RelativeToolTip": "Views\\RegisterView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-16T10:08:37.009Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "BikoteakView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\BikoteakView.xaml",
+              "RelativeDocumentMoniker": "Views\\BikoteakView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\BikoteakView.xaml",
+              "RelativeToolTip": "Views\\BikoteakView.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-09T10:33:29.325Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "HalfWidthConverter.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Infrastructure\\HalfWidthConverter.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\HalfWidthConverter.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Infrastructure\\HalfWidthConverter.cs",
+              "RelativeToolTip": "Infrastructure\\HalfWidthConverter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T10:16:50.106Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "PartidaAzkarraView.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaAzkarraView.xaml",
+              "RelativeDocumentMoniker": "Views\\PartidaAzkarraView.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Views\\PartidaAzkarraView.xaml",
+              "RelativeToolTip": "Views\\PartidaAzkarraView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-09T09:30:16.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
               "Title": "AssemblyInfo.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\AssemblyInfo.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\AssemblyInfo.cs",
               "RelativeDocumentMoniker": "AssemblyInfo.cs",
-              "ToolTip": "D:\\MusRoyalePC\\AssemblyInfo.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\AssemblyInfo.cs",
               "RelativeToolTip": "AssemblyInfo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -380,11 +537,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 33,
               "Title": "App.xaml",
-              "DocumentMoniker": "D:\\MusRoyalePC\\App.xaml",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\App.xaml",
               "RelativeDocumentMoniker": "App.xaml",
-              "ToolTip": "D:\\MusRoyalePC\\App.xaml",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\App.xaml",
               "RelativeToolTip": "App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-01-09T09:04:03.958Z",
@@ -392,11 +549,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 34,
               "Title": "App.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\App.xaml.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\App.xaml.cs",
               "RelativeDocumentMoniker": "App.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\App.xaml.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\App.xaml.cs",
               "RelativeToolTip": "App.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -404,39 +561,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "D:\\MusRoyalePC\\MainWindow.xaml.cs",
-              "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-08T09:44:32.705Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 29,
               "Title": "RelayCommand.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Infrastructure\\RelayCommand.cs",
+              "DocumentMoniker": "D:\\MusRoyalePC\\MusRoyalePCa\\Infrastructure\\RelayCommand.cs",
               "RelativeDocumentMoniker": "Infrastructure\\RelayCommand.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Infrastructure\\RelayCommand.cs",
+              "ToolTip": "D:\\MusRoyalePC\\MusRoyalePCa\\Infrastructure\\RelayCommand.cs",
               "RelativeToolTip": "Infrastructure\\RelayCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-08T09:26:25.437Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "NavTab.cs",
-              "DocumentMoniker": "D:\\MusRoyalePC\\Models\\NavTab.cs",
-              "RelativeDocumentMoniker": "Models\\NavTab.cs",
-              "ToolTip": "D:\\MusRoyalePC\\Models\\NavTab.cs",
-              "RelativeToolTip": "Models\\NavTab.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-08T09:26:18.07Z"
             }
           ]
         }

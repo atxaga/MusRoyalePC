@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "g5xqASLuf2k=",
+  "dgSpecHash": "b/43hW1wqOs=",
   "success": true,
-  "projectFilePath": "D:\\MusRoyalePC\\MusRoyalePC.csproj",
+  "projectFilePath": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ik012982i18\\.nuget\\packages\\google.api.commonprotos\\2.17.0\\google.api.commonprotos.2.17.0.nupkg.sha512",
     "C:\\Users\\ik012982i18\\.nuget\\packages\\google.api.gax\\4.12.1\\google.api.gax.4.12.1.nupkg.sha512",
@@ -27,11 +27,7 @@
     "C:\\Users\\ik012982i18\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
     "C:\\Users\\ik012982i18\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.2\\system.diagnostics.diagnosticsource.6.0.2.nupkg.sha512",
     "C:\\Users\\ik012982i18\\.nuget\\packages\\system.linq.asyncenumerable\\10.0.0\\system.linq.asyncenumerable.10.0.0.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\system.management\\7.0.2\\system.management.7.0.2.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.20\\microsoft.windowsdesktop.app.ref.8.0.20.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.20\\microsoft.netcore.app.ref.8.0.20.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.20\\microsoft.aspnetcore.app.ref.8.0.20.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.20\\microsoft.netcore.app.host.win-x64.8.0.20.nupkg.sha512"
+    "C:\\Users\\ik012982i18\\.nuget\\packages\\system.management\\7.0.2\\system.management.7.0.2.nupkg.sha512"
   ],
   "logs": []
 }

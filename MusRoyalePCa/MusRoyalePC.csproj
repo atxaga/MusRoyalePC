@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\ava1.png" />
+    <None Remove="Assets\ava2.png" />
+    <None Remove="Assets\ava3.png" />
+    <None Remove="Assets\ava4.png" />
+    <None Remove="Assets\ava5.png" />
+    <None Remove="Assets\avadef.png" />
     <None Remove="Assets\BackgroundWood.png" />
     <None Remove="Assets\Bikoteak.png" />
     <None Remove="Assets\Cartas\basto1.png" />
@@ -59,6 +65,7 @@
     <None Remove="Assets\Cartas\oro5.png" />
     <None Remove="Assets\Cartas\oro6.png" />
     <None Remove="Assets\Cartas\oro7.png" />
+    <None Remove="Assets\fondoheader.png" />
     <None Remove="Assets\logo.png" />
     <None Remove="Assets\PartidaAzkarra.png" />
     <None Remove="Assets\Pribatua.png" />
@@ -70,6 +77,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\ava1.png" />
+    <Resource Include="Assets\ava2.png" />
+    <Resource Include="Assets\ava3.png" />
+    <Resource Include="Assets\ava4.png" />
+    <Resource Include="Assets\ava5.png" />
+    <Resource Include="Assets\avadef.png" />
     <Resource Include="Assets\BackgroundWood.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -117,6 +130,7 @@
     <Resource Include="Assets\Cartas\oro5.png" />
     <Resource Include="Assets\Cartas\oro6.png" />
     <Resource Include="Assets\Cartas\oro7.png" />
+    <Resource Include="Assets\fondoheader.png" />
     <Resource Include="Assets\logo.png" />
     <Resource Include="Assets\PartidaAzkarra.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -128,8 +142,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="musroyale-488aa-firebase-adminsdk-fbsvc-3ef71de2cb.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

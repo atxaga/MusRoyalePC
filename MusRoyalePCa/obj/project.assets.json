@@ -1066,11 +1066,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MusRoyalePC\\MusRoyalePC.csproj",
+      "projectUniqueName": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj",
       "projectName": "MusRoyalePC",
-      "projectPath": "D:\\MusRoyalePC\\MusRoyalePC.csproj",
+      "projectPath": "D:\\MusRoyalePC\\MusRoyalePCa\\MusRoyalePC.csproj",
       "packagesPath": "C:\\Users\\ik012982i18\\.nuget\\packages\\",
-      "outputPath": "D:\\MusRoyalePC\\obj\\",
+      "outputPath": "D:\\MusRoyalePC\\MusRoyalePCa\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1125,24 +1125,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.20, 8.0.20]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.20, 8.0.20]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.20, 8.0.20]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.20, 8.0.20]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
@@ -1151,7 +1133,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

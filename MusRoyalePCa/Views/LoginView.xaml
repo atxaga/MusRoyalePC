@@ -39,7 +39,13 @@
                                        Margin="0,0,20,0" Foreground="#8D7A71" FontSize="20" Cursor="Hand"/>
                         </Grid>
                     </Border>
-
+                    <CheckBox x:Name="RecordarCheck" Content="Gogoratu erabiltzailea" 
+          Foreground="#8D7A71" FontSize="14" FontWeight="SemiBold"
+          Margin="5,0,0,25" Cursor="Hand" VerticalContentAlignment="Center">
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
                     <Button x:Name="BtnLogin" Content="SAIOA HASI" Click="BtnLogin_Click"
                             Background="#3C2822" Foreground="White" FontWeight="Bold" FontSize="20"
                             Height="70" Cursor="Hand" BorderThickness="0">
