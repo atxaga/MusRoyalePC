@@ -1,0 +1,27 @@
+﻿using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace MusRoyalePC.Views
+{
+    public partial class PartidaAzkarraView : UserControl
+    {
+        private static readonly Regex NumericRegex = new("^[0-9]+([.,][0-9]{0,2})?$");
+
+        public PartidaAzkarraView()
+        {
+            InitializeComponent();
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // permit only digits and optional decimal separator
+            e.Handled = !NumericRegex.IsMatch(((TextBox)sender).Text.Insert(((TextBox)sender).SelectionStart, e.Text));
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+    }
+}

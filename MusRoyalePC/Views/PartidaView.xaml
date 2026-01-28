@@ -1,0 +1,261 @@
+<UserControl x:Class="MusRoyalePC.Views.PartidaView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="950" d:DesignWidth="1200">
+
+    <UserControl.Resources>
+        <Style x:Key="RoundedButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Image">
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PlayerAvatar" TargetType="Ellipse">
+            <Setter Property="Width" Value="55"/>
+            <Setter Property="Height" Value="55"/>
+            <Setter Property="Stroke" Value="#D1B282"/>
+            <Setter Property="StrokeThickness" Value="3"/>
+            <Setter Property="Fill" Value="#44000000"/>
+        </Style>
+
+        <Style x:Key="SpeechBubble" TargetType="Border">
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="BorderBrush" Value="#C79A58"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="2" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Margin="40,15" Background="#E6D5B6" CornerRadius="15" Padding="20,8"
+                BorderBrush="#C79A58" BorderThickness="1" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Etxekoak" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <Border Background="#5A3B26" CornerRadius="5" Padding="8,3">
+                    <TextBlock Text="1 - 2" Foreground="White" FontWeight="Bold"/>
+                </Border>
+                <TextBlock Text="RONDA 1" FontWeight="Black" FontSize="18" Margin="40,0" VerticalAlignment="Center"/>
+                <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" Margin="0,0,10,0">
+                    <TextBlock Text="0 - 0" Foreground="White" FontWeight="Bold"/>
+                </Border>
+                <TextBlock Text="Kanpokoak" FontWeight="Bold" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="40,5">
+            <Border x:Name="Tapete" CornerRadius="50" BorderBrush="#B58F54" BorderThickness="4">
+                <Border.Background>
+                    <ImageBrush ImageSource="/Assets/Tapete.png" Stretch="UniformToFill"/>
+                </Border.Background>
+
+                <Grid>
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0">
+                        <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleKidea" Visibility="Collapsed" Margin="0,0,0,5">
+                            <TextBlock x:Name="TxtMensajeKidea" Text="" FontWeight="Bold" Foreground="#3A2C20"/>
+                        </Border>
+                        <Ellipse Style="{StaticResource PlayerAvatar}"/>
+                        <Border Style="{StaticResource SpeechBubble}" Margin="0,10">
+                            <TextBlock Text="Tengo juego" FontWeight="Bold" Foreground="#3A2C20"/>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Image Source="/Assets/Cartas/karta.png" Width="45" Style="{StaticResource CardStyle}" Margin="0,0,-20,0"/>
+                            <Image Source="/Assets/Cartas/karta.png" Width="45" Style="{StaticResource CardStyle}" Margin="0,0,-20,0"/>
+                            <Image Source="/Assets/Cartas/karta.png" Width="45" Style="{StaticResource CardStyle}" Margin="0,0,-20,0"/>
+                            <Image Source="/Assets/Cartas/karta.png" Width="45" Style="{StaticResource CardStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <Border x:Name="BubbleAurkari1" Visibility="Collapsed" Style="{StaticResource SpeechBubble}">
+                                <TextBlock x:Name="TxtMensajeAurkari1" FontWeight="Bold"/>
+                            </Border>
+                            <Ellipse Style="{StaticResource PlayerAvatar}"/>
+                        </StackPanel>
+                        <StackPanel VerticalAlignment="Center" Margin="15,0,0,0">
+                            <Border Style="{StaticResource SpeechBubble}" Margin="0,0,0,10">
+                                <TextBlock Text="Envido 2 más!" FontWeight="Bold" Foreground="#3A2C20"/>
+                            </Border>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.LayoutTransform>
+                                    <RotateTransform Angle="90"/>
+                                </StackPanel.LayoutTransform>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}" Margin="0,0,-25,0"/>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}" Margin="0,0,-25,0"/>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}" Margin="0,0,-25,0"/>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,100,0">
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,15,0">
+                            <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleAurkari2"  Margin="0,0,0,10">
+                                <TextBlock Text="No tengo pares" x:Name="TxtMensajeAurkari2" FontWeight="Bold" Foreground="#3A2C20"/>
+                            </Border>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.LayoutTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </StackPanel.LayoutTransform>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}" Margin="0,0,-25,0"/>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}" Margin="0,0,-25,0"/>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}" Margin="0,0,-25,0"/>
+                                <Image Source="/Assets/Cartas/karta.png" Width="55" Style="{StaticResource CardStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Aurkari 2" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <Ellipse Style="{StaticResource PlayerAvatar}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <Border Style="{StaticResource SpeechBubble}" Margin="0,0,0,10" Background="#C24B3A" BorderBrush="White">
+                            <TextBlock Text="ORDAGO!" FontWeight="Black" Foreground="White" FontSize="16"/>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                            <Image x:Name="ImgCarta1" MouseDown="Carta_MouseDown" Tag="0" Source="/Assets/Cartas/copa1.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
+                            <Image x:Name="ImgCarta2" MouseDown="Carta_MouseDown" Tag="1" Source="/Assets/Cartas/basto12.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
+                            <Image x:Name="ImgCarta3" MouseDown="Carta_MouseDown" Tag="2" Source="/Assets/Cartas/espada12.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
+                            <Image x:Name="ImgCarta4" MouseDown="Carta_MouseDown" Tag="3" Source="/Assets/Cartas/copa12.png" Width="90" Style="{StaticResource CardStyle}" Cursor="Hand"/>
+                        </StackPanel>
+                        <Ellipse Style="{StaticResource PlayerAvatar}" Width="65" Height="65" Stroke="Gold" StrokeThickness="4"/>
+                        <TextBlock Text="Iker (Tú)" Foreground="Gold" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Border VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                        <TextBlock Text="Hablan Pares" Foreground="#66FFFFFF" FontSize="24" FontWeight="Light" FontStyle="Italic"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="40,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="💬" Width="55" Height="55" Margin="0,0,10,0" Background="#D1B282"/>
+                <Button Content="📷" Width="55" Height="55" Background="#D1B282" />
+                <Button Content="Test Resumen" Click="TestResumen_Click" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10"/>
+            </StackPanel>
+
+            <StackPanel x:Name="PanelBotones" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="BtnMus" Content="MUS" Visibility="Collapsed" Click="BtnMus_Click" Style="{StaticResource RoundedButton}" Width="100"/>
+                <Button x:Name="BtnPaso" Content="PASO" Visibility="Collapsed" Click="BtnPaso_Click" Style="{StaticResource RoundedButton}" Width="100"/>
+                <Button x:Name="BtnEnvido" Content="ENVIDO" Visibility="Collapsed" Click="BtnEnvido_Click" Style="{StaticResource RoundedButton}" Width="100"/>
+                <Button x:Name="BtnQuiero" Content="QUIERO" Visibility="Collapsed" Click="BtnQuiero_Click" Style="{StaticResource RoundedButton}" Width="100"/>
+
+                <StackPanel x:Name="PanelSubApuesta" Orientation="Vertical" Visibility="Collapsed" Margin="10,0,0,0">
+                    <Button x:Name="BtnEnvido2" Content="2" Click="BtnApuesta_Click" Tag="2" Style="{StaticResource RoundedButton}" Width="50" Height="30"/>
+                    <Button x:Name="BtnEnvido5" Content="5" Click="BtnApuesta_Click" Tag="5" Style="{StaticResource RoundedButton}" Width="50" Height="30"/>
+                    <Button x:Name="BtnHordago" Content="ORDAGO" Click="BtnApuesta_Click" Tag="hordago" Style="{StaticResource RoundedButton}" Width="80" Height="30" Background="DarkRed"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Border x:Name="OverlayResumen" 
+                Visibility="Collapsed"
+                Background="#CC000000" 
+                Grid.RowSpan="3" 
+                Panel.ZIndex="100">
+
+            <Border Background="#2C3E50" CornerRadius="15" Width="450" Height="400" 
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    BorderBrush="#F1C40F" BorderThickness="3">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.7"/>
+                </Border.Effect>
+
+                <StackPanel Margin="25">
+                    <TextBlock Text="PUNTUACIÓN DE LA RONDA" Foreground="#F1C40F" FontSize="22" 
+                               FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="1" Text="NOS" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="ELLOS" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="1" Text="🔲 Grandes" Foreground="#BDC3C7" Margin="0,8"/>
+                        <TextBlock x:Name="TxtG_Nos" Grid.Row="1" Grid.Column="1" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtG_Ellos" Grid.Row="1" Grid.Column="2" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="2" Text="🔳 Chicas" Foreground="#BDC3C7" Margin="0,8"/>
+                        <TextBlock x:Name="TxtC_Nos" Grid.Row="2" Grid.Column="1" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtC_Ellos" Grid.Row="2" Grid.Column="2" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="3" Text="Pair Pares" Foreground="#BDC3C7" Margin="0,8"/>
+                        <TextBlock x:Name="TxtP_Nos" Grid.Row="3" Grid.Column="1" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtP_Ellos" Grid.Row="3" Grid.Column="2" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="4" Text="🃏 Juego" Foreground="#BDC3C7" Margin="0,8"/>
+                        <TextBlock x:Name="TxtJ_Nos" Grid.Row="4" Grid.Column="1" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtJ_Ellos" Grid.Row="4" Grid.Column="2" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="5" Text="📍 Punto" Foreground="#BDC3C7" Margin="0,8"/>
+                        <TextBlock x:Name="TxtPt_Nos" Grid.Row="5" Grid.Column="1" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtPt_Ellos" Grid.Row="5" Grid.Column="2" Text="0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <Separator Margin="0,15" Background="#F1C40F" Opacity="0.5"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="TOTAL RONDA: " Foreground="White" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtTotalNos" Text="0" Foreground="#2ECC71" FontSize="22" FontWeight="Bold" Margin="10,0"/>
+                        <TextBlock Text="-" Foreground="White" FontSize="22" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtTotalEllos" Text="0" Foreground="#E74C3C" FontSize="22" FontWeight="Bold" Margin="10,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>
