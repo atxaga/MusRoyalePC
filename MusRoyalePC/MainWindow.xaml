@@ -149,6 +149,12 @@
                         <DataTrigger Binding="{Binding CurrentPageName}" Value="Lagunak">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Perfila">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Chat">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding CurrentPageName}" Value="Denda">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
@@ -157,8 +163,11 @@
             </Border.Style>
 
             <UniformGrid Rows="1" Columns="5" Margin="8">
-                <Button Style="{StaticResource NavButtonStyle}" Tag="👥" Content="Profila"/>
-                <Button Style="{StaticResource NavButtonStyle}" Tag="💬" Content="Txat"/>
+                <Button Style="{StaticResource NavButtonStyle}" Tag="👥"                
+                        Command="{Binding NavigateCommand}" CommandParameter="Perfila"/>
+
+                <Button Style="{StaticResource NavButtonStyle}" Tag="💬" 
+                Command="{Binding NavigateCommand}" CommandParameter="Chat"/> 
                 <Button Style="{StaticResource NavButtonStyle}" Tag="🏠" Content="Home" 
                 Command="{Binding NavigateCommand}" CommandParameter="Home"/>
                 <Button Style="{StaticResource NavButtonStyle}" Tag="🧑‍🤝‍🧑" Content="Lagunak" 

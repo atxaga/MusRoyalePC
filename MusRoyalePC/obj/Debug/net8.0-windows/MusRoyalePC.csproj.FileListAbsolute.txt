@@ -180,3 +180,8 @@ D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\refint\MusRoyalePC.dll
 D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\MusRoyalePC.pdb
 D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\MusRoyalePC.genruntimeconfig.cache
 D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\ref\MusRoyalePC.dll
+D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\Views\ChatView.baml
+D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\Views\PerfilaView.baml
+D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\Views\ChatView.g.cs
+D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\Views\PerfilaView.g.cs
+D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\MusRoyalePC.dll.config

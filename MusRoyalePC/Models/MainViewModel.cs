@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Google.Cloud.Firestore;
+using MusRoyalePC.Models;
+using MusRoyalePC.Views;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using MusRoyalePC.Views;
 
 namespace MusRoyalePC
 {
@@ -42,14 +44,40 @@ namespace MusRoyalePC
 
         public MainViewModel()
         {
+            var db = Services.FirestoreService.Instance.Db;
+            string currentUserId = Properties.Settings.Default.savedId;
+            if(currentUserId != "")
+            {
+                // Cargamos datos en el Header desde Firestore
+                var userDoc = db.Collection("Users").Document(currentUserId).GetSnapshotAsync().Result;
+                if (userDoc.Exists)
+                {
+                    // 1. Cargamos datos del usuario
+                    UserName = userDoc.GetValue<string>("username");
+                    var dinero = userDoc.ContainsField("dinero") ? userDoc.GetValue<object>("dinero").ToString() : "0";
+                    Balance = dinero;
+                }
+                CurrentPageName = "Home";
+            }
+            else
+            {
+                CurrentView = new LoginView();
+            }
+
             // Vista inicial
-            CurrentView = new LoginView();
+            //CurrentView = new LoginView();
 
             // Navegación general (Home, Lagunak, etc.)
             NavigateCommand = new RelayCommand<string>(Navegar);
 
             // Cerrar aplicación
-            PowerOffCommand = new RelayCommand<object>(_ => Application.Current.Shutdown());
+            PowerOffCommand = new RelayCommand<object>(_ => {
+                Properties.Settings.Default.savedId = string.Empty;
+
+                // 2. OBLIGATORIO: Guardar los cambios en el disco
+                Properties.Settings.Default.Save();
+                Application.Current.Shutdown();
+            });
 
             // El botón "Jokatu" simplemente navega a la vista de partida
             StartMatchCommand = new RelayCommand<object>(_ => Navegar("Partida"));
@@ -70,6 +98,12 @@ namespace MusRoyalePC
                     break;
                 case "Lagunak":
                     CurrentView = new LagunakView();
+                    break;
+                case "Perfila":
+                    CurrentView = new PerfilaView();
+                    break;
+                case "Chat":
+                    CurrentView = new ChatView();
                     break;
                 case "Register":
                     CurrentView = new RegisterView();

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Google.Cloud.Firestore;
+using MusRoyalePC.Models;
+using MusRoyalePC.Services;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using MusRoyalePC.Services;
-using Google.Cloud.Firestore;
 
 namespace MusRoyalePC.Views
 {
@@ -47,9 +48,17 @@ namespace MusRoyalePC.Views
                             vm.UserName = userDoc.GetValue<string>("username");
                             var dinero = userDoc.ContainsField("dinero") ? userDoc.GetValue<object>("dinero").ToString() : "0";
                             vm.Balance = dinero;
-
+                            // Dentro de tu lógica de Login exitoso
+                            if (RecordarCheck.IsChecked == true) // Si tienes un CheckBox de "Recordarme"
+                            {
+                                Properties.Settings.Default.savedId = userDoc.Id;
+                                Properties.Settings.Default.Save();
+                            }
                             // Esto pone CurrentView en null (para el menú de madera)
                             // Y pone CurrentPageName en "Home" (para que el Footer sea visible)
+                            UserSession.Instance.Username = userDoc.GetValue<string>("username");
+                            UserSession.Instance.Avatar = userDoc.GetValue<string>("avatarActual");
+                            UserSession.Instance.DocumentId = userDoc.Id;
                             vm.Navegar("Home");
                         }
                     }
