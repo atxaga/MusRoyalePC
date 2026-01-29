@@ -8,6 +8,7 @@
              d:DesignHeight="600" d:DesignWidth="900">
     <UserControl.Resources>
         <local:HalfWidthConverter x:Key="HalfWidthConverter"/>
+        
     </UserControl.Resources>
     <Grid x:Name="Root" Background="Transparent">
         <Grid.RowDefinitions>

@@ -90,7 +90,44 @@
                 </Border>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
-                    <Button Content="⚙" Background="#20FFFFFF" Foreground="{StaticResource HeaderFg}" BorderThickness="0" Padding="8" Margin="0,0,8,0"/>
+                    <Button Content="Salir" 
+                        Background="#E95420" 
+                        Foreground="White" 
+                        BorderThickness="0" 
+                        Padding="12,8" 
+                        Margin="0,0,8,0"
+                        FontWeight="Bold"
+                        Command="{Binding SalirPartidaCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPageName}" Value="Partida">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="⚙" 
+                        Background="#20FFFFFF" 
+                        Foreground="{StaticResource HeaderFg}" 
+                        BorderThickness="0" 
+                        Padding="8" 
+                        Margin="0,0,8,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPageName}" Value="Partida">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
                     <Button Content="⏻" Background="#20FFFFFF" Foreground="#E95420" BorderThickness="0" Command="{Binding PowerOffCommand}" Padding="8"/>
                 </StackPanel>
             </Grid>
@@ -163,17 +200,16 @@
             </Border.Style>
 
             <UniformGrid Rows="1" Columns="5" Margin="8">
-                <Button Style="{StaticResource NavButtonStyle}" Tag="👥"                
+                <Button Style="{StaticResource NavButtonStyle}" Tag="👥" Content="Perfila"               
                         Command="{Binding NavigateCommand}" CommandParameter="Perfila"/>
-
-                <Button Style="{StaticResource NavButtonStyle}" Tag="💬" 
-                Command="{Binding NavigateCommand}" CommandParameter="Chat"/> 
+                <Button Style="{StaticResource NavButtonStyle}" Tag="💬" Content="Chat" 
+                        Command="{Binding NavigateCommand}" CommandParameter="Chat"/> 
                 <Button Style="{StaticResource NavButtonStyle}" Tag="🏠" Content="Home" 
-                Command="{Binding NavigateCommand}" CommandParameter="Home"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="Home"/>
                 <Button Style="{StaticResource NavButtonStyle}" Tag="🧑‍🤝‍🧑" Content="Lagunak" 
-                Command="{Binding NavigateCommand}" CommandParameter="Lagunak"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="Lagunak"/>
                 <Button Style="{StaticResource NavButtonStyle}" Tag="🛒" Content="Denda" 
-                Command="{Binding NavigateCommand}" CommandParameter="Denda"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="Denda"/>
             </UniformGrid>
         </Border>
     </Grid>
