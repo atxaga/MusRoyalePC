@@ -1,7 +1,7 @@
 ﻿MusRoyalePC
 1.0.0.0
 
-winexe
+exe
 C#
 .cs
 D:\MusRoyalePC\MusRoyalePC\obj\Debug\net8.0-windows\
@@ -11,9 +11,9 @@ false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 D:\MusRoyalePC\MusRoyalePC\App.xaml
 10-1643775798
-
-30-520554545
-21960018854
+2-2108420710
+31910941164
+2341772452758
 MainWindow.xaml;Views\BikoteakView.xaml;Views\ChatView.xaml;Views\LagunakView.xaml;Views\LoginView.xaml;Views\PartidaAzkarraView.xaml;Views\PartidaView.xaml;Views\PerfilaView.xaml;Views\PribatuaView.xaml;Views\RegisterView.xaml;
 
 False
