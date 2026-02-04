@@ -30,11 +30,15 @@
                 MaxWidth="{Binding ElementName=Root, Path=ActualWidth, Converter={StaticResource HalfWidthConverter}}">
             <StackPanel>
                 <TextBlock Text="Partidaren Kodea" FontSize="24" FontWeight="SemiBold" Foreground="#3A2C20"/>
-                <TextBlock Text="Beste jokalaria kode hau erabili beharko dute." FontSize="12" Margin="0,4,0,16" Foreground="#806b5a"/>
+                <TextBlock Text="Idatzi kodea sartzeko edo sortu berri bat" FontSize="12" Margin="0,4,0,16" Foreground="#806b5a"/>
 
                 <!-- Code display -->
                 <Border Background="#F3DB7A" CornerRadius="14" BorderBrush="#C79A58" BorderThickness="2" Padding="8" Margin="0,0,0,8">
-                    <TextBlock Text="YGTD S22" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding CodigoAIntroducir, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" 
+                         FontWeight="SemiBold" FontSize="24" Background="Transparent" 
+                         BorderThickness="0" MaxLength="4" CharacterCasing="Upper"
+                         MinWidth="100" TextAlignment="Center"/>
                 </Border>
 
                 <Separator Margin="0,16" Opacity="0.4"/>
@@ -82,9 +86,19 @@
         </Border>
 
         <!-- Play button bottom -->
-        <Border Grid.Row="2" Margin="20" CornerRadius="18" Background="#D1B282" HorizontalAlignment="Center"
-                MaxWidth="{Binding ElementName=Root, Path=ActualWidth, Converter={StaticResource HalfWidthConverter}}">
-            <Button Content="Sortu" FontSize="18" Padding="12" BorderThickness="0" Background="Transparent" MinWidth="220"/>
-        </Border>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+            <Border CornerRadius="18" Background="#D1B282" Margin="10">
+                <Button Content="Sortu Kodea" FontSize="18" Padding="12" BorderThickness="0" Background="Transparent" MinWidth="180" 
+                Command="{Binding DataContext.StartMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                CommandParameter="CREAR_PRIVADA" />
+            </Border>
+
+            <Border CornerRadius="18" Background="#5A3B26" Margin="10">
+                <Button Content="Jokatu" FontSize="18" Padding="12" BorderThickness="0" Background="Transparent" Foreground="White" MinWidth="180" 
+                Command="{Binding DataContext.StartMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                CommandParameter="UNIRSE_PRIVADA" />
+            </Border>
+        </StackPanel>
+
     </Grid>
 </UserControl>

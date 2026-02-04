@@ -63,6 +63,41 @@ namespace MusRoyalePC.Services
             }
         }
 
+        public async Task<string> ConectarYUnirse(string ip, int puerto, string modo, string codigo = "")
+        {
+            // 1. Asegurar conexión
+            if (_client == null || !_client.Connected)
+            {
+                await Conectar(ip, puerto);
+            }
+
+            if (_writer == null) return "ERROR";
+
+            // 2. Enviar modo (PUBLICA, CREAR_PRIVADA, UNIRSE_PRIVADA)
+            await _writer.WriteLineAsync(modo);
+
+            // 3. Gestionar respuesta del servidor
+            if (modo == "CREAR_PRIVADA")
+            {
+                // El server responde: CODIGO \n [EL_CODE]
+                await _reader.ReadLineAsync(); // Salta el texto "CODIGO"
+                return await _reader.ReadLineAsync() ?? "ERROR";
+            }
+
+            if (modo == "UNIRSE_PRIVADA")
+            {
+                string? resp = await _reader.ReadLineAsync();
+                if (resp == "PEDIR_CODIGO")
+                {
+                    await _writer.WriteLineAsync(codigo);
+                    return (await _reader.ReadLineAsync() == "OK") ? "OK" : "ERROR_CODE";
+                }
+            }
+
+            // Para PUBLICA, el servidor suele responder "OK" o directamente empezar a mandar datos
+            return "OK";
+        }
+
         private async Task EscucharServidor(CancellationToken ct)
         {
             try

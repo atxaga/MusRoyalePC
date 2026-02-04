@@ -18,7 +18,7 @@ namespace MusRoyalePC.Services
             try
             {
                 // En el constructor o método de inicialización
-                string fileName = "musroyale-488aa-firebase-adminsdk-fbsvc-3ef71de2cb.json";
+                string fileName = "D:\\MusRoyalePC\\MusRoyalePC\\musroyale-488aa-d00f80fee001.json";
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
                 if (File.Exists(path))
