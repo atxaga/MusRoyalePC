@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1600">
 
     <Grid>
-        
+
 
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 
@@ -46,17 +46,12 @@
                             <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
                         </CheckBox.LayoutTransform>
                     </CheckBox>
-                    <Button x:Name="BtnLogin" Content="SAIOA HASI" Click="BtnLogin_Click"
-                            Background="#3C2822" Foreground="White" FontWeight="Bold" FontSize="20"
-                            Height="70" Cursor="Hand" BorderThickness="0">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="18"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+                    <Button x:Name="BtnLogin" Content="SAIOA HASI"
+        Background="#3C2822" Foreground="White" FontWeight="Bold" FontSize="20"
+        Height="70" Cursor="Hand" BorderThickness="0"
+        Command="{Binding LoginCommand}" />
 
-					<Button Content="¿Ez daukazu konturik? Erregistratu"
+                    <Button Content="¿Ez daukazu konturik? Erregistratu"
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="#3E2723"
