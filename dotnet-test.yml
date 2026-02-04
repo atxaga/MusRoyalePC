@@ -2,9 +2,9 @@ name: .NET Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ bittor ]
   pull_request:
-    branches: [ main ]
+    branches: [ bittor ]
 
 jobs:
   build-and-test:
