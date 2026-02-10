@@ -146,7 +146,6 @@ D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\testhost.dll
 D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\xunit.abstractions.dll
 D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\testhost.exe
 D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\xunit.runner.visualstudio.testadapter.dll
-D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\musroyale-488aa-firebase-adminsdk-fbsvc-3ef71de2cb.json
 D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\MusRoyalePC.exe
 D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\MusRoyalePC.dll.config
 D:\MusRoyalePC\MusRoyalePC\bin\Debug\net8.0-windows\MusRoyalePC.deps.json

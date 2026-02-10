@@ -124,14 +124,14 @@ namespace MusRoyalePC
                 {
                     case "PUBLICA":
                         // Conectamos y vamos directo a la mesa a esperar rivales
-                        string resPub = await _netService.ConectarYUnirse("34.233.112.247", 13000, "PUBLICA");
+                        string resPub = await _netService.ConectarYUnirse("98.82.112.35", 13000, "PUBLICA");
                         if (resPub == "OK") Navegar("Partida");
                         else MessageBox.Show("Ezin izan da partidan sartu.");
                         break;
 
                     case "CREAR_PRIVADA":
                         // Solo pedimos el código, nos quedamos en la vista actual para mostrarlo
-                        string codigoNuevo = await _netService.ConectarYUnirse("34.233.112.247", 13000, "CREAR_PRIVADA");
+                        string codigoNuevo = await _netService.ConectarYUnirse("98.82.112.35", 13000, "CREAR_PRIVADA");
                         if (codigoNuevo.Length == 4)
                         {
                             CodigoAIntroducir = codigoNuevo; // Se muestra en el TextBox amarillo
@@ -142,7 +142,7 @@ namespace MusRoyalePC
                         // Validamos que haya algo escrito y enviamos
                         if (string.IsNullOrEmpty(CodigoAIntroducir)) return;
 
-                        string resPriv = await _netService.ConectarYUnirse("34.233.112.247", 13000, "UNIRSE_PRIVADA", CodigoAIntroducir);
+                        string resPriv = await _netService.ConectarYUnirse("98.82.112.35", 13000, "UNIRSE_PRIVADA", CodigoAIntroducir);
                         if (resPriv == "OK") Navegar("Partida");
                         else MessageBox.Show("Kode okerra.");
                         break;

@@ -12,7 +12,7 @@ namespace MusRoyalePC.Views
     public partial class PartidaView : UserControl
     {
         private MusClientService _netService;
-        private string ip = "34.233.112.247";
+        private string ip = "98.82.112.35";
         private int port = 13000;
         private List<int> _cartasSeleccionadas = new List<int>();
         private string[] _misCartasActuales = new string[4];

@@ -158,9 +158,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="musroyale-488aa-firebase-adminsdk-fbsvc-3ef71de2cb.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
