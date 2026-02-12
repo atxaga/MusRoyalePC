@@ -96,7 +96,7 @@
         <Border Grid.Row="2" Margin="20" CornerRadius="18" Background="#D1B282" HorizontalAlignment="Center"
                 MaxWidth="{Binding ElementName=Root, Path=ActualWidth, Converter={StaticResource HalfWidthConverter}}">
             <Button Content="Jokatu" FontSize="18" Padding="12" BorderThickness="0" Background="Transparent" MinWidth="220" 
-                    Command="{Binding StartMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                    Command="{Binding DataContext.StartMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
 					CommandParameter="PUBLICA" />
 		</Border>
 	</Grid>

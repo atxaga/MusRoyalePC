@@ -34,11 +34,12 @@
 
                 <!-- Code display -->
                 <Border Background="#F3DB7A" CornerRadius="14" BorderBrush="#C79A58" BorderThickness="2" Padding="8" Margin="0,0,0,8">
-                    <TextBox Text="{Binding CodigoAIntroducir, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Text="{Binding DataContext.CodigoAIntroducir, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
                          HorizontalAlignment="Center" VerticalAlignment="Center" 
                          FontWeight="SemiBold" FontSize="24" Background="Transparent" 
                          BorderThickness="0" MaxLength="4" CharacterCasing="Upper"
                          MinWidth="100" TextAlignment="Center"/>
+
                 </Border>
 
                 <Separator Margin="0,16" Opacity="0.4"/>

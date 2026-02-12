@@ -12,26 +12,23 @@ namespace MusRoyalePC.Views
     public partial class PartidaView : UserControl
     {
         private MusClientService _netService;
-        private string ip = "98.82.112.35";
-        private int port = 13000;
         private List<int> _cartasSeleccionadas = new List<int>();
         private string[] _misCartasActuales = new string[4];
 
         private TaskCompletionSource<string>? _decisionTaskSource;
 
-        public PartidaView()
+        public PartidaView(MusClientService servicioConectado)
         {
             InitializeComponent();
-            _netService = new MusClientService();
+
+            // Asignamos el servicio que viene del MainViewModel
+            _netService = servicioConectado;
 
             _netService.OnCartasRecibidas += ActualizarMisCartas;
             _netService.OnMiTurno += ActivarControles;
             _netService.OnComandoRecibido += ProcesarMensajeServer;
 
-            Conectar();
         }
-
-        private async void Conectar() => await _netService.Conectar(ip, port);
 
         // --- LÓGICA DE MENSAJES DEL SERVIDOR ---
         private async void ProcesarMensajeServer(string msg)
@@ -68,29 +65,46 @@ namespace MusRoyalePC.Views
         }
         private async Task ManejarDecisionApuesta(string fase)
         {
-            // 1. Forzar limpieza de cualquier tarea anterior
             _decisionTaskSource?.TrySetCanceled();
             _decisionTaskSource = new TaskCompletionSource<string>();
 
-            Dispatcher.Invoke(() => {
-                OcultarTodosLosBotones();
-
-                // Activar botones necesarios
-                BtnPaso.Visibility = Visibility.Visible;
-                BtnEnvido.Visibility = Visibility.Visible;
-                BtnQuiero.Visibility = Visibility.Visible;
-                PanelSubApuesta.Visibility = Visibility.Collapsed;
+            Dispatcher.Invoke(() =>
+            {
+                OcultarTodosLosBotones(); // Limpieza inicial
 
                 Console.WriteLine($"--- UI Activada para fase: {fase} ---");
+
+                // Botones básicos
+                BtnPaso.Visibility = Visibility.Visible;
+                BtnQuiero.Visibility = Visibility.Visible;
+
+                // Envido base (2) y el botón de "+"
+                BtnEnvido.Visibility = Visibility.Visible;
+                BtnMas.Visibility = Visibility.Visible;
+                BtnMas.Content = "?"; // Asegurar que empiece con el más
+
+                // Asegurar que las apuestas altas empiecen ocultas hasta que se pulse "+"
+                PanelApuestasAltas.Visibility = Visibility.Collapsed;
             });
 
-            // 2. Esperar respuesta del usuario
             string respuesta = await _decisionTaskSource.Task;
-
-            // 3. Enviar y limpiar inmediatamente
             _netService.EnviarComando(respuesta);
 
             Dispatcher.Invoke(() => OcultarTodosLosBotones());
+        }
+
+        private void BtnMas_Click(object sender, RoutedEventArgs e)
+        {
+            if (PanelApuestasAltas.Visibility == Visibility.Collapsed)
+            {
+                PanelApuestasAltas.Visibility = Visibility.Visible;
+                BtnMas.Content = "?"; // Cambiar icono a menos
+            }
+            else
+            {
+                PanelApuestasAltas.Visibility = Visibility.Collapsed;
+                BtnMas.Content = "?"; // Volver a icono mas
+            }
         }
 
         private void BtnPaso_Click(object sender, RoutedEventArgs e)
@@ -166,30 +180,37 @@ namespace MusRoyalePC.Views
 
         private void ActivarControles()
         {
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
+                OcultarTodosLosBotones();
                 BtnMus.Visibility = Visibility.Visible;
-                BtnPaso.Visibility = Visibility.Visible;
-                BtnEnvido.Visibility = Visibility.Visible;
-                BtnQuiero.Visibility = Visibility.Visible;
-                PanelSubApuesta.Visibility = Visibility.Collapsed;
+                BtnPaso.Visibility = Visibility.Visible; // Paso para cortar mus
             });
         }
 
         private void OcultarTodosLosBotones()
         {
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
+                // Ocultar botones principales
                 BtnMus.Visibility = Visibility.Collapsed;
                 BtnPaso.Visibility = Visibility.Collapsed;
-                BtnEnvido.Visibility = Visibility.Collapsed;
                 BtnQuiero.Visibility = Visibility.Collapsed;
-                PanelSubApuesta.Visibility = Visibility.Collapsed;
+                BtnEnvido.Visibility = Visibility.Collapsed;
+                BtnMas.Visibility = Visibility.Collapsed;
 
+                // Ocultar panel de apuestas altas
+                if (PanelApuestasAltas != null)
+                {
+                    PanelApuestasAltas.Visibility = Visibility.Collapsed;
+                }
+
+                // Limpiar botones de descarte si los hubiera
                 var descartes = PanelBotones.Children.OfType<Button>()
                     .Where(b => b.Content.ToString() == "DESCARTAR").ToList();
                 foreach (var d in descartes) PanelBotones.Children.Remove(d);
             });
         }
-
         private void Carta_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var img = sender as Image;
@@ -235,12 +256,6 @@ namespace MusRoyalePC.Views
             // Se oculta solo tras 5 segundos para que deje ver el progreso
             Task.Delay(5000).ContinueWith(_ =>
                 Dispatcher.Invoke(() => OverlayResumen.Visibility = Visibility.Collapsed));
-        }
-
-        private void BtnEnvido_Click(object sender, RoutedEventArgs e)
-        {
-            PanelSubApuesta.Visibility = (PanelSubApuesta.Visibility == Visibility.Visible)
-                ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

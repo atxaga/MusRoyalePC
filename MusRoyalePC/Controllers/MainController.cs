@@ -55,7 +55,7 @@ namespace MusRoyalePC.Controllers
             });
 
             GoBackCommand = new RelayCommand(_ => CurrentView = null);
-            StartMatchCommand = new RelayCommand(_ => CurrentView = new PartidaView());
+           // StartMatchCommand = new RelayCommand(_ => CurrentView = new PartidaView());
 
             SelectModeCommand = new RelayCommand(param =>
             {

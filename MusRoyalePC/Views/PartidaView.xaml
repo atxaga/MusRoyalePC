@@ -164,29 +164,39 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="2" Margin="40,20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Orientation="Horizontal">
-                <Button Content="💬" Width="55" Height="55" Margin="0,0,10,0" Background="#D1B282"/>
-                <Button Content="📷" Width="55" Height="55" Background="#D1B282" />
-                <Button Content="Test Resumen" Click="TestResumen_Click" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10"/>
+        <Grid Grid.Row="2" Margin="20,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="💬" Width="55" Height="55" Margin="0,0,10,0" Background="#D1B282" Style="{StaticResource RoundedButton}"/>
+                <Button Content="📷" Width="55" Height="55" Background="#D1B282" Style="{StaticResource RoundedButton}"/>
+                <Button Content="T" Click="TestResumen_Click" Width="30" Height="30" Margin="10,0,0,0" Opacity="0.5"/>
             </StackPanel>
 
-            <StackPanel x:Name="PanelBotones" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="BtnMus" Content="MUS" Visibility="Collapsed" Click="BtnMus_Click" Style="{StaticResource RoundedButton}" Width="100"/>
-                <Button x:Name="BtnPaso" Content="PASO" Visibility="Collapsed" Click="BtnPaso_Click" Style="{StaticResource RoundedButton}" Width="100"/>
-                <Button x:Name="BtnEnvido" Content="ENVIDO" Visibility="Collapsed" Click="BtnEnvido_Click" Style="{StaticResource RoundedButton}" Width="100"/>
-                <Button x:Name="BtnQuiero" Content="QUIERO" Visibility="Collapsed" Click="BtnQuiero_Click" Style="{StaticResource RoundedButton}" Width="100"/>
+            <StackPanel x:Name="PanelBotones" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <StackPanel x:Name="PanelSubApuesta" Orientation="Vertical" Visibility="Collapsed" Margin="10,0,0,0">
-                    <Button x:Name="BtnEnvido2" Content="2" Click="BtnApuesta_Click" Tag="2" Style="{StaticResource RoundedButton}" Width="50" Height="30"/>
-                    <Button x:Name="BtnEnvido5" Content="5" Click="BtnApuesta_Click" Tag="5" Style="{StaticResource RoundedButton}" Width="50" Height="30"/>
-                    <Button x:Name="BtnHordago" Content="ORDAGO" Click="BtnApuesta_Click" Tag="hordago" Style="{StaticResource RoundedButton}" Width="80" Height="30" Background="DarkRed"/>
+                <Button x:Name="BtnMus" Content="MUS" Visibility="Collapsed" Click="BtnMus_Click" 
+                        Style="{StaticResource RoundedButton}" Background="#3498DB" Width="100" Height="50" Margin="5"/>
+
+                <Button x:Name="BtnPaso" Content="PASO" Visibility="Collapsed" Click="BtnPaso_Click" 
+                        Style="{StaticResource RoundedButton}" Background="#95A5A6" Width="100" Height="50" Margin="5"/>
+
+                <Button x:Name="BtnQuiero" Content="QUIERO" Visibility="Collapsed" Click="BtnQuiero_Click" 
+                        Style="{StaticResource RoundedButton}" Background="#27AE60" Width="100" Height="50" Margin="5"/>
+
+                <Button x:Name="BtnEnvido" Content="ENVIDO (2)" Visibility="Collapsed" Click="BtnApuesta_Click" Tag="2"
+                        Style="{StaticResource RoundedButton}" Background="#F1C40F" Foreground="#4E342E" FontWeight="Bold" Width="120" Height="50" Margin="5"/>
+
+                <Button x:Name="BtnMas" Content="➕" Visibility="Collapsed" Click="BtnMas_Click"
+                        Style="{StaticResource RoundedButton}" Background="#D35400" Width="50" Height="50" Margin="5"
+                        ToolTip="Ver apuestas altas"/>
+
+                <StackPanel x:Name="PanelApuestasAltas" Orientation="Horizontal" Visibility="Collapsed">
+                    <Button x:Name="BtnEnvido5" Content="5" Click="BtnApuesta_Click" Tag="5"
+                            Style="{StaticResource RoundedButton}" Background="#E67E22" Width="60" Height="50" Margin="5"/>
+
+                    <Button x:Name="BtnHordago" Content="ÓRDAGO" Click="BtnApuesta_Click" Tag="ordago"
+                            Style="{StaticResource RoundedButton}" Background="#C0392B" FontWeight="Black" Width="120" Height="50" Margin="5"/>
                 </StackPanel>
+
             </StackPanel>
         </Grid>
 

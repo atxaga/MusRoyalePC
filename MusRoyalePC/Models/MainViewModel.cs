@@ -120,36 +120,55 @@ namespace MusRoyalePC
         {
             try
             {
+                // IP de tu servidor (Asegúrate de que sea la correcta, antes pusiste una terminada en .35)
+                string ipServer = "44.210.239.166";
+                int puerto = 13000;
+
                 switch (modo)
                 {
                     case "PUBLICA":
-                        // Conectamos y vamos directo a la mesa a esperar rivales
-                        string resPub = await _netService.ConectarYUnirse("98.82.112.35", 13000, "PUBLICA");
-                        if (resPub == "OK") Navegar("Partida");
+                        string resPub = await _netService.ConectarYUnirse(ipServer, puerto, "PUBLICA");
+                        if (resPub == "OK")
+                        {
+                            Navegar("Partida");
+                        }
                         else MessageBox.Show("Ezin izan da partidan sartu.");
                         break;
 
                     case "CREAR_PRIVADA":
-                        // Solo pedimos el código, nos quedamos en la vista actual para mostrarlo
-                        string codigoNuevo = await _netService.ConectarYUnirse("98.82.112.35", 13000, "CREAR_PRIVADA");
-                        if (codigoNuevo.Length == 4)
+                        // 1. ConectarYUnirse ya se encarga de todo (Conectar -> Enviar ID -> Recibir Código -> Iniciar Escucha)
+                        string codigoNuevo = await _netService.ConectarYUnirse(ipServer, puerto, "CREAR_PRIVADA");
+
+                        if (codigoNuevo != "ERROR" && codigoNuevo.Length == 4)
                         {
-                            CodigoAIntroducir = codigoNuevo; // Se muestra en el TextBox amarillo
+                            CodigoAIntroducir = codigoNuevo;
+
+                            // Navegamos. Como 'ConectarYUnirse' ya inició la escucha internamente,
+                            // no hay que tocar el socket de nuevo.
+                            App.Current.Dispatcher.Invoke(() => Navegar("Partida"));
+
+                            MessageBox.Show($"Partida sortuta! Kodea: {codigoNuevo}");
                         }
+                        else { MessageBox.Show("Errorea."); }
                         break;
 
                     case "UNIRSE_PRIVADA":
-                        // Validamos que haya algo escrito y enviamos
-                        if (string.IsNullOrEmpty(CodigoAIntroducir)) return;
-
-                        string resPriv = await _netService.ConectarYUnirse("98.82.112.35", 13000, "UNIRSE_PRIVADA", CodigoAIntroducir);
-                        if (resPriv == "OK") Navegar("Partida");
-                        else MessageBox.Show("Kode okerra.");
+                        string res = await _netService.ConectarYUnirse(ipServer, puerto, "UNIRSE_PRIVADA", CodigoAIntroducir);
+                        if (res == "OK")
+                        {
+                            // Usamos el Dispatcher para asegurar que la vista cambie sin errores
+                            App.Current.Dispatcher.Invoke(() => Navegar("Partida"));
+                        }
+                        else
+                        {
+                            MessageBox.Show("Ezin izan da sartu.");
+                        }
                         break;
                 }
             }
             catch (Exception ex)
             {
+                // Esto atrapará el timeout o errores de red sin colgar la App
                 MessageBox.Show($"Errorea: {ex.Message}");
             }
         }
@@ -160,7 +179,7 @@ namespace MusRoyalePC
             switch (destino)
             {
                 case "Home": CurrentView = null; break;
-                case "Partida": CurrentView = new PartidaView(); break;
+                case "Partida": CurrentView = new PartidaView(_netService); break;
                 case "Lagunak": CurrentView = new LagunakView(); break;
                 case "Perfila": CurrentView = new PerfilaView(); break;
                 case "Chat": CurrentView = new ChatView(); break;
