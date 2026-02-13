@@ -62,17 +62,23 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Margin="40,15" Background="#E6D5B6" CornerRadius="15" Padding="20,8"
-                BorderBrush="#C79A58" BorderThickness="1" HorizontalAlignment="Center">
+        BorderBrush="#C79A58" BorderThickness="1" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
+
                 <TextBlock Text="Etxekoak" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <Border Background="#5A3B26" CornerRadius="5" Padding="8,3">
-                    <TextBlock Text="1 - 2" Foreground="White" FontWeight="Bold"/>
+
+                <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" MinWidth="40">
+                    <TextBlock x:Name="LblPuntosEtxekoak" Text="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
                 </Border>
-                <TextBlock Text="RONDA 1" FontWeight="Black" FontSize="18" Margin="40,0" VerticalAlignment="Center"/>
-                <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" Margin="0,0,10,0">
-                    <TextBlock Text="0 - 0" Foreground="White" FontWeight="Bold"/>
+
+                <TextBlock x:Name="LblInfoRonda" Text="RONDA 1" FontWeight="Black" FontSize="18" Margin="40,0" VerticalAlignment="Center"/>
+
+                <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" Margin="0,0,10,0" MinWidth="40">
+                    <TextBlock x:Name="LblPuntosKanpokoak" Text="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
                 </Border>
+
                 <TextBlock Text="Kanpokoak" FontWeight="Bold" VerticalAlignment="Center"/>
+
             </StackPanel>
         </Border>
 
@@ -264,6 +270,10 @@
                         <TextBlock Text="-" Foreground="White" FontSize="22" VerticalAlignment="Center"/>
                         <TextBlock x:Name="TxtTotalEllos" Text="0" Foreground="#E74C3C" FontSize="22" FontWeight="Bold" Margin="10,0"/>
                     </StackPanel>
+                    <Button Content="CONTINUAR" Click="CerrarResumen_Click" 
+                        Width="150" Height="40" Background="#3498DB" Foreground="White"
+                        Style="{StaticResource RoundedButton}" Margin="0,20,0,0"
+                        FontWeight="Bold" Cursor="Hand"/>
                 </StackPanel>
             </Border>
         </Border>

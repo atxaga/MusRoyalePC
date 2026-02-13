@@ -1,11 +1,13 @@
+﻿using MusRoyalePC.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using MusRoyalePC.Services;
+using System.Windows.Threading;
 
 namespace MusRoyalePC.Views
 {
@@ -21,16 +23,15 @@ namespace MusRoyalePC.Views
         {
             InitializeComponent();
 
-            // Asignamos el servicio que viene del MainViewModel
             _netService = servicioConectado;
 
+            // Suscripción a eventos del servicio
             _netService.OnCartasRecibidas += ActualizarMisCartas;
             _netService.OnMiTurno += ActivarControles;
             _netService.OnComandoRecibido += ProcesarMensajeServer;
-
         }
 
-        // --- L�GICA DE MENSAJES DEL SERVIDOR ---
+        // --- 1. LÓGICA DE MENSAJES DEL SERVIDOR ---
         private async void ProcesarMensajeServer(string msg)
         {
             if (msg == "ALL_MUS")
@@ -38,31 +39,65 @@ namespace MusRoyalePC.Views
                 Dispatcher.Invoke(() =>
                 {
                     OcultarTodosLosBotones();
+                    // Creamos el botón de descarte dinámicamente
                     Button btnDescarte = new Button
                     {
                         Content = "DESCARTAR",
                         Style = (Style)this.Resources["RoundedButton"],
                         Background = System.Windows.Media.Brushes.DarkGreen,
                         Width = 150,
-                        Height = 55
+                        Height = 55,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = System.Windows.Media.Brushes.White
                     };
                     btnDescarte.Click += (s, e) => EnviarDescarte(btnDescarte);
                     PanelBotones.Children.Add(btnDescarte);
                 });
             }
-            else if (msg == "GRANDES" || msg == "PEQUE�AS" || msg == "PARES" || msg == "JUEGO")
+            else if (msg == "GRANDES" || msg == "PEQUEÑAS" || msg == "PARES" || msg == "JUEGO" || msg == "PUNTO")
             {
+                // Actualizamos el cartel central para saber qué se juega
+                Dispatcher.Invoke(() => LblInfoRonda.Text = msg);
                 await ManejarDecisionApuesta(msg);
             }
+            // Mantenemos esto por compatibilidad si el servidor manda strings crudos
             else if (msg.StartsWith("PUNTOS|"))
             {
-                string[] partes = msg.Split('|'); // [0]=PUNTOS, [1]=Esk1, [2]=Esk2, [3]=Ezk1, [4]=Ezk2
+                string[] partes = msg.Split('|');
                 if (partes.Length == 5)
                 {
-                    ActualizarMarcadorReal(partes[1], partes[2], partes[3], partes[4]);
+                    // Convertimos el formato antiguo al nuevo marcador
+                    ActualizarMarcadorSimple(partes[1], partes[2], partes[3], partes[4]);
                 }
             }
         }
+
+        // --- 2. MÉTODO PRINCIPAL DE ACTUALIZACIÓN DE UI (LLAMAR DESDE TU SERVICIO) ---
+        public void ActualizarInterfaz(EstadoJuego estado)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // A) Actualizar Marcador Superior (Etxekoak / Kanpokoak)
+                LblPuntosEtxekoak.Text = estado.PuntosNosotros.ToString();
+                LblPuntosKanpokoak.Text = estado.PuntosEllos.ToString();
+
+                if (!string.IsNullOrEmpty(estado.MensajeCentro))
+                    LblInfoRonda.Text = estado.MensajeCentro.ToUpper();
+
+                // B) Lógica del Overlay de Resumen
+                if (estado.FaseActual == "Resumen")
+                {
+                    MostrarResumen(estado);
+                }
+                else
+                {
+                    // Si no estamos en resumen, aseguramos que esté cerrado
+                    OverlayResumen.Visibility = Visibility.Collapsed;
+                }
+            });
+        }
+
+        // --- 3. LÓGICA DE APUESTAS Y BOTONES ---
         private async Task ManejarDecisionApuesta(string fase)
         {
             _decisionTaskSource?.TrySetCanceled();
@@ -70,20 +105,19 @@ namespace MusRoyalePC.Views
 
             Dispatcher.Invoke(() =>
             {
-                OcultarTodosLosBotones(); // Limpieza inicial
-
+                OcultarTodosLosBotones();
                 Console.WriteLine($"--- UI Activada para fase: {fase} ---");
 
-                // Botones b�sicos
+                // Botones básicos
                 BtnPaso.Visibility = Visibility.Visible;
                 BtnQuiero.Visibility = Visibility.Visible;
 
-                // Envido base (2) y el bot�n de "+"
+                // Envido base (2) y el botón de "+"
                 BtnEnvido.Visibility = Visibility.Visible;
                 BtnMas.Visibility = Visibility.Visible;
-                BtnMas.Content = "?"; // Asegurar que empiece con el m�s
+                BtnMas.Content = "➕";
 
-                // Asegurar que las apuestas altas empiecen ocultas hasta que se pulse "+"
+                // Panel de altas oculto por defecto
                 PanelApuestasAltas.Visibility = Visibility.Collapsed;
             });
 
@@ -98,34 +132,37 @@ namespace MusRoyalePC.Views
             if (PanelApuestasAltas.Visibility == Visibility.Collapsed)
             {
                 PanelApuestasAltas.Visibility = Visibility.Visible;
-                BtnMas.Content = "?"; // Cambiar icono a menos
+                BtnMas.Content = "➖";
             }
             else
             {
                 PanelApuestasAltas.Visibility = Visibility.Collapsed;
-                BtnMas.Content = "?"; // Volver a icono mas
+                BtnMas.Content = "➕";
             }
         }
 
-        private void BtnPaso_Click(object sender, RoutedEventArgs e)
+        private void BtnPaso_Click(object sender, RoutedEventArgs e) => ResolverApuesta("paso");
+
+        private void BtnQuiero_Click(object sender, RoutedEventArgs e) => ResolverApuesta("quiero");
+
+        private void BtnMus_Click(object sender, RoutedEventArgs e)
         {
-            if (_decisionTaskSource != null && !_decisionTaskSource.Task.IsCompleted)
-            {
-                _decisionTaskSource.TrySetResult("paso");
-            }
-            else
-            {
-                _netService.EnviarComando("paso");
-                OcultarTodosLosBotones();
-            }
+            _netService.EnviarComando("mus");
+            OcultarTodosLosBotones();
         }
 
         private void BtnApuesta_Click(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
-            string valor = btn.Tag.ToString();
-            string comando = (valor == "ordago") ? "ordago" : $"{valor}";
+            if (sender is Button btn && btn.Tag != null)
+            {
+                string valor = btn.Tag.ToString();
+                ResolverApuesta(valor);
+            }
+        }
 
+        // Helper para resolver la Task o enviar directo
+        private void ResolverApuesta(string comando)
+        {
             if (_decisionTaskSource != null && !_decisionTaskSource.Task.IsCompleted)
             {
                 _decisionTaskSource.TrySetResult(comando);
@@ -137,94 +174,44 @@ namespace MusRoyalePC.Views
             }
         }
 
-        private void BtnMus_Click(object sender, RoutedEventArgs e)
-        {
-            _netService.EnviarComando("mus");
-            OcultarTodosLosBotones();
-        }
-
-        private void BtnQuiero_Click(object sender, RoutedEventArgs e)
-        {
-            // 1. Verificamos si hay una tarea de decisi�n esperando
-            if (_decisionTaskSource != null && !_decisionTaskSource.Task.IsCompleted)
-            {
-                // 2. "Despertamos" al m�todo ManejarDecisionApuesta enviando "quiero"
-                _decisionTaskSource.TrySetResult("quiero");
-            }
-            else
-            {
-                // Caso de seguridad: si no hay tarea, lo enviamos directo
-                _netService.EnviarComando("quiero");
-                OcultarTodosLosBotones();
-            }
-        }
-
+        // --- 4. GESTIÓN DE CARTAS ---
         private void ActualizarMisCartas(string[] cartas)
         {
             _misCartasActuales = cartas;
             Dispatcher.Invoke(() => {
                 try
                 {
+                    // Asumiendo que las cartas están en Assets/Cartas/
                     ImgCarta1.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[0]}.png"));
                     ImgCarta2.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[1]}.png"));
                     ImgCarta3.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[2]}.png"));
                     ImgCarta4.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[3]}.png"));
 
+                    // Reset de selección
                     _cartasSeleccionadas.Clear();
                     ImgCarta1.Opacity = 1.0; ImgCarta2.Opacity = 1.0;
                     ImgCarta3.Opacity = 1.0; ImgCarta4.Opacity = 1.0;
                 }
-                catch (Exception ex) { Console.WriteLine("Error im�genes: " + ex.Message); }
+                catch (Exception ex) { Console.WriteLine("Error cargando imágenes: " + ex.Message); }
             });
         }
 
-        private void ActivarControles()
+        private void Carta_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            if (sender is Image img && img.Tag != null)
             {
-                OcultarTodosLosBotones();
-                BtnMus.Visibility = Visibility.Visible;
-                BtnPaso.Visibility = Visibility.Visible; // Paso para cortar mus
-            });
-        }
+                int index = int.Parse(img.Tag.ToString());
 
-        private void OcultarTodosLosBotones()
-        {
-            Dispatcher.Invoke(() =>
-            {
-                // Ocultar botones principales
-                BtnMus.Visibility = Visibility.Collapsed;
-                BtnPaso.Visibility = Visibility.Collapsed;
-                BtnQuiero.Visibility = Visibility.Collapsed;
-                BtnEnvido.Visibility = Visibility.Collapsed;
-                BtnMas.Visibility = Visibility.Collapsed;
-
-                // Ocultar panel de apuestas altas
-                if (PanelApuestasAltas != null)
+                if (_cartasSeleccionadas.Contains(index))
                 {
-                    PanelApuestasAltas.Visibility = Visibility.Collapsed;
+                    _cartasSeleccionadas.Remove(index);
+                    img.Opacity = 1.0;
                 }
-
-                // Limpiar botones de descarte si los hubiera
-                var descartes = PanelBotones.Children.OfType<Button>()
-                    .Where(b => b.Content.ToString() == "DESCARTAR").ToList();
-                foreach (var d in descartes) PanelBotones.Children.Remove(d);
-            });
-        }
-        private void Carta_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var img = sender as Image;
-            int index = int.Parse(img.Tag.ToString());
-
-            if (_cartasSeleccionadas.Contains(index))
-            {
-                _cartasSeleccionadas.Remove(index);
-                img.Opacity = 1.0;
-            }
-            else
-            {
-                _cartasSeleccionadas.Add(index);
-                img.Opacity = 0.5;
+                else
+                {
+                    _cartasSeleccionadas.Add(index);
+                    img.Opacity = 0.5;
+                }
             }
         }
 
@@ -237,25 +224,185 @@ namespace MusRoyalePC.Views
             OcultarTodosLosBotones();
         }
 
-        private void TestResumen_Click(object sender, RoutedEventArgs e) => ActualizarMarcadorReal("3", "9", "2", "4");
+        // --- 5. UI HELPERS ---
+        private void ActivarControles()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                OcultarTodosLosBotones();
+                BtnMus.Visibility = Visibility.Visible;
+                BtnPaso.Visibility = Visibility.Visible; // Paso aquí es "Cortar Mus"
+            });
+        }
 
-        private void ActualizarMarcadorReal(string e1, string e2, string z1, string z2)
+        private void OcultarTodosLosBotones()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Ocultar botones fijos
+                BtnMus.Visibility = Visibility.Collapsed;
+                BtnPaso.Visibility = Visibility.Collapsed;
+                BtnQuiero.Visibility = Visibility.Collapsed;
+                BtnEnvido.Visibility = Visibility.Collapsed;
+                BtnMas.Visibility = Visibility.Collapsed;
+
+                // Ocultar panel extra
+                if (PanelApuestasAltas != null)
+                    PanelApuestasAltas.Visibility = Visibility.Collapsed;
+
+                // Limpiar botones dinámicos (Descarte)
+                var descartes = PanelBotones.Children.OfType<Button>()
+                    .Where(b => b.Content.ToString() == "DESCARTAR").ToList();
+                foreach (var d in descartes) PanelBotones.Children.Remove(d);
+            });
+        }
+
+        // --- 6. RESUMEN Y MARCADOR ---
+
+        // Método antiguo para compatibilidad con strings crudos
+        private void ActualizarMarcadorSimple(string e1, string e2, string z1, string z2)
         {
             Dispatcher.Invoke(() => {
-                // Asumiendo que Eskuin (Derecha) somos NOSOTROS y Ezker (Izquierda) ellos
-                TxtTotalNos.Text = (int.Parse(e1) * 5 + int.Parse(e2)).ToString();
-                TxtTotalEllos.Text = (int.Parse(z1) * 5 + int.Parse(z2)).ToString();
+                // Convertimos las piedras del mensaje antiguo al total
+                int totalNos = int.Parse(e1) * 5 + int.Parse(e2);
+                int totalEllos = int.Parse(z1) * 5 + int.Parse(z2);
 
-                // Si quieres mostrar amarracos y piedras por separado en el resumen:
-                TxtG_Nos.Text = e1;   // Amarracos nuestros
-                TxtG_Ellos.Text = e2; // Piedras nuestras
-
-                OverlayResumen.Visibility = Visibility.Visible;
+                LblPuntosEtxekoak.Text = totalNos.ToString();
+                LblPuntosKanpokoak.Text = totalEllos.ToString();
             });
-
-            // Se oculta solo tras 5 segundos para que deje ver el progreso
-            Task.Delay(5000).ContinueWith(_ =>
-                Dispatcher.Invoke(() => OverlayResumen.Visibility = Visibility.Collapsed));
         }
+
+        private void MostrarResumen(EstadoJuego estado)
+        {
+            // 1. Rellenar columna NOSOTROS (Etxekoak)
+            if (estado.PuntosNosotrosDetalle != null)
+            {
+                TxtG_Nos.Text = estado.PuntosNosotrosDetalle.Grandes.ToString();
+                TxtC_Nos.Text = estado.PuntosNosotrosDetalle.Chicas.ToString();
+                TxtP_Nos.Text = estado.PuntosNosotrosDetalle.Pares.ToString();
+                TxtJ_Nos.Text = estado.PuntosNosotrosDetalle.Juego.ToString();
+                TxtPt_Nos.Text = estado.PuntosNosotrosDetalle.Punto.ToString();
+            }
+
+            // 2. Rellenar columna ELLOS (Kanpokoak)
+            if (estado.PuntosEllosDetalle != null)
+            {
+                TxtG_Ellos.Text = estado.PuntosEllosDetalle.Grandes.ToString();
+                TxtC_Ellos.Text = estado.PuntosEllosDetalle.Chicas.ToString();
+                TxtP_Ellos.Text = estado.PuntosEllosDetalle.Pares.ToString();
+                TxtJ_Ellos.Text = estado.PuntosEllosDetalle.Juego.ToString();
+                TxtPt_Ellos.Text = estado.PuntosEllosDetalle.Punto.ToString();
+            }
+
+            // 3. Totales de la ronda
+            TxtTotalNos.Text = estado.TotalRondaNosotros.ToString();
+            TxtTotalEllos.Text = estado.TotalRondaEllos.ToString();
+
+            // 4. Mostrar Overlay
+            OverlayResumen.Visibility = Visibility.Visible;
+        }
+
+        // Evento para cerrar el resumen y seguir jugando
+        private void CerrarResumen_Click(object sender, RoutedEventArgs e)
+        {
+            OverlayResumen.Visibility = Visibility.Collapsed;
+            // Opcional: Avisar al server que estamos listos
+            // _netService.EnviarComando("LISTO_RONDA"); 
+        }
+
+        // Para pruebas rápidas
+        private void TestResumen_Click(object sender, RoutedEventArgs e)
+        {
+            var testState = new EstadoJuego
+            {
+                PuntosNosotros = 15,
+                PuntosEllos = 10,
+                MensajeCentro = "FINAL RONDA",
+                FaseActual = "Resumen",
+                TotalRondaNosotros = 5,
+                TotalRondaEllos = 0,
+                PuntosNosotrosDetalle = new DetallePuntos { Grandes = 2, Chicas = 0, Pares = 3, Juego = 0, Punto = 0 },
+                PuntosEllosDetalle = new DetallePuntos { Grandes = 0, Chicas = 0, Pares = 0, Juego = 0, Punto = 0 }
+            };
+            ActualizarInterfaz(testState);
+        }
+
+        private void DesvincularEventos()
+        {
+            if (_netService != null)
+            {
+                _netService.OnCartasRecibidas -= ActualizarMisCartas;
+                _netService.OnMiTurno -= ActivarControles;
+                _netService.OnComandoRecibido -= ProcesarMensajeServer;
+                _netService.OnPuntosRecibidos -= AlRecibirPuntos;
+            }
+        }
+
+        // --- LÓGICA CLAVE: DISTINGUIR EQUIPOS ---
+        private void AlRecibirPuntos(int idTaldeaGanador, int puntosNuevos)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // 1. Preguntamos al servicio: "¿Este ID de equipo ganador es el mío?"
+                // _netService.MiIdTaldea es la variable donde guardaste tu ID al empezar la partida
+                bool sonMios = (idTaldeaGanador == _netService.MiIdTaldea);
+
+                // 2. Seleccionamos qué etiqueta actualizar
+                TextBlock marcadorDestino = sonMios ? LblPuntosEtxekoak : LblPuntosKanpokoak;
+
+                // 3. Sumamos
+                int puntosActuales = int.TryParse(marcadorDestino.Text, out int val) ? val : 0;
+                int total = puntosActuales + puntosNuevos;
+
+                marcadorDestino.Text = total.ToString();
+
+                // 4. Animación visual (Verde si ganamos nosotros, Rojo si ganan ellos)
+                AnimarPuntos(marcadorDestino, sonMios);
+            });
+        }
+
+        private void AnimarPuntos(TextBlock target, bool esPositivo)
+        {
+            var brushOriginal = target.Foreground;
+            // Verde brillante para nosotros, Naranja/Rojo para el rival
+            target.Foreground = esPositivo ? System.Windows.Media.Brushes.LightGreen : System.Windows.Media.Brushes.OrangeRed;
+
+            // Efecto de "Pop" (aumentar tamaño)
+            double sizeOriginal = target.FontSize;
+            target.FontSize += 8;
+
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(600) };
+            timer.Tick += (s, e) =>
+            {
+                target.Foreground = brushOriginal;
+                target.FontSize = sizeOriginal;
+                timer.Stop();
+            };
+            timer.Start();
+        }
+    }
+
+    // --- MODELOS DE DATOS ---
+    public class EstadoJuego
+    {
+        public int PuntosNosotros { get; set; } // Puntuación total partida
+        public int PuntosEllos { get; set; }
+        public string MensajeCentro { get; set; } // "MUS", "JUEGO", etc.
+        public string FaseActual { get; set; } // "Juego", "Resumen"
+
+        // Datos para el Resumen
+        public int TotalRondaNosotros { get; set; }
+        public int TotalRondaEllos { get; set; }
+        public DetallePuntos PuntosNosotrosDetalle { get; set; }
+        public DetallePuntos PuntosEllosDetalle { get; set; }
+    }
+
+    public class DetallePuntos
+    {
+        public int Grandes { get; set; }
+        public int Chicas { get; set; }
+        public int Pares { get; set; }
+        public int Juego { get; set; }
+        public int Punto { get; set; }
     }
 }

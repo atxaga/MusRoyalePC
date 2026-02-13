@@ -23,10 +23,20 @@ namespace MusRoyalePC.Services
         private Task? _listenTask;
 
         public event Action<string[]>? OnCartasRecibidas;
+        public event Action<int, int> OnPuntosRecibidos;
         public event Action? OnMiTurno;
         public event Action<string>? OnComandoRecibido;
         public event Action<Exception>? OnError;
         public event Action? OnDisconnected;
+
+        // Datos PROPIOS (rellenados antes de conectar o al recibir INFO)
+        public string MiIdFirestore { get; set; }  // <-- IMPORTANTE: Asignar esto en el Login
+        public int MiIdTaldea { get; private set; }
+        public int MiNumeroJugador { get; private set; }
+
+        // Datos del COMPAÑERO
+        public string IdCompanero { get; private set; }
+        public int NumeroCompanero { get; private set; }
 
         public bool IsConnected => _client?.Connected == true;
 
@@ -68,6 +78,49 @@ namespace MusRoyalePC.Services
                 Desconectar();
                 OnError?.Invoke(ex);
                 throw;
+            }
+        }
+
+        private void ProcesarInfoInicial(string data)
+        {
+            // data llega así: "1AbCdEf0,2GhIjKl1,1MnOpQr2,2StUvWx3"
+            string[] jugadores = data.Split(',');
+
+            // Paso 1: Primero me busco a MÍ MISMO para saber mi equipo
+            foreach (string j in jugadores)
+            {
+                if (j.Length < 3) continue; // Protección contra datos vacíos
+
+                // Extraemos los datos "pegados"
+                int talde = int.Parse(j.Substring(0, 1));                  // Primer carácter
+                int playerNum = int.Parse(j.Substring(j.Length - 1, 1));   // Último carácter
+                string id = j.Substring(1, j.Length - 2);                  // Lo del medio
+
+                if (id == MiIdFirestore)
+                {
+                    this.MiIdTaldea = talde;
+                    this.MiNumeroJugador = playerNum;
+                    Console.WriteLine($"[CLIENTE] Soy yo ({id}). Equipo: {talde}, Sitio: {playerNum}");
+                    break; // Ya me encontré, salgo del bucle
+                }
+            }
+
+            // Paso 2: Ahora que sé mi equipo, busco a mi COMPAÑERO
+            // (Es aquel que tiene MI mismo IdTaldea pero NO es mi IdFirestore)
+            foreach (string j in jugadores)
+            {
+                if (j.Length < 3) continue;
+
+                int talde = int.Parse(j.Substring(0, 1));
+                int playerNum = int.Parse(j.Substring(j.Length - 1, 1));
+                string id = j.Substring(1, j.Length - 2);
+
+                if (talde == this.MiIdTaldea && id != this.MiIdFirestore)
+                {
+                    this.IdCompanero = id;
+                    this.NumeroCompanero = playerNum;
+                    Console.WriteLine($"[CLIENTE] Mi compañero es {id} en el sitio {playerNum}");
+                }
             }
         }
 
@@ -179,6 +232,37 @@ namespace MusRoyalePC.Services
                             if (EsCarta(linea))
                             {
                                 await LeerCartasSueltas(linea);
+                            }
+                            // --- 1. NUEVO: Detectar Info Inicial para saber mi ID de Talde ---
+                            else if (linea.StartsWith("INFO:"))
+                            {
+                                // Pasamos todo lo que hay después de "INFO:"
+                                ProcesarInfoInicial(linea.Substring(5));
+                            }
+                            // --- 2. MODIFICADO: Leer Puntos con ID de Talde ---
+                            // Asumimos que el server manda: "PUNTOS:IdTaldea:Cantidad" (Ej: "PUNTOS:1:5")
+                            else if (linea.StartsWith("PUNTOS:"))
+                            {
+                                try
+                                {
+                                    string[] partes = linea.Split(':');
+                                    // partes[0] es "PUNTOS"
+                                    // partes[1] es IdTaldea
+                                    // partes[2] es Cantidad
+
+                                    if (partes.Length >= 3)
+                                    {
+                                        int idTaldea = int.Parse(partes[1]);
+                                        int cantidad = int.Parse(partes[2]);
+
+                                        // Disparamos el evento con AMBOS datos para que la Vista sepa a quién sumar
+                                        OnPuntosRecibidos?.Invoke(idTaldea, cantidad);
+                                    }
+                                }
+                                catch
+                                {
+                                    Debug.WriteLine("Error leyendo formato de puntos");
+                                }
                             }
                             else
                             {
