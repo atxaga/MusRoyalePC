@@ -57,7 +57,7 @@ namespace MusRoyalePC.Views
                             // Esto pone CurrentView en null (para el menú de madera)
                             // Y pone CurrentPageName en "Home" (para que el Footer sea visible)
                             UserSession.Instance.Username = userDoc.GetValue<string>("username");
-                            UserSession.Instance.Avatar = userDoc.GetValue<string>("avatarActual");
+                          //  UserSession.Instance.Avatar = userDoc.GetValue<string>("avatarActual");
                             UserSession.Instance.DocumentId = userDoc.Id;
                             vm.Navegar("Home");
                         }

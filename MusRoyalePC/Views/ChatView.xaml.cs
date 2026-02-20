@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using MusRoyalePC.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +20,7 @@ namespace MusRoyalePC.Views
         public ChatView()
         {
             InitializeComponent();
-            currentUserId = Properties.Settings.Default.savedId;
+            currentUserId = FirestoreService.Instance.CurrentUserId;
             db = Services.FirestoreService.Instance.Db;
             chatItems.ItemsSource = Messages;
             CargarAmigos();
