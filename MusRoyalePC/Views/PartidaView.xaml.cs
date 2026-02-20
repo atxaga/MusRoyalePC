@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Google.Cloud.Firestore;
 
 namespace MusRoyalePC.Views
 {
@@ -19,18 +20,75 @@ namespace MusRoyalePC.Views
 
         private TaskCompletionSource<string>? _decisionTaskSource;
 
+        // mapping Seat(0..3) -> posición UI
+        private Dictionary<int, UiSeat> _seatToUi = new();
+
+        // cache firebaseId -> username
+        private readonly Dictionary<string, (string Name, string AvatarUrl)> _userDataCache = new();
         public PartidaView(MusClientService servicioConectado)
         {
             InitializeComponent();
 
             _netService = servicioConectado;
 
-            // Suscripción a eventos del servicio
             _netService.OnCartasRecibidas += ActualizarMisCartas;
             _netService.OnMiTurno += ActivarControles;
             _netService.OnComandoRecibido += ProcesarMensajeServer;
+            _netService.OnPuntosRecibidos += AlRecibirPuntos;
+
+
+            LblNombreYo.Text = "(Tú)";
         }
 
+        private enum UiSeat
+        {
+            Yo,
+            Front,
+            Left,
+            Right
+        }
+
+        
+        private string EtiquetarEquipo(AsientosPartida a, InfoJugadorPartida j, string username)
+        {
+            // Si prefieres sin tags, quita esto.
+            string tag = a.EsMiEquipo(j) ? "" : "";
+            return string.IsNullOrWhiteSpace(tag) ? username : $"{username} {tag}";
+        }
+
+        private async Task<(string Name, string AvatarUrl)> ResolveUserProfileAsync(string firebaseId)
+        {
+            if (string.IsNullOrWhiteSpace(firebaseId)) return ("?.", null);
+
+            if (_userDataCache.TryGetValue(firebaseId, out var cached)) return cached;
+
+            try
+            {
+                var db = FirestoreService.Instance.Db;
+                DocumentSnapshot doc = await db.Collection("Users").Document(firebaseId).GetSnapshotAsync();
+
+                string name = firebaseId;
+                string avatarUrl = null;
+
+                if (doc.Exists)
+                {
+                    // Nombre (con tus fallbacks)
+                    if (doc.ContainsField("Username")) name = doc.GetValue<string>("Username");
+                    else if (doc.ContainsField("username")) name = doc.GetValue<string>("username");
+
+                    // Avatar (asumiendo que el campo en Firebase se llama "AvatarUrl" o "PhotoUrl")
+                    if (doc.ContainsField("AvatarUrl")) avatarUrl = doc.GetValue<string>("AvatarUrl");
+                }
+
+                var result = (Name: name, AvatarUrl: avatarUrl);
+                _userDataCache[firebaseId] = result;
+                return result;
+            }
+            catch
+            {
+                return (firebaseId, null);
+            }
+        }
         // --- 1. LÓGICA DE MENSAJES DEL SERVIDOR ---
         private async void ProcesarMensajeServer(string msg)
         {
@@ -39,7 +97,6 @@ namespace MusRoyalePC.Views
                 Dispatcher.Invoke(() =>
                 {
                     OcultarTodosLosBotones();
-                    // Creamos el botón de descarte dinámicamente
                     Button btnDescarte = new Button
                     {
                         Content = "DESCARTAR",
@@ -56,19 +113,67 @@ namespace MusRoyalePC.Views
             }
             else if (msg == "GRANDES" || msg == "PEQUEÑAS" || msg == "PARES" || msg == "JUEGO" || msg == "PUNTO")
             {
-                // Actualizamos el cartel central para saber qué se juega
                 Dispatcher.Invoke(() => LblInfoRonda.Text = msg);
                 await ManejarDecisionApuesta(msg);
             }
-            // Mantenemos esto por compatibilidad si el servidor manda strings crudos
             else if (msg.StartsWith("PUNTOS|"))
             {
                 string[] partes = msg.Split('|');
                 if (partes.Length == 5)
                 {
-                    // Convertimos el formato antiguo al nuevo marcador
                     ActualizarMarcadorSimple(partes[1], partes[2], partes[3], partes[4]);
                 }
+            }
+            else if (msg.StartsWith("ACCION:", StringComparison.Ordinal))
+            {
+                MostrarAccionJugador(msg);
+            }
+        }
+
+        private void MostrarAccionJugador(string msg)
+        {
+            try
+            {
+                var partes = msg.Split(':', 3);
+                if (partes.Length < 3) return;
+
+                if (!int.TryParse(partes[1], out int seat)) return;
+                string texto = partes[2];
+
+                Dispatcher.Invoke(() =>
+                {
+                    if (!_seatToUi.TryGetValue(seat, out var uiSeat))
+                    {
+                        return;
+                    }
+
+                    (Border bubble, TextBlock label) = uiSeat switch
+                    {
+                        UiSeat.Front => (BubbleKidea, TxtMensajeKidea),
+                        UiSeat.Left => (BubbleAurkari1, TxtMensajeAurkari1),
+                        UiSeat.Right => (BubbleAurkari2, TxtMensajeAurkari2),
+                        UiSeat.Yo => (null, null),
+                        _ => (null, null)
+                    };
+
+                    if (bubble == null || label == null)
+                        return;
+
+                    label.Text = texto;
+                    bubble.Visibility = Visibility.Visible;
+
+                    var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(2500) };
+                    timer.Tick += (s, e) =>
+                    {
+                        bubble.Visibility = Visibility.Collapsed;
+                        timer.Stop();
+                    };
+                    timer.Start();
+                });
+            }
+            catch
+            {
+                // ignore
             }
         }
 
@@ -77,21 +182,18 @@ namespace MusRoyalePC.Views
         {
             Dispatcher.Invoke(() =>
             {
-                // A) Actualizar Marcador Superior (Etxekoak / Kanpokoak)
                 LblPuntosEtxekoak.Text = estado.PuntosNosotros.ToString();
                 LblPuntosKanpokoak.Text = estado.PuntosEllos.ToString();
 
                 if (!string.IsNullOrEmpty(estado.MensajeCentro))
                     LblInfoRonda.Text = estado.MensajeCentro.ToUpper();
 
-                // B) Lógica del Overlay de Resumen
                 if (estado.FaseActual == "Resumen")
                 {
                     MostrarResumen(estado);
                 }
                 else
                 {
-                    // Si no estamos en resumen, aseguramos que esté cerrado
                     OverlayResumen.Visibility = Visibility.Collapsed;
                 }
             });
@@ -343,20 +445,15 @@ namespace MusRoyalePC.Views
         {
             Dispatcher.Invoke(() =>
             {
-                // 1. Preguntamos al servicio: "¿Este ID de equipo ganador es el mío?"
-                // _netService.MiIdTaldea es la variable donde guardaste tu ID al empezar la partida
                 bool sonMios = (idTaldeaGanador == _netService.MiIdTaldea);
 
-                // 2. Seleccionamos qué etiqueta actualizar
                 TextBlock marcadorDestino = sonMios ? LblPuntosEtxekoak : LblPuntosKanpokoak;
 
-                // 3. Sumamos
                 int puntosActuales = int.TryParse(marcadorDestino.Text, out int val) ? val : 0;
                 int total = puntosActuales + puntosNuevos;
 
                 marcadorDestino.Text = total.ToString();
 
-                // 4. Animación visual (Verde si ganamos nosotros, Rojo si ganan ellos)
                 AnimarPuntos(marcadorDestino, sonMios);
             });
         }

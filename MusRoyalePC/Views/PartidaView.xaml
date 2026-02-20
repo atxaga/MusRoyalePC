@@ -93,8 +93,9 @@
                         <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleKidea" Visibility="Collapsed" Margin="0,0,0,5">
                             <TextBlock x:Name="TxtMensajeKidea" Text="" FontWeight="Bold" Foreground="#3A2C20"/>
                         </Border>
-                        <Ellipse Style="{StaticResource PlayerAvatar}"/>
-                        <Border Style="{StaticResource SpeechBubble}" Margin="0,10">
+                        <Ellipse  x:Name="ImgAvatarFront" Style="{StaticResource PlayerAvatar}"/>
+                        <TextBlock x:Name="LblNombreFront" Text="" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                        <Border Style="{StaticResource SpeechBubble}" Margin="0,10" Visibility="Collapsed">
                             <TextBlock Text="Tengo juego" FontWeight="Bold" Foreground="#3A2C20"/>
                         </Border>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -110,10 +111,11 @@
                             <Border x:Name="BubbleAurkari1" Visibility="Collapsed" Style="{StaticResource SpeechBubble}">
                                 <TextBlock x:Name="TxtMensajeAurkari1" FontWeight="Bold"/>
                             </Border>
-                            <Ellipse Style="{StaticResource PlayerAvatar}"/>
+                            <Ellipse x:Name="ImgAvatarLeft" Style="{StaticResource PlayerAvatar}"/>
+                            <TextBlock x:Name="LblNombreLeft" Text="" Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,0" FontWeight="Bold"/>
                         </StackPanel>
                         <StackPanel VerticalAlignment="Center" Margin="15,0,0,0">
-                            <Border Style="{StaticResource SpeechBubble}" Margin="0,0,0,10">
+                            <Border Style="{StaticResource SpeechBubble}" Margin="0,0,0,10" Visibility="Collapsed">
                                 <TextBlock Text="Envido 2 más!" FontWeight="Bold" Foreground="#3A2C20"/>
                             </Border>
                             <StackPanel Orientation="Horizontal">
@@ -130,8 +132,8 @@
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,100,0">
                         <StackPanel VerticalAlignment="Center" Margin="0,0,15,0">
-                            <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleAurkari2"  Margin="0,0,0,10">
-                                <TextBlock Text="No tengo pares" x:Name="TxtMensajeAurkari2" FontWeight="Bold" Foreground="#3A2C20"/>
+                            <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleAurkari2"  Margin="0,0,0,10" Visibility="Collapsed">
+                                <TextBlock Text="" x:Name="TxtMensajeAurkari2" FontWeight="Bold" Foreground="#3A2C20"/>
                             </Border>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.LayoutTransform>
@@ -144,13 +146,13 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Aurkari 2" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                            <Ellipse Style="{StaticResource PlayerAvatar}"/>
+                            <TextBlock x:Name="LblNombreRight" Text="" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5" FontWeight="Bold"/>
+                            <Ellipse x:Name="ImgAvatarRight" Style="{StaticResource PlayerAvatar}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20">
-                        <Border Style="{StaticResource SpeechBubble}" Margin="0,0,0,10" Background="#C24B3A" BorderBrush="White">
+                        <Border Style="{StaticResource SpeechBubble}" Margin="0,0,0,10" Background="#C24B3A" BorderBrush="White" Visibility="Collapsed">
                             <TextBlock Text="ORDAGO!" FontWeight="Black" Foreground="White" FontSize="16"/>
                         </Border>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
@@ -159,8 +161,8 @@
                             <Image x:Name="ImgCarta3" MouseDown="Carta_MouseDown" Tag="2" Source="/Assets/Cartas/espada12.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
                             <Image x:Name="ImgCarta4" MouseDown="Carta_MouseDown" Tag="3" Source="/Assets/Cartas/copa12.png" Width="90" Style="{StaticResource CardStyle}" Cursor="Hand"/>
                         </StackPanel>
-                        <Ellipse Style="{StaticResource PlayerAvatar}" Width="65" Height="65" Stroke="Gold" StrokeThickness="4"/>
-                        <TextBlock Text="Iker (Tú)" Foreground="Gold" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+                        <Ellipse  x:Name="ImgAvatarYo" Style="{StaticResource PlayerAvatar}" Width="65" Height="65" Stroke="Gold" StrokeThickness="4"/>
+                        <TextBlock x:Name="LblNombreYo" Text="(Tú)" Foreground="Gold" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <Border VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">

@@ -121,7 +121,7 @@ namespace MusRoyalePC
             try
             {
                 // IP de tu servidor (Asegúrate de que sea la correcta, antes pusiste una terminada en .35)
-                string ipServer = "3.237.21.174";
+                string ipServer = "52.72.136.36";
                 int puerto = 13000;
 
                 switch (modo)
