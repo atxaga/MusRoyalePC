@@ -257,9 +257,10 @@
               "RelativeDocumentMoniker": "Views\\PartidaView.xaml.cs",
               "ToolTip": "D:\\MusRoyalePC\\MusRoyalePC\\Views\\PartidaView.xaml.cs",
               "RelativeToolTip": "Views\\PartidaView.xaml.cs",
-              "ViewState": "AgIAAEIDAAAAAAAAAABfwEYDAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAH0DAAAAAAAAAIBXwIADAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-23T09:15:28.19Z"
+              "WhenOpened": "2026-01-23T09:15:28.19Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

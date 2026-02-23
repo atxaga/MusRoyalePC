@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MusRoyalePC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a964ba69b295418a2b7ab29c871776391a78ac8c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+096814727a47d97a5932c28933b07a8f84568a99")]
 [assembly: System.Reflection.AssemblyProductAttribute("MusRoyalePC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MusRoyalePC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

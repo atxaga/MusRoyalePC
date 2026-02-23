@@ -36,6 +36,10 @@ namespace MusRoyalePC.Views
 
         private UiSeat? _countdownSeat;
 
+        private bool _abandonSent;
+
+        private readonly Dictionary<string, UiSeat> _firebaseToUiSeat = new(StringComparer.Ordinal);
+
         public PartidaView(MusClientService servicioConectado)
         {
             InitializeComponent();
@@ -72,6 +76,12 @@ namespace MusRoyalePC.Views
                     [a.Left.Seat] = UiSeat.Left,
                     [a.Right.Seat] = UiSeat.Right,
                 };
+
+                _firebaseToUiSeat.Clear();
+                _firebaseToUiSeat[a.Yo.FirestoreId] = UiSeat.Yo;
+                _firebaseToUiSeat[a.Front.FirestoreId] = UiSeat.Front;
+                _firebaseToUiSeat[a.Left.FirestoreId] = UiSeat.Left;
+                _firebaseToUiSeat[a.Right.FirestoreId] = UiSeat.Right;
 
                 var yoTask = ResolveUserProfileAsync(a.Yo.FirestoreId);
                 var frontTask = ResolveUserProfileAsync(a.Front.FirestoreId);
@@ -195,20 +205,34 @@ namespace MusRoyalePC.Views
 
             if (msg.StartsWith("TURN;", StringComparison.Ordinal))
             {
-                // Formato observado: TURN;uid;seat
+                // Formato real: TURN;{firebaseId}
                 try
                 {
-                    var parts = msg.Split(';');
-                    if (parts.Length >= 3 && int.TryParse(parts[2], out int seatServer) && _seatToUi.TryGetValue(seatServer, out var uiSeat))
+                    var parts = msg.Split(';', 2);
+                    string firebaseId = parts.Length == 2 ? parts[1].Trim() : string.Empty;
+
+                    if (!string.IsNullOrWhiteSpace(firebaseId) && _firebaseToUiSeat.TryGetValue(firebaseId, out var uiSeat))
                     {
-                        // Countdown visual para el que tiene el turno (aunque no sea el usuario)
                         StartTurnCountdown(uiSeat);
+                    }
+                    else
+                    {
+                        // Fallback: si no podemos mapear, no rompemos. Si coincide con mi session id, lo tratamos como yo.
+                        if (!string.IsNullOrWhiteSpace(firebaseId) && firebaseId == _netService.MiIdFirestore)
+                            StartTurnCountdown(UiSeat.Yo);
                     }
                 }
                 catch
                 {
                     // ignore
                 }
+                return;
+            }
+
+            if (msg == "TURN")
+            {
+                Dispatcher.Invoke(() => LblInfoRonda.Text = "TURNO");
+                StartTurnCountdown(UiSeat.Yo);
                 return;
             }
 
@@ -268,8 +292,6 @@ namespace MusRoyalePC.Views
                 var parts = raw.Split(';', 3);
                 if (parts.Length < 3) return;
 
-                // uid puede venir recortado por el server en logs; lo usamos solo por si acaso
-                string uid = parts[0].Trim();
                 int serverId = int.TryParse(parts[1].Trim(), out var id) ? id : 0;
                 string mensaje = parts[2].Trim();
 
@@ -285,6 +307,12 @@ namespace MusRoyalePC.Views
                     mensaje = mensaje.StartsWith("jokuaDaukat", StringComparison.OrdinalIgnoreCase)
                         ? "JOKUA DAUKAT"
                         : "JOKUA EZ DUT";
+                }
+
+                // Si el serverId corresponde a un rival, mostramos su anillo de forma visual (sin auto-comando)
+                if (_seatToUi.TryGetValue(serverId, out var uiSeat) && uiSeat != UiSeat.Yo)
+                {
+                    StartTurnCountdown(uiSeat);
                 }
 
                 MostrarPopupDecision(serverId, mensaje);
@@ -809,6 +837,36 @@ namespace MusRoyalePC.Views
         private void BtnPaso_Click(object sender, RoutedEventArgs e)
         {
             ResolverApuesta("paso");
+        }
+
+        private void EnviarAbandonoSiConectado()
+        {
+            if (_abandonSent) return;
+            _abandonSent = true;
+
+            try
+            {
+                if (_netService?.IsConnected == true)
+                {
+                    _netService.EnviarComando("ABANDONO");
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        // Asegurarnos de enviar ABANDONO cuando se cierre la vista
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            // Si nos están quitando del árbol visual, asumimos salida de la partida.
+            if (oldParent != null && VisualParent == null)
+            {
+                EnviarAbandonoSiConectado();
+            }
+
+            base.OnVisualParentChanged(oldParent);
         }
 
     }
