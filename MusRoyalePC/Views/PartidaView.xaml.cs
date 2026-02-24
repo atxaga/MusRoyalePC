@@ -36,6 +36,9 @@ namespace MusRoyalePC.Views
 
         private UiSeat? _countdownSeat;
 
+        // NUEVO: delay entre turnos (según pedido)
+        private static readonly TimeSpan TurnStartDelay = TimeSpan.FromSeconds(5);
+
         private bool _abandonSent;
 
         private readonly Dictionary<string, UiSeat> _firebaseToUiSeat = new(StringComparer.Ordinal);
@@ -183,6 +186,15 @@ namespace MusRoyalePC.Views
         // --- 1. LÓGICA DE MENSAJES DEL SERVIDOR ---
         private async void ProcesarMensajeServer(string msg)
         {
+            // NUEVO: fin de partida por abandono
+            if (string.Equals(msg?.Trim(), "END_GAME", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(msg?.Trim(), "ENDGAME", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(msg?.Trim(), "end_game", StringComparison.OrdinalIgnoreCase))
+            {
+                MostrarEndGame("Jokalari bat atera da.");
+                return;
+            }
+
             // Marcador superior: mostrar fase/ronda
             if (msg.StartsWith("RONDA:", StringComparison.Ordinal))
             {
@@ -327,6 +339,14 @@ namespace MusRoyalePC.Views
                         : "JOKUA EZ DUT";
                 }
 
+                // NUEVO: normalizar apuestas numéricas
+                // Si el server manda "2" => ENVIDO 2
+                // Si manda un número mayor => "{n} GEHIAGO"
+                if (int.TryParse(mensaje, out int apuesta))
+                {
+                    mensaje = apuesta == 2 ? "ENVIDO 2" : $"{apuesta} GEHIAGO";
+                }
+
                 // Si el serverId corresponde a un rival, mostramos su anillo de forma visual (sin auto-comando)
                 if (_seatToUi.TryGetValue(serverId, out var uiSeat) && uiSeat != UiSeat.Yo)
                 {
@@ -339,191 +359,6 @@ namespace MusRoyalePC.Views
             {
                 // ignore
             }
-        }
-
-        private void MostrarPopupDecision(int serverSeat, string texto)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if (!_seatToUi.TryGetValue(serverSeat, out var uiSeat))
-                    return;
-
-                // Para el propio usuario: bubble igual que el resto, encima de sus cartas.
-                if (uiSeat == UiSeat.Yo)
-                {
-                    TxtMensajeYo.Text = texto;
-                    BubbleYo.Visibility = Visibility.Visible;
-
-                    var timerYo = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(2500) };
-                    timerYo.Tick += (s, e) =>
-                    {
-                        BubbleYo.Visibility = Visibility.Collapsed;
-                        timerYo.Stop();
-                    };
-                    timerYo.Start();
-                    return;
-                }
-
-                (Border bubble, TextBlock label) = uiSeat switch
-                {
-                    UiSeat.Front => (BubbleKidea, TxtMensajeKidea),
-                    UiSeat.Left => (BubbleAurkari1, TxtMensajeAurkari1),
-                    UiSeat.Right => (BubbleAurkari2, TxtMensajeAurkari2),
-                    _ => (null, null)
-                };
-
-                if (bubble == null || label == null) return;
-
-                label.Text = texto;
-                bubble.Visibility = Visibility.Visible;
-
-                var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(2500) };
-                timer.Tick += (s, e) =>
-                {
-                    bubble.Visibility = Visibility.Collapsed;
-                    timer.Stop();
-                };
-                timer.Start();
-            });
-        }
-
-        private void StartTurnCountdown(UiSeat? seatOverride = null)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                StopTurnCountdown();
-
-                _countdownSeat = seatOverride ?? UiSeat.Yo;
-
-                // Capturamos el asiento y la fase en el momento de arrancar el timer.
-                UiSeat seatForThisTimer = _countdownSeat.Value;
-                bool isMusPhaseForThisTimer = (seatForThisTimer == UiSeat.Yo) && BtnMus.Visibility == Visibility.Visible;
-
-                _turnCountdownDuration = TimeSpan.FromSeconds(10);
-                if (seatForThisTimer == UiSeat.Yo)
-                    _turnCountdownDuration = isMusPhaseForThisTimer ? TimeSpan.FromSeconds(9) : TimeSpan.FromSeconds(10);
-
-                _turnCountdownStart = DateTime.UtcNow;
-                _turnCountdownFired = false;
-
-                var ring = GetCountdownRing(seatForThisTimer);
-                if (ring != null)
-                {
-                    ring.Visibility = Visibility.Visible;
-                    UpdateCountdownRing(ring, 1.0);
-                }
-
-                _turnCountdownTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(33) };
-                _turnCountdownTimer.Tick += (_, __) =>
-                {
-                    var elapsed = DateTime.UtcNow - _turnCountdownStart;
-                    double remaining = Math.Max(0, 1.0 - (elapsed.TotalMilliseconds / _turnCountdownDuration.TotalMilliseconds));
-
-                    var r = GetCountdownRing(seatForThisTimer);
-                    if (r != null)
-                        UpdateCountdownRing(r, remaining);
-
-                    if (!_turnCountdownFired && elapsed >= _turnCountdownDuration)
-                    {
-                        _turnCountdownFired = true;
-                        StopTurnCountdown();
-
-                        // Auto comando SOLO si este timer era del usuario.
-                        if (seatForThisTimer == UiSeat.Yo)
-                        {
-                            string cmd = isMusPhaseForThisTimer ? "mus" : "paso";
-                            ResolverApuesta(cmd);
-                        }
-                    }
-                };
-
-                _turnCountdownTimer.Start();
-            });
-        }
-
-        private void StopTurnCountdown()
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if (_turnCountdownTimer != null)
-                {
-                    _turnCountdownTimer.Stop();
-                    _turnCountdownTimer = null;
-                }
-
-                foreach (var ring in new[] { AvatarCountdownRing, AvatarCountdownRingFront, AvatarCountdownRingLeft, AvatarCountdownRingRight })
-                {
-                    if (ring != null)
-                    {
-                        ring.Visibility = Visibility.Collapsed;
-                        ring.Data = Geometry.Empty;
-                    }
-                }
-
-                _countdownSeat = null;
-            });
-        }
-
-        private Path? GetCountdownRing(UiSeat seat) => seat switch
-        {
-            UiSeat.Yo => AvatarCountdownRing,
-            UiSeat.Front => AvatarCountdownRingFront,
-            UiSeat.Left => AvatarCountdownRingLeft,
-            UiSeat.Right => AvatarCountdownRingRight,
-            _ => null
-        };
-
-        private static (double Cx, double Cy, double R) GetRingGeometryFor(UiSeat seat)
-        {
-            return seat == UiSeat.Yo ? (35d, 35d, 30d) : (30d, 30d, 25d);
-        }
-
-        private void UpdateCountdownRing(Path ring, double fraction)
-        {
-            fraction = Math.Clamp(fraction, 0, 1);
-
-            if (fraction <= 0.001)
-            {
-                ring.Data = Geometry.Empty;
-                return;
-            }
-
-            // IMPORTANTE: usar el seat del ring que se está actualizando.
-            // _countdownSeat puede cambiar si entra un nuevo TURN mientras el timer está tickeando.
-            UiSeat seat = SeatFromRing(ring);
-            var (cx, cy, r) = GetRingGeometryFor(seat);
-
-            double startAngle = -90;
-            double sweepAngle = 360 * fraction;
-            double endAngle = startAngle + sweepAngle;
-
-            Point start = PointOnCircle(cx, cy, r, startAngle);
-            Point end = PointOnCircle(cx, cy, r, endAngle);
-
-            bool isLargeArc = sweepAngle >= 180;
-
-            var fig = new PathFigure { StartPoint = start, IsClosed = false, IsFilled = false };
-            fig.Segments.Add(new ArcSegment
-            {
-                Point = end,
-                Size = new Size(r, r),
-                SweepDirection = SweepDirection.Clockwise,
-                IsLargeArc = isLargeArc,
-                RotationAngle = 0
-            });
-
-            var geo = new PathGeometry();
-            geo.Figures.Add(fig);
-            ring.Data = geo;
-        }
-
-        private UiSeat SeatFromRing(Path ring)
-        {
-            if (ReferenceEquals(ring, AvatarCountdownRing)) return UiSeat.Yo;
-            if (ReferenceEquals(ring, AvatarCountdownRingFront)) return UiSeat.Front;
-            if (ReferenceEquals(ring, AvatarCountdownRingLeft)) return UiSeat.Left;
-            if (ReferenceEquals(ring, AvatarCountdownRingRight)) return UiSeat.Right;
-            return UiSeat.Yo;
         }
 
         // --- 2. CONTROL DE TIEMPOS ---
@@ -595,6 +430,10 @@ namespace MusRoyalePC.Views
             if (sender is Button btn && btn.Tag != null)
             {
                 string valor = btn.Tag.ToString();
+
+                // Normalización visual/semántica:
+                // - Tag 2 => enviar "2" pero mostramos "ENVIDO 2" en burbujas (cuando venga del server)
+                // - Tag 5 => "5 GEHIAGO" (subir después de un 2)
                 ResolverApuesta(valor);
             }
         }
@@ -782,6 +621,181 @@ namespace MusRoyalePC.Views
             return new Point(cx + (r * Math.Cos(rad)), cy + (r * Math.Sin(rad)));
         }
 
+        private void MostrarPopupDecision(int serverSeat, string texto)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (!_seatToUi.TryGetValue(serverSeat, out var uiSeat))
+                    return;
+
+                if (uiSeat == UiSeat.Yo)
+                {
+                    TxtMensajeYo.Text = texto;
+                    BubbleYo.Visibility = Visibility.Visible;
+
+                    var timerYo = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(5000) };
+                    timerYo.Tick += (s, e) =>
+                    {
+                        BubbleYo.Visibility = Visibility.Collapsed;
+                        timerYo.Stop();
+                    };
+                    timerYo.Start();
+                    return;
+                }
+
+                (Border bubble, TextBlock label) = uiSeat switch
+                {
+                    UiSeat.Front => (BubbleKidea, TxtMensajeKidea),
+                    UiSeat.Left => (BubbleAurkari1, TxtMensajeAurkari1),
+                    UiSeat.Right => (BubbleAurkari2, TxtMensajeAurkari2),
+                    _ => (null, null)
+                };
+
+                if (bubble == null || label == null) return;
+
+                label.Text = texto;
+                bubble.Visibility = Visibility.Visible;
+
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(5000) };
+                timer.Tick += (s, e) =>
+                {
+                    bubble.Visibility = Visibility.Collapsed;
+                    timer.Stop();
+                };
+                timer.Start();
+            });
+        }
+
+        private void StartTurnCountdown(UiSeat? seatOverride = null)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                StopTurnCountdown();
+
+                _countdownSeat = seatOverride ?? UiSeat.Yo;
+
+                UiSeat seatForThisTimer = _countdownSeat.Value;
+                bool isMusPhaseForThisTimer = (seatForThisTimer == UiSeat.Yo) && BtnMus.Visibility == Visibility.Visible;
+
+                // Pedido: 30 segundos (sin contar el delay inicial)
+                _turnCountdownDuration = TimeSpan.FromSeconds(30);
+
+                _turnCountdownStart = DateTime.UtcNow;
+                _turnCountdownFired = false;
+
+                UpdateTurnInfo(seatForThisTimer, secondsRemaining: null, waitingDelay: true);
+                TurnInfoPanel.Visibility = Visibility.Visible;
+
+                foreach (var ring in new[] { AvatarCountdownRing, AvatarCountdownRingFront, AvatarCountdownRingLeft, AvatarCountdownRingRight })
+                {
+                    if (ring != null)
+                    {
+                        ring.Visibility = Visibility.Collapsed;
+                        ring.Data = Geometry.Empty;
+                    }
+                }
+
+                _turnCountdownTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(33) };
+                _turnCountdownTimer.Tick += (_, __) =>
+                {
+                    var sinceStart = DateTime.UtcNow - _turnCountdownStart;
+
+                    if (sinceStart < TurnStartDelay)
+                    {
+                        double delayLeft = Math.Max(0, (TurnStartDelay - sinceStart).TotalSeconds);
+                        UpdateTurnInfo(seatForThisTimer, secondsRemaining: (int)Math.Ceiling(delayLeft), waitingDelay: true);
+                        return;
+                    }
+
+                    var elapsed = sinceStart - TurnStartDelay;
+                    double remainingFraction = Math.Max(0, 1.0 - (elapsed.TotalMilliseconds / _turnCountdownDuration.TotalMilliseconds));
+
+                    var ring = GetCountdownRing(seatForThisTimer);
+                    if (ring != null)
+                    {
+                        if (ring.Visibility != Visibility.Visible)
+                        {
+                            ring.Visibility = Visibility.Visible;
+                            UpdateCountdownRing(ring, 1.0);
+                        }
+                        UpdateCountdownRing(ring, remainingFraction);
+                    }
+
+                    int secondsLeft = (int)Math.Ceiling(Math.Max(0, (_turnCountdownDuration - elapsed).TotalSeconds));
+                    UpdateTurnInfo(seatForThisTimer, secondsRemaining: secondsLeft, waitingDelay: false);
+
+                    if (!_turnCountdownFired && elapsed >= _turnCountdownDuration)
+                    {
+                        _turnCountdownFired = true;
+                        StopTurnCountdown();
+
+                        if (seatForThisTimer == UiSeat.Yo)
+                        {
+                            string cmd = isMusPhaseForThisTimer ? "mus" : "paso";
+                            ResolverApuesta(cmd);
+                        }
+                    }
+                };
+
+                _turnCountdownTimer.Start();
+            });
+        }
+
+        private void StopTurnCountdown()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (_turnCountdownTimer != null)
+                {
+                    _turnCountdownTimer.Stop();
+                    _turnCountdownTimer = null;
+                }
+
+                foreach (var ring in new[] { AvatarCountdownRing, AvatarCountdownRingFront, AvatarCountdownRingLeft, AvatarCountdownRingRight })
+                {
+                    if (ring != null)
+                    {
+                        ring.Visibility = Visibility.Collapsed;
+                        ring.Data = Geometry.Empty;
+                    }
+                }
+
+                if (TurnInfoPanel != null)
+                    TurnInfoPanel.Visibility = Visibility.Collapsed;
+
+                _countdownSeat = null;
+            });
+        }
+
+        private void UpdateTurnInfo(UiSeat seat, int? secondsRemaining, bool waitingDelay)
+        {
+            string nombre = seat switch
+            {
+                UiSeat.Yo => LblNombreYo?.Text ?? "(Tú)",
+                UiSeat.Front => LblNombreFront?.Text ?? "-",
+                UiSeat.Left => LblNombreLeft?.Text ?? "-",
+                UiSeat.Right => LblNombreRight?.Text ?? "-",
+                _ => "-"
+            };
+
+            if (!string.IsNullOrWhiteSpace(nombre) && nombre.Contains("(Tú)", StringComparison.OrdinalIgnoreCase))
+                nombre = nombre.Replace("(Tú)", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
+
+            LblTurnoJugador.Text = string.IsNullOrWhiteSpace(nombre) ? "-" : nombre;
+
+            if (secondsRemaining is null)
+            {
+                LblTurnoTiempo.Text = string.Empty;
+            }
+            else
+            {
+                // Euskera (opcional): "hasiko da" en delay.
+                LblTurnoTiempo.Text = waitingDelay
+                    ? $"{secondsRemaining}s"
+                    : $"{secondsRemaining}s";
+            }
+        }
+
         private async Task ManejarDecisionApuesta(string fase)
         {
             _decisionTaskSource?.TrySetCanceled();
@@ -792,11 +806,18 @@ namespace MusRoyalePC.Views
                 OcultarTodosLosBotones();
 
                 BtnPaso.Visibility = Visibility.Visible;
-                BtnQuiero.Visibility = Visibility.Visible;
+
+                // QUIERO solo si estamos en fase de apuesta
+                BtnQuiero.Visibility = FaseConApuesta(fase) ? Visibility.Visible : Visibility.Collapsed;
+
                 BtnEnvido.Visibility = Visibility.Visible;
                 BtnMas.Visibility = Visibility.Visible;
                 BtnMas.Content = "➕";
                 PanelApuestasAltas.Visibility = Visibility.Collapsed;
+
+                BtnEnvido.Content = "ENVIDO 2";
+                if (BtnEnvido5 != null)
+                    BtnEnvido5.Content = "5 GEHIAGO";
             });
 
             StartTurnCountdown(UiSeat.Yo);
@@ -917,6 +938,113 @@ namespace MusRoyalePC.Views
             AbandonarPartida();
         }
 
+        private Path? GetCountdownRing(UiSeat seat) => seat switch
+        {
+            UiSeat.Yo => AvatarCountdownRing,
+            UiSeat.Front => AvatarCountdownRingFront,
+            UiSeat.Left => AvatarCountdownRingLeft,
+            UiSeat.Right => AvatarCountdownRingRight,
+            _ => null
+        };
+
+        private static (double Cx, double Cy, double R) GetRingGeometryFor(UiSeat seat)
+        {
+            return seat == UiSeat.Yo ? (35d, 35d, 30d) : (30d, 30d, 25d);
+        }
+
+        private UiSeat SeatFromRing(Path ring)
+        {
+            if (ReferenceEquals(ring, AvatarCountdownRing)) return UiSeat.Yo;
+            if (ReferenceEquals(ring, AvatarCountdownRingFront)) return UiSeat.Front;
+            if (ReferenceEquals(ring, AvatarCountdownRingLeft)) return UiSeat.Left;
+            if (ReferenceEquals(ring, AvatarCountdownRingRight)) return UiSeat.Right;
+            return UiSeat.Yo;
+        }
+
+        private void UpdateCountdownRing(Path ring, double fraction)
+        {
+            fraction = Math.Clamp(fraction, 0, 1);
+
+            if (fraction <= 0.001)
+            {
+                ring.Data = Geometry.Empty;
+                return;
+            }
+
+            UiSeat seat = SeatFromRing(ring);
+            var (cx, cy, r) = GetRingGeometryFor(seat);
+
+            double startAngle = -90;
+            double sweepAngle = 360 * fraction;
+            double endAngle = startAngle + sweepAngle;
+
+            Point start = PointOnCircle(cx, cy, r, startAngle);
+            Point end = PointOnCircle(cx, cy, r, endAngle);
+
+            bool isLargeArc = sweepAngle >= 180;
+
+            var fig = new PathFigure { StartPoint = start, IsClosed = false, IsFilled = false };
+            fig.Segments.Add(new ArcSegment
+            {
+                Point = end,
+                Size = new Size(r, r),
+                SweepDirection = SweepDirection.Clockwise,
+                IsLargeArc = isLargeArc,
+                RotationAngle = 0
+            });
+
+            var geo = new PathGeometry();
+            geo.Figures.Add(fig);
+            ring.Data = geo;
+        }
+
+        private void MostrarEndGame(string texto)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    StopTurnCountdown();
+                    OcultarTodosLosBotones();
+
+                    if (TxtEndGameMsg != null)
+                        TxtEndGameMsg.Text = string.IsNullOrWhiteSpace(texto) ? "Jokalari bat atera da." : texto;
+
+                    if (OverlayEndGame != null)
+                        OverlayEndGame.Visibility = Visibility.Visible;
+                }
+                catch
+                {
+                    // ignore
+                }
+            });
+        }
+
+        private void VolverAlHome_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                AbandonarPartida();
+
+                // Volver a Home/MainView
+                var vm = Application.Current?.MainWindow?.DataContext as MainViewModel;
+                vm?.Navegar("Home");
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        private static bool FaseConApuesta(string fase)
+        {
+            if (string.IsNullOrWhiteSpace(fase)) return false;
+            return fase.Equals("GRANDES", StringComparison.OrdinalIgnoreCase)
+                || fase.Equals("PEQUEÑAS", StringComparison.OrdinalIgnoreCase)
+                || fase.Equals("PARES", StringComparison.OrdinalIgnoreCase)
+                || fase.Equals("JUEGO", StringComparison.OrdinalIgnoreCase)
+                || fase.Equals("PUNTO", StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     // --- MODELOS DE DATOS ---
