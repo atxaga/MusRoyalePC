@@ -205,26 +205,44 @@ namespace MusRoyalePC.Views
 
             if (msg.StartsWith("TURN;", StringComparison.Ordinal))
             {
-                // Formato real: TURN;{firebaseId}
+                // Formato real observado: TURN;{firebaseId};{serverSeat}
                 try
                 {
-                    var parts = msg.Split(';', 2);
-                    string firebaseId = parts.Length == 2 ? parts[1].Trim() : string.Empty;
+                    var parts = msg.Split(';');
+                    string firebaseId = parts.Length >= 2 ? parts[1].Trim() : string.Empty;
+                    int? serverSeat = null;
+                    if (parts.Length >= 3 && int.TryParse(parts[2].Trim(), out int seatVal))
+                        serverSeat = seatVal;
 
-                    if (!string.IsNullOrWhiteSpace(firebaseId) && _firebaseToUiSeat.TryGetValue(firebaseId, out var uiSeat))
+                    // Preferimos serverSeat (0..3)
+                    if (serverSeat.HasValue && _seatToUi.TryGetValue(serverSeat.Value, out var uiSeatBySeat))
                     {
-                        StartTurnCountdown(uiSeat);
+                        Debug.WriteLine($"[PartidaView] TURN seat={serverSeat.Value} -> ui={uiSeatBySeat}");
+                        StartTurnCountdown(uiSeatBySeat);
+                        return;
                     }
-                    else
+
+                    // Fallback por firebaseId
+                    if (!string.IsNullOrWhiteSpace(firebaseId) && _firebaseToUiSeat.TryGetValue(firebaseId, out var uiSeatByFirebase))
                     {
-                        // Fallback: si no podemos mapear, no rompemos. Si coincide con mi session id, lo tratamos como yo.
-                        if (!string.IsNullOrWhiteSpace(firebaseId) && firebaseId == _netService.MiIdFirestore)
-                            StartTurnCountdown(UiSeat.Yo);
+                        Debug.WriteLine($"[PartidaView] TURN firebaseId={firebaseId} -> ui={uiSeatByFirebase}");
+                        StartTurnCountdown(uiSeatByFirebase);
+                        return;
                     }
+
+                    // Último fallback
+                    if (!string.IsNullOrWhiteSpace(firebaseId) && firebaseId == _netService.MiIdFirestore)
+                    {
+                        Debug.WriteLine($"[PartidaView] TURN para mi por firebaseId (fallback). firebaseId={firebaseId}");
+                        StartTurnCountdown(UiSeat.Yo);
+                        return;
+                    }
+
+                    Debug.WriteLine($"[PartidaView] TURN sin mapear. Raw='{msg}', firebaseId='{firebaseId}', serverSeat='{serverSeat}'");
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // ignore
+                    Debug.WriteLine($"[PartidaView] Error parse TURN: {ex.Message}. Raw='{msg}'");
                 }
                 return;
             }
@@ -805,7 +823,7 @@ namespace MusRoyalePC.Views
 
             StartTurnCountdown(UiSeat.Yo);
         }
-
+    
         private void OcultarTodosLosBotones()
         {
             Dispatcher.Invoke(() =>
@@ -857,13 +875,26 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // Asegurarnos de enviar ABANDONO cuando se cierre la vista
-        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        private void AbandonarPartida()
         {
-            // Si nos están quitando del árbol visual, asumimos salida de la partida.
-            if (oldParent != null && VisualParent == null)
+            try
             {
                 EnviarAbandonoSiConectado();
+                DesvincularEventos();
+                _netService?.Desconectar();
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        // Asegurarnos de enviar ABANDONO y cerrar socket cuando se cierre la vista
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            if (oldParent != null && VisualParent == null)
+            {
+                AbandonarPartida();
             }
 
             base.OnVisualParentChanged(oldParent);
