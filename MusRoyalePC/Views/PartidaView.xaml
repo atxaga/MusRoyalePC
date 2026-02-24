@@ -98,8 +98,9 @@
                         <Grid Width="60" Height="60">
                             <Ellipse x:Name="ImgAvatarFront" Style="{StaticResource PlayerAvatar}"/>
                             <Path x:Name="AvatarCountdownRingFront"
-                                  Stroke="#D1B282"
-                                  StrokeThickness="5"
+                                  Stroke="Gold"
+                                  StrokeThickness="6"
+                                  Panel.ZIndex="10"
                                   StrokeStartLineCap="Round"
                                   StrokeEndLineCap="Round"
                                   Fill="Transparent"
@@ -129,8 +130,9 @@
                             <Grid Width="60" Height="60">
                                 <Ellipse x:Name="ImgAvatarLeft" Style="{StaticResource PlayerAvatar}"/>
                                 <Path x:Name="AvatarCountdownRingLeft"
-                                      Stroke="#D1B282"
-                                      StrokeThickness="5"
+                                      Stroke="Gold"
+                                      StrokeThickness="6"
+                                      Panel.ZIndex="10"
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
                                       Fill="Transparent"
@@ -170,8 +172,9 @@
                             <Grid Width="60" Height="60">
                                 <Ellipse x:Name="ImgAvatarRight" Style="{StaticResource PlayerAvatar}"/>
                                 <Path x:Name="AvatarCountdownRingRight"
-                                      Stroke="#D1B282"
-                                      StrokeThickness="5"
+                                      Stroke="Gold"
+                                      StrokeThickness="6"
+                                      Panel.ZIndex="10"
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
                                       Fill="Transparent"
@@ -202,9 +205,11 @@
                             <Path x:Name="AvatarCountdownRing"
                                   Stroke="Gold"
                                   StrokeThickness="6"
+                                  Panel.ZIndex="10"
                                   StrokeStartLineCap="Round"
                                   StrokeEndLineCap="Round"
                                   Fill="Transparent"
+                                  Visibility="Collapsed"
                                   Data="M 35,5 A 30,30 0 1 1 34.999,5"/>
                         </Grid>
 
