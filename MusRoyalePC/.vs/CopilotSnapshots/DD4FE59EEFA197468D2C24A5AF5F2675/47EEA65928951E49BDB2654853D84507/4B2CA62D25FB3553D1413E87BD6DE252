@@ -1,0 +1,122 @@
+﻿using MusRoyalePC.Models;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace MusRoyalePC.Services;
+
+/// <summary>
+/// Coordinador global para escuchar invitaciones de dúos y mostrarlas desde cualquier vista.
+/// </summary>
+public sealed class DuoInviteCoordinator
+{
+    private static DuoInviteCoordinator? _instance;
+    public static DuoInviteCoordinator Instance => _instance ??= new DuoInviteCoordinator();
+
+    private readonly DuoMatchmakingService _service = new();
+    private bool _started;
+
+    public void Start()
+    {
+        if (_started) return;
+        _started = true;
+
+        string myId = FirestoreService.Instance.CurrentUserId;
+        if (string.IsNullOrWhiteSpace(myId))
+            myId = UserSession.Instance.DocumentId;
+
+        if (string.IsNullOrWhiteSpace(myId))
+            return;
+
+        _service.OnInviteReceived += OnInviteReceived;
+        _service.ListenInvitesForUser(myId);
+    }
+
+    public void Stop()
+    {
+        _service.OnInviteReceived -= OnInviteReceived;
+        _service.StopInviteListening();
+        _started = false;
+    }
+
+    private void OnInviteReceived(DuoInvite invite)
+    {
+        Application.Current.Dispatcher.Invoke(async () =>
+        {
+            // Mostrar confirmación simple global
+            var result = MessageBox.Show(
+                $"Duo gonbidapena jaso duzu!\nEmisor: {invite.EmisorId}\nApuesta: {invite.Apuesta}\n\nOnartu?",
+                "Duo Invite",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await _service.AcceptAsync(invite.PartidaId);
+
+                    // Mantener listener de ese doc para detectar jokatu.
+                    _service.OnStateChanged += async state =>
+                    {
+                        if (state.PartidaId != invite.PartidaId) return;
+
+                        if (state.Onartua && state.Jokatu)
+                        {
+                            await StartDuoMatchAsync(state.PartidaId, state.Apuesta);
+                        }
+                    };
+
+                    _service.Listen(invite.PartidaId);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                try { await _service.DeleteAsync(invite.PartidaId); } catch { }
+            }
+        });
+    }
+
+    private static async Task StartDuoMatchAsync(string partidaId, int apuesta)
+    {
+        try
+        {
+            if (Application.Current.MainWindow is not MainWindow mw)
+                return;
+
+            if (mw.DataContext is not MainViewModel vm)
+                return;
+
+            // Conectar al servidor con el modo BIKOTEAK (misma función)
+            string ipServer = "52.72.136.36";
+            int puerto = 13000;
+
+            vm.NetService.MiIdFirestore = UserSession.Instance.DocumentId;
+
+            string res = await vm.NetService.ConectarYUnirse(ipServer, puerto, "BIKOTEAK");
+            if (res == "OK")
+            {
+                vm.Navegar("Partida");
+
+                // Borrar el documento como Android (best effort)
+                try
+                {
+                    await FirestoreService.Instance.Db.Collection("PartidaDuo").Document(partidaId).DeleteAsync();
+                }
+                catch { }
+            }
+            else
+            {
+                MessageBox.Show("Ezin izan da BIKOTEAK partidan sartu.");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+}

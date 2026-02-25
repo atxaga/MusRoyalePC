@@ -1,0 +1,124 @@
+﻿using Google.Cloud.Firestore;
+using MusRoyalePC.Services;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace MusRoyalePC.ViewModels
+{
+    public class BikoteakViewModel : INotifyPropertyChanged
+    {
+        private int _reyesSeleccionados = 4;
+        private string _betAmount = "0";
+        private bool _isFriendsPopupOpen;
+        private FriendPick? _selectedFriend;
+
+        public int ReyesSeleccionados
+        {
+            get => _reyesSeleccionados;
+            set { _reyesSeleccionados = value; OnPropertyChanged(); }
+        }
+
+        public bool IsFriendsPopupOpen
+        {
+            get => _isFriendsPopupOpen;
+            set { _isFriendsPopupOpen = value; OnPropertyChanged(); }
+        }
+
+        public string BetAmount
+        {
+            get => _betAmount;
+            set { _betAmount = value; OnPropertyChanged(); }
+        }
+
+        public FriendPick? SelectedFriend
+        {
+            get => _selectedFriend;
+            set { _selectedFriend = value; OnPropertyChanged(); OnPropertyChanged(nameof(SelectedFriendDisplay)); }
+        }
+
+        public string SelectedFriendDisplay => SelectedFriend == null ? "" : $"Gonbidatua: {SelectedFriend.Name}";
+
+        public ObservableCollection<FriendPick> Amigos { get; } = new();
+
+        // COMANDOS
+        public ICommand ToggleFriendsCommand => new RelayCommand(_ =>
+        {
+            IsFriendsPopupOpen = !IsFriendsPopupOpen;
+            if (IsFriendsPopupOpen && Amigos.Count == 0)
+                _ = LoadFriendsAsync();
+        });
+
+        public ICommand InviteFriendCommand => new RelayCommand(amigo =>
+        {
+            if (amigo is FriendPick f)
+                SelectedFriend = f;
+            IsFriendsPopupOpen = false;
+        });
+
+        public ICommand StartMatchCommand => new RelayCommand(_ =>
+        {
+            // Aquí solo dejamos el estado; el arranque real depende del protocolo del servidor.
+            if (SelectedFriend == null)
+            {
+                MessageBox.Show("Aukeratu lagun bat gonbidatzeko.");
+                return;
+            }
+
+            MessageBox.Show($"Invitación preparada para {SelectedFriend.Name} ({SelectedFriend.Id}). Falta implementar protocolo servidor.");
+        });
+
+        public ICommand SelectReyesCommand => new RelayCommand(p =>
+        {
+            if (p != null) ReyesSeleccionados = int.Parse(p.ToString());
+        });
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        private async Task LoadFriendsAsync()
+        {
+            try
+            {
+                var db = FirestoreService.Instance.Db;
+                string currentUserId = FirestoreService.Instance.CurrentUserId;
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    currentUserId = Models.UserSession.Instance.DocumentId;
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    return;
+
+                DocumentSnapshot userDoc = await db.Collection("Users").Document(currentUserId).GetSnapshotAsync();
+                if (!userDoc.Exists || !userDoc.ContainsField("amigos"))
+                    return;
+
+                var ids = userDoc.GetValue<System.Collections.Generic.List<string>>("amigos");
+                Application.Current.Dispatcher.Invoke(() => Amigos.Clear());
+
+                foreach (var id in ids)
+                {
+                    DocumentSnapshot fDoc = await db.Collection("Users").Document(id).GetSnapshotAsync();
+                    if (!fDoc.Exists) continue;
+
+                    string name = fDoc.ContainsField("username") ? fDoc.GetValue<string>("username") : id;
+                    string avatar = fDoc.ContainsField("avatarActual") ? fDoc.GetValue<string>("avatarActual") : "avadef.png";
+                    string avatarUri = $"pack://application:,,,/Assets/{avatar}";
+
+                    var friend = new FriendPick(id, name, avatarUri);
+                    Application.Current.Dispatcher.Invoke(() => Amigos.Add(friend));
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+    }
+
+    public sealed record FriendPick(string Id, string Name, string AvatarUri);
+}

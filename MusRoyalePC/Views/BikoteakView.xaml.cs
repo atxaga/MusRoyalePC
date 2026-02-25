@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MusRoyalePC.ViewModels;
 
 namespace MusRoyalePC.Views
 {
@@ -11,6 +12,7 @@ namespace MusRoyalePC.Views
         public BikoteakView()
         {
             InitializeComponent();
+            DataContext = new BikoteakViewModel();
         }
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

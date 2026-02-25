@@ -1,0 +1,251 @@
+﻿using Google.Cloud.Firestore;
+using MusRoyalePC.Models;
+using MusRoyalePC.Services;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.IO;
+using System.Diagnostics;
+
+namespace MusRoyalePC.Views
+{
+    public partial class LagunakView : UserControl
+    {
+        public ObservableCollection<FriendRowVm> FriendsList { get; set; }
+
+        public LagunakView()
+        {
+            InitializeComponent();
+            FriendsList = new ObservableCollection<FriendRowVm>();
+            CargarRelaciones("amigos", "Offline", false);
+            this.DataContext = this;
+        }
+
+        private void BtnVerAmigos_Click(object sender, RoutedEventArgs e) => CargarRelaciones("amigos", "Offline", false);
+        private void BtnVerEnviadas_Click(object sender, RoutedEventArgs e) => CargarRelaciones("solicitudMandada", "Zure zain...", true, "Cancelar");
+        private void BtnVerRecibidas_Click(object sender, RoutedEventArgs e) => CargarRelaciones("solicitudRecibida", "Laguna izan nahi du", true, "Aceptar");
+
+        private static string NormalizeAvatarAsset(string? avatarBD)
+        {
+            if (string.IsNullOrWhiteSpace(avatarBD))
+                return "avadef.png";
+
+            string file = avatarBD.Trim();
+
+            // Si viene como URL o contiene ':' no es un asset local
+            if (file.Contains(':'))
+                return "avadef.png";
+
+            // Quitar posibles prefijos
+            file = file.TrimStart('/', '\\');
+            if (file.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase))
+                file = file.Substring("Assets/".Length);
+
+            // Si viene vacío tras normalizar
+            if (string.IsNullOrWhiteSpace(file))
+                return "avadef.png";
+
+            // Evitar segmentos vacíos o rutas raras
+            while (file.Contains("//", StringComparison.Ordinal))
+                file = file.Replace("//", "/", StringComparison.Ordinal);
+
+            if (file.Contains("..", StringComparison.Ordinal) || file.Contains("\\", StringComparison.Ordinal))
+                return "avadef.png";
+
+            // Firestore suele guardar solo el nombre (ej: ava1.png). Si no tiene extensión, fallback.
+            if (!Path.HasExtension(file))
+                return "avadef.png";
+
+            return file;
+        }
+
+        private async void CargarRelaciones(string campoLista, string estadoTexto, bool mostrarBoton, string etiquetaBoton = "")
+        {
+            Debug.WriteLine($"[LagunakView] CargarRelaciones campoLista='{campoLista}', estadoTexto='{estadoTexto}', mostrarBoton={mostrarBoton}");
+
+            try
+            {
+                var db = Services.FirestoreService.Instance.Db;
+                string currentUserId = Properties.Settings.Default.savedId;
+                Debug.WriteLine($"[LagunakView] currentUserId(Settings.savedId)='{currentUserId}'");
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    Debug.WriteLine("[LagunakView] currentUserId vacío -> no se puede cargar amigos.");
+                    return;
+                }
+
+                DocumentSnapshot userDoc = await db.Collection("Users").Document(currentUserId).GetSnapshotAsync();
+
+                Debug.WriteLine($"[LagunakView] userDoc.Exists={userDoc.Exists}");
+
+                if (!userDoc.Exists) return;
+                FriendsList.Clear();
+
+                // Log de campos presentes (para ver si el documento es la colección correcta)
+                try
+                {
+                    var dict = userDoc.ToDictionary();
+                    Debug.WriteLine($"[LagunakView] userDoc fields: {string.Join(",", dict.Keys)}");
+                }
+                catch { }
+
+                if (!userDoc.ContainsField(campoLista))
+                {
+                    Debug.WriteLine($"[LagunakView] userDoc no contiene el campo '{campoLista}'");
+                    return;
+                }
+
+                var listaIds = userDoc.GetValue<List<string>>(campoLista) ?? new List<string>();
+                Debug.WriteLine($"[LagunakView] '{campoLista}' count={listaIds.Count}");
+
+                foreach (string id in listaIds)
+                {
+                    if (string.IsNullOrWhiteSpace(id))
+                    {
+                        Debug.WriteLine("[LagunakView] id amigo vacío -> skip");
+                        continue;
+                    }
+
+                    try
+                    {
+                        DocumentSnapshot docAmigo = await db.Collection("Users").Document(id).GetSnapshotAsync();
+                        Debug.WriteLine($"[LagunakView] amigoId='{id}' doc.Exists={docAmigo.Exists}");
+                        if (!docAmigo.Exists) continue;
+
+                        string nombre = (docAmigo.ContainsField("username") ? docAmigo.GetValue<string>("username") : null) ?? "Sin Nombre";
+
+                        string? avatarBD = null;
+                        if (docAmigo.ContainsField("avatarActual"))
+                            avatarBD = docAmigo.GetValue<string>("avatarActual");
+
+                        string avatarFile = NormalizeAvatarAsset(avatarBD);
+                        var avatarUri = new Uri($"pack://application:,,,/Assets/{avatarFile}", UriKind.Absolute);
+
+                        Debug.WriteLine($"[LagunakView] amigo='{nombre}', avatarActual(raw)='{avatarBD}', avatarFile='{avatarFile}', uri='{avatarUri}'");
+
+                        FriendsList.Add(new FriendRowVm(id, nombre, estadoTexto, avatarUri.ToString(), mostrarBoton, etiquetaBoton, false, ""));
+                    }
+                    catch (Exception exAmigo)
+                    {
+                        Debug.WriteLine($"[LagunakView] EX al cargar amigo '{id}': {exAmigo}");
+                    }
+                }
+
+                Debug.WriteLine($"[LagunakView] FriendsList final count={FriendsList.Count}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LagunakView] EX CargarRelaciones: {ex}");
+                MessageBox.Show($"Errorea: {ex.Message}");
+            }
+        }
+
+        private async void UserSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string textoBusqueda = UserSearchBox.Text.Trim().ToLower();
+            if (string.IsNullOrEmpty(textoBusqueda)) { CargarRelaciones("amigos", "Offline", false); return; }
+            await BuscarUsuariosGlobal(textoBusqueda);
+        }
+
+        private async Task BuscarUsuariosGlobal(string filtro)
+        {
+            try
+            {
+                var db = Services.FirestoreService.Instance.Db;
+                string miId = Services.FirestoreService.Instance.CurrentUserId;
+                DocumentSnapshot yoDoc = await db.Collection("Users").Document(miId).GetSnapshotAsync();
+
+                List<string> misAmigos = yoDoc.ContainsField("amigos") ? yoDoc.GetValue<List<string>>("amigos") : new List<string>();
+
+                QuerySnapshot snapshot = await db.Collection("Users").GetSnapshotAsync();
+                FriendsList.Clear();
+
+                foreach (DocumentSnapshot doc in snapshot.Documents)
+                {
+                    if (doc.Id == miId) continue;
+                    string nombre = doc.ContainsField("username") ? doc.GetValue<string>("username") : null;
+
+                    if (nombre != null && nombre.ToLower().Contains(filtro))
+                    {
+                        string? avatarBD = doc.ContainsField("avatarActual") ? doc.GetValue<string>("avatarActual") : null;
+                        string avatarFile = NormalizeAvatarAsset(avatarBD);
+                        var avatarUri = new Uri($"pack://application:,,,/Assets/{avatarFile}", UriKind.Absolute);
+
+                        bool yaEsAmigo = misAmigos.Contains(doc.Id);
+
+                        if (yaEsAmigo)
+                            FriendsList.Add(new FriendRowVm(doc.Id, nombre, "Laguna duzu", avatarUri.ToString(), false, "", false, ""));
+                        else
+                            FriendsList.Add(new FriendRowVm(doc.Id, nombre, "Mus Royale erabiltzailea", avatarUri.ToString(), true, "Gehitu", false, ""));
+                    }
+                }
+            }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}"); }
+        }
+
+        private async void ActionBotton_Click(object sender, RoutedEventArgs e)
+        {
+            var boton = sender as Button;
+            var amigoVm = boton?.DataContext as FriendRowVm;
+            if (amigoVm == null) return;
+
+            string miId = Services.FirestoreService.Instance.CurrentUserId;
+            var db = Services.FirestoreService.Instance.Db;
+
+            try
+            {
+                switch (amigoVm.PrimaryActionLabel)
+                {
+                    case "Gehitu":
+                        await db.Collection("Users").Document(miId).UpdateAsync("solicitudMandada", FieldValue.ArrayUnion(amigoVm.Id));
+                        await db.Collection("Users").Document(amigoVm.Id).UpdateAsync("solicitudRecibida", FieldValue.ArrayUnion(miId));
+                        MessageBox.Show("Eskaera bidalita!");
+                        break;
+                    case "Aceptar":
+                    case "Aceptatu":
+                        await db.Collection("Users").Document(miId).UpdateAsync("amigos", FieldValue.ArrayUnion(amigoVm.Id));
+                        await db.Collection("Users").Document(amigoVm.Id).UpdateAsync("amigos", FieldValue.ArrayUnion(miId));
+                        await db.Collection("Users").Document(miId).UpdateAsync("solicitudRecibida", FieldValue.ArrayRemove(amigoVm.Id));
+                        await db.Collection("Users").Document(amigoVm.Id).UpdateAsync("solicitudMandada", FieldValue.ArrayRemove(miId));
+                        MessageBox.Show("Orain lagunak zarete!");
+                        CargarRelaciones("amigos", "Offline", false);
+                        break;
+                    case "Cancelar":
+                        await db.Collection("Users").Document(miId).UpdateAsync("solicitudMandada", FieldValue.ArrayRemove(amigoVm.Id));
+                        await db.Collection("Users").Document(amigoVm.Id).UpdateAsync("solicitudRecibida", FieldValue.ArrayRemove(miId));
+                        CargarRelaciones("solicitudMandada", "Zure zain...", true, "Cancelar");
+                        break;
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("Errorea: " + ex.Message); }
+        }
+    }
+
+    public sealed class FriendRowVm
+    {
+        public string Id { get; }
+        public string Name { get; }
+        public string Status { get; }
+        public string Avatar { get; }
+        public bool ShowPrimaryAction { get; }
+        public string PrimaryActionLabel { get; }
+        public bool ShowSecondaryAction { get; }
+        public string SecondaryActionLabel { get; }
+
+        public FriendRowVm(string id, string name, string status, string avatar, bool showPrimaryAction, string primary, bool showSecondaryAction, string secondary)
+        {
+            Id = id;
+            Name = name;
+            Status = status;
+            Avatar = avatar;
+            ShowPrimaryAction = showPrimaryAction;
+            PrimaryActionLabel = primary;
+            ShowSecondaryAction = showSecondaryAction;
+            SecondaryActionLabel = secondary;
+        }
+    }
+}

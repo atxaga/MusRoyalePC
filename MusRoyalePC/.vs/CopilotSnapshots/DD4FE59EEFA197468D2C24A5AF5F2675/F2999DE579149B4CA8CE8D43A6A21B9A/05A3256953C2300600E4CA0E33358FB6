@@ -1,0 +1,174 @@
+﻿using MusRoyalePC.Models;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace MusRoyalePC.Services;
+
+/// <summary>
+/// Coordinador global para escuchar invitaciones de dúos y mostrarlas desde cualquier vista.
+/// </summary>
+public sealed class DuoInviteCoordinator
+{
+    private readonly DuoMatchmakingService _service = new();
+    private bool _started;
+    private int _startingMatch; // 0/1
+
+    public event Action<DuoInviteUi>? OnInviteToastRequested;
+
+    private static DuoInviteCoordinator? _instance;
+    public static DuoInviteCoordinator Instance => _instance ??= new DuoInviteCoordinator();
+
+    public void Start()
+    {
+        string myId = FirestoreService.Instance.CurrentUserId;
+        if (string.IsNullOrWhiteSpace(myId))
+            myId = UserSession.Instance.DocumentId;
+
+        Debug.WriteLine($"[DuoInviteCoordinator] Start() myId='{myId}', CurrentUserId='{FirestoreService.Instance.CurrentUserId}', SessionId='{UserSession.Instance.DocumentId}'");
+
+        if (string.IsNullOrWhiteSpace(myId))
+        {
+            Debug.WriteLine("[DuoInviteCoordinator] No hay myId, no se inicia listener (se podrá reintentar). ");
+            _started = false;
+            return;
+        }
+
+        if (_started)
+        {
+            Debug.WriteLine("[DuoInviteCoordinator] Ya iniciado, ignorando.");
+            return;
+        }
+
+        _started = true;
+
+        _service.OnInviteReceived -= OnInviteReceived;
+        _service.OnInviteReceived += OnInviteReceived;
+
+        Debug.WriteLine("[DuoInviteCoordinator] ListenInvitesForUser...");
+        _service.ListenInvitesForUser(myId);
+    }
+
+    public void Stop()
+    {
+        Debug.WriteLine("[DuoInviteCoordinator] Stop()");
+        _service.OnInviteReceived -= OnInviteReceived;
+        _service.StopInviteListening();
+        _started = false;
+    }
+
+    private void OnInviteReceived(DuoInvite invite)
+    {
+        Debug.WriteLine($"[DuoInviteCoordinator] Invite received partidaId='{invite.PartidaId}', emisor='{invite.EmisorId}', receptor='{invite.ReceptorId}', apuesta={invite.Apuesta}");
+
+        // Pedimos al UI que muestre un toast (no MessageBox)
+        Application.Current.Dispatcher.BeginInvoke(async () =>
+        {
+            var ui = await BuildInviteUiAsync(invite);
+            OnInviteToastRequested?.Invoke(ui);
+        });
+    }
+
+    public async Task AcceptInviteAsync(DuoInvite invite)
+    {
+        try
+        {
+            await _service.AcceptAsync(invite.PartidaId);
+
+            // Suscripción única
+            _service.OnStateChanged -= HandleState;
+            _service.OnStateChanged += HandleState;
+
+            _service.Listen(invite.PartidaId);
+        }
+        catch (Exception ex)
+        {
+            Application.Current.Dispatcher.BeginInvoke(() => MessageBox.Show(ex.Message));
+        }
+
+        void HandleState(DuoMatchState state)
+        {
+            if (state.PartidaId != invite.PartidaId) return;
+            if (state.Onartua && state.Jokatu)
+                _ = StartDuoMatchAsync(state.PartidaId, state.Apuesta);
+        }
+    }
+
+    public async Task RejectInviteAsync(DuoInvite invite)
+    {
+        try { await _service.DeleteAsync(invite.PartidaId); } catch { }
+    }
+
+    private async Task<DuoInviteUi> BuildInviteUiAsync(DuoInvite invite)
+    {
+        string name = invite.EmisorId;
+        string avatar = "avadef.png";
+
+        try
+        {
+            var db = FirestoreService.Instance.Db;
+            var doc = await db.Collection("Users").Document(invite.EmisorId).GetSnapshotAsync();
+            if (doc.Exists)
+            {
+                if (doc.ContainsField("username")) name = doc.GetValue<string>("username");
+                if (doc.ContainsField("avatarActual")) avatar = doc.GetValue<string>("avatarActual");
+            }
+        }
+        catch { }
+
+        var avatarUri = new Uri($"pack://application:,,,/Assets/{avatar}", UriKind.Absolute).ToString();
+        return new DuoInviteUi(invite, name, avatarUri, $"Jokatzera gonbidatu dizu!");
+    }
+
+    private async Task StartDuoMatchAsync(string partidaId, int apuesta)
+    {
+        if (Interlocked.Exchange(ref _startingMatch, 1) == 1)
+            return;
+
+        try
+        {
+            if (Application.Current.MainWindow is not MainWindow mw)
+                return;
+
+            if (mw.DataContext is not MainViewModel vm)
+                return;
+
+            string ipServer = "52.72.136.36";
+            int puerto = 13000;
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                vm.NetService.MiIdFirestore = UserSession.Instance.DocumentId;
+                vm.NetService.Desconectar();
+            });
+
+            string res = await vm.NetService.ConectarYUnirse(ipServer, puerto, "ID_ESKATU");
+            if (res == "OK")
+            {
+                Application.Current.Dispatcher.BeginInvoke(() => vm.Navegar("Partida"));
+
+                try
+                {
+                    await FirestoreService.Instance.Db.Collection("PartidaDuo").Document(partidaId).DeleteAsync();
+                }
+                catch { }
+            }
+            else
+            {
+                Application.Current.Dispatcher.BeginInvoke(() => MessageBox.Show("Ezin izan da ID_ESKATU partidan sartu."));
+            }
+        }
+        catch (Exception ex)
+        {
+            Application.Current.Dispatcher.BeginInvoke(() => MessageBox.Show(ex.Message));
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _startingMatch, 0);
+        }
+    }
+}
+
+public sealed record DuoInviteUi(DuoInvite Invite, string EmisorName, string EmisorAvatarUri, string Message);

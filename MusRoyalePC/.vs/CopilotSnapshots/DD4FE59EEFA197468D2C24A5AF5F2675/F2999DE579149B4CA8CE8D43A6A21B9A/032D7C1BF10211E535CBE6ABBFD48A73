@@ -1,0 +1,221 @@
+﻿<Window x:Class="MusRoyalePC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Mus Royale"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        ResizeMode="CanResize"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#CCB48A"/>
+        <SolidColorBrush x:Key="PrimaryBrushStrong" Color="#D1B282"/>
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#80333333"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#E95420"/>
+        <SolidColorBrush x:Key="OnlineBrush" Color="#2ECC71"/>
+        <SolidColorBrush x:Key="HeaderFg" Color="#FFFFFF"/>
+        <ImageBrush x:Key="WoodBg" ImageSource="/Assets/BackgroundWood.png" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
+
+        <Style TargetType="Image">
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+        </Style>
+
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#CC000000"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <StackPanel Orientation="Vertical" Margin="4" HorizontalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Tag}" FontSize="18" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{TemplateBinding Content}" FontSize="12" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModeCard" TargetType="Button">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="16" Padding="0" ClipToBounds="True" Background="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource WoodBg}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="88"/>
+        </Grid.RowDefinitions>
+
+        <!-- Host de toasts (encima de todo) -->
+        <Grid Panel.ZIndex="999">
+            <ItemsControl x:Name="ToastHost" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0"/>
+        </Grid>
+
+        <Border Grid.Row="0" Background="Transparent">
+            <Grid Margin="16,0" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel>
+                        <TextBlock Text="{Binding UserName}" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource HeaderFg}"/>
+                        <TextBlock Text="Online" FontSize="12" Foreground="{StaticResource OnlineBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="1" Background="#33222222" CornerRadius="20" Padding="10,4" VerticalAlignment="Center" Margin="16,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="€" Foreground="Gold" FontWeight="Bold" Margin="0,0,6,0"/>
+                        <TextBlock Text="{Binding Balance}" Foreground="{StaticResource HeaderFg}"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="Salir" 
+                        Background="#E95420" 
+                        Foreground="White" 
+                        BorderThickness="0" 
+                        Padding="12,8" 
+                        Margin="0,0,8,0"
+                        FontWeight="Bold"
+                        Command="{Binding SalirPartidaCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPageName}" Value="Partida">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="⚙" 
+                        Background="#20FFFFFF" 
+                        Foreground="{StaticResource HeaderFg}" 
+                        BorderThickness="0" 
+                        Padding="8" 
+                        Margin="0,0,8,0" Click="Button_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPageName}" Value="Partida">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="⏻" Background="#20FFFFFF" Foreground="#E95420" BorderThickness="0" Command="{Binding PowerOffCommand}" Padding="8"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="24,12">
+            <ContentControl Content="{Binding CurrentView}" Panel.ZIndex="1"/>
+
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentView}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Aukeratu jokatzeko modua" Foreground="White" FontSize="24" FontWeight="SemiBold"/>
+
+                <UniformGrid Grid.Row="1" Rows="1" Columns="3" Margin="0,12,0,0">
+                    <Button Style="{StaticResource ModeCard}" Command="{Binding NavigateCommand}" CommandParameter="PartidaAzkarra" Margin="10">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Assets/PartidaAzkarra.png" Stretch="Uniform"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Style="{StaticResource ModeCard}" Command="{Binding NavigateCommand}" CommandParameter="Bikoteak" Margin="10">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Assets/Bikoteak.png" Stretch="Uniform"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Style="{StaticResource ModeCard}" Command="{Binding NavigateCommand}" CommandParameter="Pribatua" Margin="10">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Assets/Pribatua.png" Stretch="Uniform"/>
+                        </Button.Background>
+                    </Button>
+                </UniformGrid>
+            </Grid>
+        </Grid>
+
+        <Border Grid.Row="2" Background="#D1B282" CornerRadius="12,12,0,0">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Home">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Lagunak">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Perfila">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Chat">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentPageName}" Value="Denda">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <UniformGrid Rows="1" Columns="5" Margin="8">
+                <Button Style="{StaticResource NavButtonStyle}" Tag="👥" Content="Perfila"               
+                        Command="{Binding NavigateCommand}" CommandParameter="Perfila"/>
+                <Button Style="{StaticResource NavButtonStyle}" Tag="💬" Content="Chat" 
+                        Command="{Binding NavigateCommand}" CommandParameter="Chat"/>
+                <Button Style="{StaticResource NavButtonStyle}" Tag="🏠" Content="Home" 
+                        Command="{Binding NavigateCommand}" CommandParameter="Home"/>
+                <Button Style="{StaticResource NavButtonStyle}" Tag="🧑‍🤝‍🧑" Content="Lagunak" 
+                        Command="{Binding NavigateCommand}" CommandParameter="Lagunak"/>
+                <Button Style="{StaticResource NavButtonStyle}" Tag="🛒" Content="Denda" 
+                        Command="{Binding NavigateCommand}" CommandParameter="Denda"/>
+            </UniformGrid>
+        </Border>
+    </Grid>
+</Window>
