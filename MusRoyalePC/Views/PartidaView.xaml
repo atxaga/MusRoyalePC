@@ -71,7 +71,13 @@
                     <TextBlock x:Name="LblPuntosEtxekoak" Text="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
                 </Border>
 
-                <TextBlock x:Name="LblInfoRonda" Text="RONDA 1" FontWeight="Black" FontSize="18" Margin="40,0" VerticalAlignment="Center"/>
+                <TextBlock x:Name="LblInfoRonda"
+                           Text="DESKARTEAK"
+                           FontWeight="Black"
+                           FontSize="30"
+                           Margin="40,0"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"/>
 
                 <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" Margin="0,0,10,0" MinWidth="40">
                     <TextBlock x:Name="LblPuntosKanpokoak" Text="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -113,9 +119,9 @@
                             <TextBlock x:Name="TxtMensajeKidea" Text="" FontWeight="Bold" Foreground="#3A2C20"/>
                         </Border>
 
-                        <!-- Avatar front + anillo -->
+                        <!-- Avatar front + anillo (clicable) -->
                         <Grid Width="60" Height="60">
-                            <Ellipse x:Name="ImgAvatarFront" Style="{StaticResource PlayerAvatar}"/>
+                            <Ellipse x:Name="ImgAvatarFront" Style="{StaticResource PlayerAvatar}" MouseLeftButtonUp="PlayerAvatar_Click" Cursor="Hand"/>
                             <Path x:Name="AvatarCountdownRingFront"
                                   Stroke="Gold"
                                   StrokeThickness="6"
@@ -145,9 +151,9 @@
                                 <TextBlock x:Name="TxtMensajeAurkari1" FontWeight="Bold"/>
                             </Border>
 
-                            <!-- Avatar left + anillo -->
+                            <!-- Avatar left + anillo (clicable) -->
                             <Grid Width="60" Height="60">
-                                <Ellipse x:Name="ImgAvatarLeft" Style="{StaticResource PlayerAvatar}"/>
+                                <Ellipse x:Name="ImgAvatarLeft" Style="{StaticResource PlayerAvatar}" MouseLeftButtonUp="PlayerAvatar_Click" Cursor="Hand"/>
                                 <Path x:Name="AvatarCountdownRingLeft"
                                       Stroke="Gold"
                                       StrokeThickness="6"
@@ -182,9 +188,9 @@
                             <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleAurkari2"  Margin="0,0,0,10" Visibility="Collapsed">
                                 <TextBlock Text="" x:Name="TxtMensajeAurkari2" FontWeight="Bold" Foreground="#3A2C20"/>
                             </Border>
-                            <!-- Avatar right + anillo -->
+                            <!-- Avatar right + anillo (clicable) -->
                             <Grid Width="60" Height="60">
-                                <Ellipse x:Name="ImgAvatarRight" Style="{StaticResource PlayerAvatar}"/>
+                                <Ellipse x:Name="ImgAvatarRight" Style="{StaticResource PlayerAvatar}" MouseLeftButtonUp="PlayerAvatar_Click" Cursor="Hand"/>
                                 <Path x:Name="AvatarCountdownRingRight"
                                       Stroke="Gold"
                                       StrokeThickness="6"
@@ -214,9 +220,9 @@
                             <Image x:Name="ImgCarta4" MouseDown="Carta_MouseDown" Tag="3" Source="/Assets/Cartas/cupa12.png" Width="90" Style="{StaticResource CardStyle}" Cursor="Hand"/>
                         </StackPanel>
 
-                        <!-- Avatar + anillo countdown -->
+                        <!-- Avatar + anillo countdown (clicable) -->
                         <Grid Width="70" Height="70">
-                            <Ellipse x:Name="ImgAvatarYo" Style="{StaticResource PlayerAvatar}" Width="65" Height="65" Stroke="#00000000" StrokeThickness="0"/>
+                            <Ellipse x:Name="ImgAvatarYo" Style="{StaticResource PlayerAvatar}" Width="65" Height="65" Stroke="#00000000" StrokeThickness="0" MouseLeftButtonUp="PlayerAvatar_Click" Cursor="Hand"/>
 
                             <!-- Anillo de cuenta atrás (actualizado desde code-behind) -->
                             <Path x:Name="AvatarCountdownRing"
@@ -385,6 +391,64 @@
                             Style="{StaticResource RoundedButton}"
                             FontWeight="Bold" Cursor="Hand"
                             HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <!-- NUEVO: Overlay estadísticas jugador -->
+        <Border x:Name="OverlayPlayerStats"
+                Visibility="Collapsed"
+                Background="#CC000000"
+                Grid.RowSpan="3"
+                Panel.ZIndex="120">
+            <Border Background="#2C3E50" CornerRadius="15" Width="520" Height="320"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    BorderBrush="#3498DB" BorderThickness="3">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.7"/>
+                </Border.Effect>
+
+                <StackPanel Margin="25">
+                    <TextBlock Text="JOKALARIA" Foreground="#F1C40F" FontSize="20"
+                               FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+                    <TextBlock x:Name="TxtStatsUsername" Text="-" Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="TxtStatsEmail" Text="-" Foreground="#BDC3C7" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,15"/>
+
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="PARTIDAK" Foreground="#BDC3C7" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtStatsPartidak" Text="0" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="IRABAZIAK" Foreground="#BDC3C7" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtStatsIrabaziak" Text="0" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock x:Name="TxtStatsFriendState" Text="" Foreground="#2ECC71" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="BtnSendFriendRequest"
+                                Content="ESKAERA BIDALI"
+                                Click="BtnSendFriendRequest_Click"
+                                Width="170" Height="42"
+                                Background="#27AE60" Foreground="White"
+                                Style="{StaticResource RoundedButton}"
+                                FontWeight="Bold" Cursor="Hand"
+                                Margin="0,0,12,0"/>
+
+                        <Button Content="ITXI"
+                                Click="BtnClosePlayerStats_Click"
+                                Width="120" Height="42"
+                                Background="#95A5A6" Foreground="White"
+                                Style="{StaticResource RoundedButton}"
+                                FontWeight="Bold" Cursor="Hand"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </Border>

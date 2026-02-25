@@ -55,7 +55,9 @@ namespace MusRoyalePC.Views
                     { "amigos", new List<string>() },
                     { "solicitudMandada", new List<string>() },
                     { "solicitudRecivida", new List<string>() },
-                    { "premium", false }
+                    { "premium", false },
+                    { "avatarActual", "avadef.png" },
+                    { "elo", 0 },
                 };
 
                 // 3. Guardar en Firestore
