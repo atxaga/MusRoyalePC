@@ -18,7 +18,7 @@ namespace MusRoyalePC.Services
             try
             {
                 // En el constructor o método de inicialización
-                string fileName = "D:\\MusRoyalePC\\MusRoyalePC\\musroyale-488aa-c071444d11be.json";
+                string fileName = "musroyale-488aa-4f22ac7baa9a.json";
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
                 if (File.Exists(path))
