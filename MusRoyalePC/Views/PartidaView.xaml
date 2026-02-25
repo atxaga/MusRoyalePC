@@ -89,6 +89,25 @@
                 </Border.Background>
 
                 <Grid>
+                    <!-- NUEVO: indicador de turno + cuenta atrás -->
+                    <Border x:Name="TurnInfoPanel"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="0"
+                            Padding="28,18"
+                            CornerRadius="18"
+                            Background="#E6000000"
+                            BorderBrush="#FFFFD700"
+                            BorderThickness="2"
+                            Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="TXANDA: " Foreground="#FFFFD700" FontWeight="Black" FontSize="26"/>
+                            <TextBlock x:Name="LblTurnoJugador" Text="-" Foreground="#FF00E5FF" FontWeight="ExtraBold" FontSize="26"/>
+                            <TextBlock Text="   ·   " Foreground="#CCFFFFFF" FontSize="24"/>
+                            <TextBlock x:Name="LblTurnoTiempo" Text="-" Foreground="White" FontWeight="Bold" FontSize="24"/>
+                        </StackPanel>
+                    </Border>
+
                     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0">
                         <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleKidea" Visibility="Collapsed" Margin="0,0,0,5">
                             <TextBlock x:Name="TxtMensajeKidea" Text="" FontWeight="Bold" Foreground="#3A2C20"/>
@@ -163,11 +182,6 @@
                             <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleAurkari2"  Margin="0,0,0,10" Visibility="Collapsed">
                                 <TextBlock Text="" x:Name="TxtMensajeAurkari2" FontWeight="Bold" Foreground="#3A2C20"/>
                             </Border>
-                            <!-- ...existing code... -->
-                        </StackPanel>
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock x:Name="LblNombreRight" Text="" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5" FontWeight="Bold"/>
-
                             <!-- Avatar right + anillo -->
                             <Grid Width="60" Height="60">
                                 <Ellipse x:Name="ImgAvatarRight" Style="{StaticResource PlayerAvatar}"/>
@@ -182,6 +196,9 @@
                                       Data="M 30,5 A 25,25 0 1 1 29.999,5"/>
                             </Grid>
                         </StackPanel>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="LblNombreRight" Text="" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5" FontWeight="Bold"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20">
@@ -194,7 +211,7 @@
                             <Image x:Name="ImgCarta1" MouseDown="Carta_MouseDown" Tag="0" Source="/Assets/Cartas/copa1.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
                             <Image x:Name="ImgCarta2" MouseDown="Carta_MouseDown" Tag="1" Source="/Assets/Cartas/basto12.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
                             <Image x:Name="ImgCarta3" MouseDown="Carta_MouseDown" Tag="2" Source="/Assets/Cartas/espada12.png" Width="90" Style="{StaticResource CardStyle}" Margin="0,0,-35,0" Cursor="Hand"/>
-                            <Image x:Name="ImgCarta4" MouseDown="Carta_MouseDown" Tag="3" Source="/Assets/Cartas/copa12.png" Width="90" Style="{StaticResource CardStyle}" Cursor="Hand"/>
+                            <Image x:Name="ImgCarta4" MouseDown="Carta_MouseDown" Tag="3" Source="/Assets/Cartas/cupa12.png" Width="90" Style="{StaticResource CardStyle}" Cursor="Hand"/>
                         </StackPanel>
 
                         <!-- Avatar + anillo countdown -->
@@ -216,9 +233,9 @@
                         <TextBlock x:Name="LblNombreYo" Text="(Tú)" Foreground="Gold" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
                     </StackPanel>
 
-                    <Border VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                    <!--<Border VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                         <TextBlock Text="Hablan Pares" Foreground="#66FFFFFF" FontSize="24" FontWeight="Light" FontStyle="Italic"/>
-                    </Border>
+                    </Border>-->
                 </Grid>
             </Border>
         </Grid>
@@ -258,6 +275,43 @@
 
             </StackPanel>
         </Grid>
+
+        <!-- NUEVO: Overlay END_GAME -->
+        <Border x:Name="OverlayEndGame"
+                Visibility="Collapsed"
+                Background="#CC000000"
+                Grid.RowSpan="3"
+                Panel.ZIndex="110">
+
+            <Border Background="#2C3E50" CornerRadius="15" Width="520" Height="260"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    BorderBrush="#E74C3C" BorderThickness="3">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.7"/>
+                </Border.Effect>
+
+                <StackPanel Margin="25" VerticalAlignment="Center">
+                    <TextBlock Text="PARTIDA FINALIZADA" Foreground="#E74C3C" FontSize="22"
+                               FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+                    <TextBlock x:Name="TxtEndGameMsg"
+                               Text="Un jugador se ha salido."
+                               Foreground="White"
+                               FontSize="16"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,0,0,20"/>
+
+                    <Button Content="VOLVER"
+                            Click="VolverAlHome_Click"
+                            Width="150" Height="42"
+                            Background="#3498DB" Foreground="White"
+                            Style="{StaticResource RoundedButton}"
+                            FontWeight="Bold" Cursor="Hand"
+                            HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Border>
 
         <Border x:Name="OverlayResumen" 
                 Visibility="Collapsed"
@@ -323,12 +377,17 @@
                         <TextBlock Text="-" Foreground="White" FontSize="22" VerticalAlignment="Center"/>
                         <TextBlock x:Name="TxtTotalEllos" Text="0" Foreground="#E74C3C" FontSize="22" FontWeight="Bold" Margin="10,0"/>
                     </StackPanel>
-                    <Button Content="CONTINUAR" Click="CerrarResumen_Click" 
-                        Width="150" Height="40" Background="#3498DB" Foreground="White"
-                        Style="{StaticResource RoundedButton}" Margin="0,20,0,0"
-                        FontWeight="Bold" Cursor="Hand"/>
+
+                    <Button Content="VOLVER A JUGAR"
+                            Click="VolverAlHome_Click"
+                            Width="180" Height="45"
+                            Background="#3498DB" Foreground="White"
+                            Style="{StaticResource RoundedButton}"
+                            FontWeight="Bold" Cursor="Hand"
+                            HorizontalAlignment="Center" Margin="0,20,0,0"/>
                 </StackPanel>
             </Border>
         </Border>
+
     </Grid>
 </UserControl>
