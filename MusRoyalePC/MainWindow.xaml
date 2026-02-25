@@ -136,6 +136,12 @@
         <Grid Grid.Row="1" Margin="24,12">
             <ContentControl Content="{Binding CurrentView}" Panel.ZIndex="1"/>
 
+            <!-- Host de toasts (encima de todo) -->
+            <Grid Grid.Row="1" Panel.ZIndex="999" IsHitTestVisible="False">
+                <ItemsControl x:Name="ToastHost" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0"
+                              IsHitTestVisible="True"/>
+            </Grid>
+
             <Grid>
                 <Grid.Style>
                     <Style TargetType="Grid">

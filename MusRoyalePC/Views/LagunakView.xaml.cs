@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
+using System.Diagnostics;
 
 namespace MusRoyalePC.Views
 {
@@ -27,21 +28,47 @@ namespace MusRoyalePC.Views
         private void BtnVerEnviadas_Click(object sender, RoutedEventArgs e) => CargarRelaciones("solicitudMandada", "Zure zain...", true, "Cancelar");
         private void BtnVerRecibidas_Click(object sender, RoutedEventArgs e) => CargarRelaciones("solicitudRecibida", "Laguna izan nahi du", true, "Aceptar");
 
+        private static string NormalizeCampoLista(DocumentSnapshot userDoc, string campoLista)
+        {
+            // En DB aparece 'solicitudRecivida' (con v) en algunos documentos
+            if (userDoc.ContainsField(campoLista))
+                return campoLista;
+
+            if (campoLista == "solicitudRecibida" && userDoc.ContainsField("solicitudRecivida"))
+                return "solicitudRecivida";
+
+            return campoLista;
+        }
+
         private static string NormalizeAvatarAsset(string? avatarBD)
         {
-            // En tu app los avatares son archivos dentro de /Assets/
-            // Si en BD viene vacío/null, o algo raro, usamos avadef.png
             if (string.IsNullOrWhiteSpace(avatarBD))
                 return "avadef.png";
 
-            // A veces en BD puede venir ya con "/Assets/" o con barras. Normalizamos.
-            string file = avatarBD.Trim().TrimStart('/', '\\');
+            string file = avatarBD.Trim();
+
+            // Si viene como URL o contiene ':' no es un asset local
+            if (file.Contains(':'))
+                return "avadef.png";
+
+            // Quitar posibles prefijos
+            file = file.TrimStart('/', '\\');
             if (file.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase))
                 file = file.Substring("Assets/".Length);
 
-            // Evitar rutas con segmentos vacíos (causan: Path cannot contain empty elements)
-            file = file.Replace("//", "/");
-            if (file.Contains(".."))
+            // Si viene vacío tras normalizar
+            if (string.IsNullOrWhiteSpace(file))
+                return "avadef.png";
+
+            // Evitar segmentos vacíos o rutas raras
+            while (file.Contains("//", StringComparison.Ordinal))
+                file = file.Replace("//", "/", StringComparison.Ordinal);
+
+            if (file.Contains("..", StringComparison.Ordinal) || file.Contains("\\", StringComparison.Ordinal))
+                return "avadef.png";
+
+            // Firestore suele guardar solo el nombre (ej: ava1.png). Si no tiene extensión, fallback.
+            if (!Path.HasExtension(file))
                 return "avadef.png";
 
             return file;
@@ -49,41 +76,95 @@ namespace MusRoyalePC.Views
 
         private async void CargarRelaciones(string campoLista, string estadoTexto, bool mostrarBoton, string etiquetaBoton = "")
         {
+            Debug.WriteLine($"[LagunakView] CargarRelaciones campoLista='{campoLista}', estadoTexto='{estadoTexto}', mostrarBoton={mostrarBoton}");
+
             try
             {
                 var db = Services.FirestoreService.Instance.Db;
-                string currentUserId = Properties.Settings.Default.savedId;
+
+                // Origen de ID (orden de prioridad): sesión actual -> user session -> settings
+                string currentUserId = Services.FirestoreService.Instance.CurrentUserId;
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    currentUserId = MusRoyalePC.Models.UserSession.Instance.DocumentId;
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    currentUserId = Properties.Settings.Default.savedId;
+
+                Debug.WriteLine($"[LagunakView] currentUserId(Resolved)='{currentUserId}' (FirestoreService.CurrentUserId='{Services.FirestoreService.Instance.CurrentUserId}', UserSession.DocumentId='{MusRoyalePC.Models.UserSession.Instance.DocumentId}', Settings.savedId='{Properties.Settings.Default.savedId}')");
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    Debug.WriteLine("[LagunakView] currentUserId vacío -> no se puede cargar amigos.");
+                    return;
+                }
+
                 DocumentSnapshot userDoc = await db.Collection("Users").Document(currentUserId).GetSnapshotAsync();
+
+                Debug.WriteLine($"[LagunakView] userDoc.Exists={userDoc.Exists}");
 
                 if (!userDoc.Exists) return;
                 FriendsList.Clear();
 
-                if (userDoc.ContainsField(campoLista))
+                // Log de campos presentes (para ver si el documento es la colección correcta)
+                try
                 {
-                    var listaIds = userDoc.GetValue<List<string>>(campoLista);
-                    foreach (string id in listaIds)
+                    var dict = userDoc.ToDictionary();
+                    Debug.WriteLine($"[LagunakView] userDoc fields: {string.Join(",", dict.Keys)}");
+                }
+                catch { }
+
+                string campoReal = NormalizeCampoLista(userDoc, campoLista);
+                if (campoReal != campoLista)
+                    Debug.WriteLine($"[LagunakView] Campo normalizado: '{campoLista}' -> '{campoReal}'");
+
+                if (!userDoc.ContainsField(campoReal))
+                {
+                    Debug.WriteLine($"[LagunakView] userDoc no contiene el campo '{campoReal}'");
+                    return;
+                }
+
+                var listaIds = userDoc.GetValue<List<string>>(campoReal) ?? new List<string>();
+                Debug.WriteLine($"[LagunakView] '{campoReal}' count={listaIds.Count}");
+
+                foreach (string id in listaIds)
+                {
+                    if (string.IsNullOrWhiteSpace(id))
                     {
-                        if (string.IsNullOrWhiteSpace(id))
-                            continue;
+                        Debug.WriteLine("[LagunakView] id amigo vacío -> skip");
+                        continue;
+                    }
 
+                    try
+                    {
                         DocumentSnapshot docAmigo = await db.Collection("Users").Document(id).GetSnapshotAsync();
-                        if (docAmigo.Exists)
-                        {
-                            string nombre = (docAmigo.ContainsField("username") ? docAmigo.GetValue<string>("username") : null) ?? "Sin Nombre";
+                        Debug.WriteLine($"[LagunakView] amigoId='{id}' doc.Exists={docAmigo.Exists}");
+                        if (!docAmigo.Exists) continue;
 
-                            string? avatarBD = null;
-                            if (docAmigo.ContainsField("avatarActual"))
-                                avatarBD = docAmigo.GetValue<string>("avatarActual");
+                        string nombre = (docAmigo.ContainsField("username") ? docAmigo.GetValue<string>("username") : null) ?? "Sin Nombre";
 
-                            string avatarFile = NormalizeAvatarAsset(avatarBD);
-                            string avatarRuta = $"pack://application:,,,/Assets/{avatarFile}";
+                        string? avatarBD = null;
+                        if (docAmigo.ContainsField("avatarActual"))
+                            avatarBD = docAmigo.GetValue<string>("avatarActual");
 
-                            FriendsList.Add(new FriendRowVm(id, nombre, estadoTexto, avatarRuta, mostrarBoton, etiquetaBoton, false, ""));
-                        }
+                        string avatarFile = NormalizeAvatarAsset(avatarBD);
+                        var avatarUri = new Uri($"pack://application:,,,/Assets/{avatarFile}", UriKind.Absolute);
+
+                        Debug.WriteLine($"[LagunakView] amigo='{nombre}', avatarActual(raw)='{avatarBD}', avatarFile='{avatarFile}', uri='{avatarUri}'");
+
+                        FriendsList.Add(new FriendRowVm(id, nombre, estadoTexto, avatarUri.ToString(), mostrarBoton, etiquetaBoton, false, ""));
+                    }
+                    catch (Exception exAmigo)
+                    {
+                        Debug.WriteLine($"[LagunakView] EX al cargar amigo '{id}': {exAmigo}");
                     }
                 }
+
+                Debug.WriteLine($"[LagunakView] FriendsList final count={FriendsList.Count}");
             }
-            catch (Exception ex) { MessageBox.Show($"Errorea: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LagunakView] EX CargarRelaciones: {ex}");
+                MessageBox.Show($"Errorea: {ex.Message}");
+            }
         }
 
         private async void UserSearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -115,14 +196,14 @@ namespace MusRoyalePC.Views
                     {
                         string? avatarBD = doc.ContainsField("avatarActual") ? doc.GetValue<string>("avatarActual") : null;
                         string avatarFile = NormalizeAvatarAsset(avatarBD);
-                        string avatarRuta = $"pack://application:,,,/Assets/{avatarFile}";
+                        var avatarUri = new Uri($"pack://application:,,,/Assets/{avatarFile}", UriKind.Absolute);
 
                         bool yaEsAmigo = misAmigos.Contains(doc.Id);
 
                         if (yaEsAmigo)
-                            FriendsList.Add(new FriendRowVm(doc.Id, nombre, "Laguna duzu", avatarRuta, false, "", false, ""));
+                            FriendsList.Add(new FriendRowVm(doc.Id, nombre, "Laguna duzu", avatarUri.ToString(), false, "", false, ""));
                         else
-                            FriendsList.Add(new FriendRowVm(doc.Id, nombre, "Mus Royale erabiltzailea", avatarRuta, true, "Gehitu", false, ""));
+                            FriendsList.Add(new FriendRowVm(doc.Id, nombre, "Mus Royale erabiltzailea", avatarUri.ToString(), true, "Gehitu", false, ""));
                     }
                 }
             }

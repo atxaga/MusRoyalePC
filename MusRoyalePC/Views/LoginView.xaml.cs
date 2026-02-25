@@ -2,6 +2,7 @@
 using MusRoyalePC.Models;
 using MusRoyalePC.Services;
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
@@ -57,8 +58,13 @@ namespace MusRoyalePC.Views
                             // Esto pone CurrentView en null (para el menú de madera)
                             // Y pone CurrentPageName en "Home" (para que el Footer sea visible)
                             UserSession.Instance.Username = userDoc.GetValue<string>("username");
-                          //  UserSession.Instance.Avatar = userDoc.GetValue<string>("avatarActual");
                             UserSession.Instance.DocumentId = userDoc.Id;
+
+                            // Arrancar listener global de invitaciones Duo
+                            Debug.WriteLine($"[LoginView] Starting DuoInviteCoordinator. CurrentUserId='{FirestoreService.Instance.CurrentUserId}', SessionId='{UserSession.Instance.DocumentId}'");
+                            DuoInviteCoordinator.Instance.Stop();
+                            DuoInviteCoordinator.Instance.Start();
+
                             vm.Navegar("Home");
                         }
                     }

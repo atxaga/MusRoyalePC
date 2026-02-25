@@ -1,0 +1,55 @@
+<UserControl x:Class="MusRoyalePC.Views.Controls.DuoInviteToast"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="90" d:DesignWidth="520">
+
+    <Border CornerRadius="20" Background="#2E7D32" BorderBrush="#E6D000" BorderThickness="2" Padding="14">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="18" ShadowDepth="6" Opacity="0.35"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Width="56" Height="56" CornerRadius="14" Background="#1B5E20" VerticalAlignment="Center">
+                <Image Width="48" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Source="{Binding EmisorAvatarUri}" Stretch="Uniform"/>
+            </Border>
+
+            <StackPanel Grid.Column="1" Margin="14,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding EmisorName}" Foreground="White" FontWeight="SemiBold" FontSize="18"/>
+                <TextBlock Text="{Binding Message}" Foreground="#DFFFE0" FontSize="12"/>
+            </StackPanel>
+
+            <Button Grid.Column="2" Width="44" Height="44" Margin="8,0" Command="{Binding AcceptCommand}"
+                    Background="#E8F5E9" BorderThickness="0" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="14">
+                            <TextBlock Text="?" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#2E7D32"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Grid.Column="3" Width="44" Height="44" Margin="8,0,0,0" Command="{Binding RejectCommand}"
+                    Background="#1B5E20" BorderThickness="0" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="14">
+                            <TextBlock Text="?" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>

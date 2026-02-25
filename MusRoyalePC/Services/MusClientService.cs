@@ -233,6 +233,7 @@ namespace MusRoyalePC.Services
 
                 case "PUBLICA":
                 case "BIKOTEAK":
+                case "ID_ESKATU":
                     // Mantener log visible de envío de ID (no quitar)
                     Console.WriteLine($"[CLIENTE] Enviando DocumentId para {modo}: {UserSession.Instance.DocumentId}");
                     Debug.WriteLine($"[CLIENTE] Enviando DocumentId para {modo}: {UserSession.Instance.DocumentId}");
@@ -251,6 +252,8 @@ namespace MusRoyalePC.Services
                 default:
                     return "ERROR_MODO_NO_SOPORTADO";
             }
+
+            return "ERROR";
         }
 
         private void IniciarEscucha()

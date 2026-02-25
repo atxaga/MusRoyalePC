@@ -3,7 +3,9 @@ using Microsoft.Win32;
 using MusRoyalePC.Controllers;
 using MusRoyalePC.Reports;
 using MusRoyalePC.Services;
+using MusRoyalePC.Views.Controls;
 using QuestPDF.Fluent;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Windows;
@@ -15,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace MusRoyalePC
 {
@@ -25,11 +28,17 @@ namespace MusRoyalePC
     {
         public MainViewModel ViewModel { get; set; }
 
+        private readonly ObservableCollection<UserControl> _toasts = new();
+
         public MainWindow()
         {
             InitializeComponent();
             ViewModel = new MainViewModel();
             this.DataContext = ViewModel;
+
+            ToastHost.ItemsSource = _toasts;
+
+            DuoInviteCoordinator.Instance.OnInviteToastRequested += ShowDuoInviteToast;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -116,6 +125,37 @@ namespace MusRoyalePC
             {
                 MessageBox.Show($"Errorea:\n{ex}", "Errorea", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ShowDuoInviteToast(DuoInviteUi ui)
+        {
+            // Construir control
+            var vm = new DuoInviteToastVm(DuoInviteCoordinator.Instance, ui);
+            var toast = new DuoInviteToast(vm);
+
+            void Close()
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    _toasts.Remove(toast);
+                });
+            }
+
+            vm.RequestClose += Close;
+
+            // Auto-close tras 12s
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(12) };
+            timer.Tick += (_, __) =>
+            {
+                timer.Stop();
+                Close();
+            };
+            timer.Start();
+
+            Dispatcher.BeginInvoke(() =>
+            {
+                _toasts.Add(toast);
+            });
         }
 
         /// <summary>

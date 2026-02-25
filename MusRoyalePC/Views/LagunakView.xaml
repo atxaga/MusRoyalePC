@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             
              d:DesignHeight="800" d:DesignWidth="400">
 
     <UserControl.Resources>
@@ -44,14 +44,21 @@
                     <ControlTemplate TargetType="TextBox">
                         <Border Background="{TemplateBinding Background}" CornerRadius="20">
                             <Grid>
-                                <TextBlock x:Name="SearchBox" Text="Bilatu lagunak..." Foreground="#88FFFFFF"
+                                <TextBlock x:Name="SearchPlaceholder" Text="Bilatu lagunak..." Foreground="#88FFFFFF"
                                            Margin="40,0,0,0" VerticalAlignment="Center"
-                                           IsHitTestVisible="False"
-                                           Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                           IsHitTestVisible="False" Visibility="Collapsed"/>
                                 <ContentPresenter Margin="40,0,10,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="🔍" Foreground="#88FFFFFF" Margin="15,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             </Grid>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="SearchPlaceholder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Text.Length, RelativeSource={RelativeSource TemplatedParent}}" Value="0">
+                                <Setter TargetName="SearchPlaceholder" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -117,7 +124,11 @@
 
                                 <Ellipse Width="60" Height="60" Stroke="#C4B48A" StrokeThickness="2">
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Avatar}"/>
+                                        <ImageBrush>
+                                            <ImageBrush.ImageSource>
+                                                <BitmapImage UriSource="{Binding Path=Avatar, TargetNullValue='pack://application:,,,/Assets/avadef.png', FallbackValue='pack://application:,,,/Assets/avadef.png'}"/>
+                                            </ImageBrush.ImageSource>
+                                        </ImageBrush>
                                     </Ellipse.Fill>
                                 </Ellipse>
 
