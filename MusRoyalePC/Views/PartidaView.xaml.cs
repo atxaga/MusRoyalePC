@@ -1,4 +1,7 @@
-﻿using MusRoyalePC.Services;
+﻿// NOTE: Este archivo quedó con múltiples copias pegadas tras un merge.
+// Se reemplaza por una versión única y consistente.
+
+using MusRoyalePC.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,16 +13,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Cloud.Firestore;
+using System.Windows.Shapes;
 
 namespace MusRoyalePC.Views
 {
     public partial class PartidaView : UserControl
     {
         private MusClientService _netService;
-        private List<int> _cartasSeleccionadas = new List<int>();
+        private readonly List<int> _cartasSeleccionadas = new();
         private string[] _misCartasActuales = new string[4];
 
         private TaskCompletionSource<string>? _decisionTaskSource;
@@ -49,8 +52,25 @@ namespace MusRoyalePC.Views
         private int _puntosEquipo1;
         private int _puntosEquipo2;
 
+        // RONDA: en grande hasta TURN
+        private const double RondaFontSizeNormal = 30d;
+        private const double RondaFontSizeGrande = 54d;
+        private string? _ultimaRondaRaw;
+        private bool _rondaGrandePendiente;
+
+        // LABURPENA
+        private readonly List<(string Item, int Total, int Talde)> _laburpenaBuffer = new();
+
         // Solo se puede aceptar (QUIERO) cuando ya hay un envido/apuesta en curso.
         private bool _hayEnvidoActivo;
+
+        private enum UiSeat
+        {
+            Yo,
+            Front,
+            Left,
+            Right
+        }
 
         public PartidaView(MusClientService servicioConectado)
         {
@@ -135,25 +155,21 @@ namespace MusRoyalePC.Views
 
         private (int Nosotros, int Ellos) GetPuntuacionPartidaActual()
         {
-            // Preferimos leer de los labels visibles (fuente de verdad actual en esta vista)
             int nosotros = ParsePuntuacionMus(LblPuntosEtxekoak?.Text);
             int ellos = ParsePuntuacionMus(LblPuntosKanpokoak?.Text);
             return (nosotros, ellos);
         }
 
-        private async Task MostrarLaburpenaPopupAsync()
+        private async Task MostrarLaburmenaPopupAsync()
         {
             int miTalde = _netService?.MiIdTaldea ?? 0;
             var lines = _laburpenaBuffer.ToList();
-
-            // Total de la ronda: usar el último totala recibido (según tu formato LABURPENA)
             int totalRonda = lines.Count > 0 ? lines[^1].Total : 0;
 
             var (pNos, pEll) = GetPuntuacionPartidaActual();
 
             Dispatcher.Invoke(() =>
             {
-                // Arriba: total de la ronda (en grande)
                 if (TxtLaburpenaTotala != null)
                 {
                     TxtLaburpenaTotala.Text = $"TOTAL RONDA: {totalRonda}";
@@ -164,7 +180,6 @@ namespace MusRoyalePC.Views
                 {
                     TxtLaburpenaItems.Inlines.Clear();
 
-                    // Cada línea: NOMBRE_RONDA  +X (verde si es nuestro talde, rojo si otro)
                     for (int i = 0; i < lines.Count; i++)
                     {
                         var l = lines[i];
@@ -179,7 +194,6 @@ namespace MusRoyalePC.Views
                             TxtLaburpenaItems.Inlines.Add(new LineBreak());
                     }
 
-                    // Abajo: total de la partida en formato mus (grandes.chicas - grandes.chicas)
                     TxtLaburpenaItems.Inlines.Add(new LineBreak());
                     TxtLaburpenaItems.Inlines.Add(new LineBreak());
 
@@ -205,14 +219,6 @@ namespace MusRoyalePC.Views
             });
 
             _laburpenaBuffer.Clear();
-        }
-
-        private enum UiSeat
-        {
-            Yo,
-            Front,
-            Left,
-            Right
         }
 
         private async void PintarAsientosAsync(AsientosPartida a)
@@ -357,11 +363,8 @@ namespace MusRoyalePC.Views
                 _rondaGrandePendiente = true;
                 MostrarRondaGrandeDesdeServer(_ultimaRondaRaw);
 
-                // Asegurar que el popup sale cuando el server mande RONDA:AMAIERA
                 if (EsAmaieraRondaRaw(_ultimaRondaRaw) && _laburpenaBuffer.Count > 0)
-                {
-                    await MostrarLaburpenaPopupAsync();
-                }
+                    await MostrarLaburmenaPopupAsync();
 
                 return;
             }
@@ -429,7 +432,7 @@ namespace MusRoyalePC.Views
                     LblInfoRonda.Text = "DESKARTEAK";
 
                     OcultarTodosLosBotones();
-                    Button btnDescarte = new Button
+                    Button btnDescarte = new()
                     {
                         Content = "DESCARTAR",
                         Style = (Style)this.Resources["RoundedButton"],
@@ -489,7 +492,17 @@ namespace MusRoyalePC.Views
                 int serverId = int.TryParse(parts[1].Trim(), out var id) ? id : 0;
                 string mensaje = parts[2].Trim();
 
-                // Normalización como Android
+                // Si llega una apuesta del server (número u órdago) => hay envido activo y se puede QUIERO.
+                if (mensaje.Equals("ordago", StringComparison.OrdinalIgnoreCase) || int.TryParse(mensaje, out _))
+                {
+                    _hayEnvidoActivo = true;
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (BtnQuiero != null && BtnQuiero.Visibility == Visibility.Visible)
+                            BtnQuiero.IsEnabled = true;
+                    });
+                }
+
                 if (mensaje.EndsWith("PARES", StringComparison.OrdinalIgnoreCase))
                 {
                     mensaje = mensaje.StartsWith("jokuaDaukat", StringComparison.OrdinalIgnoreCase)
@@ -509,9 +522,7 @@ namespace MusRoyalePC.Views
                 }
 
                 if (_seatToUi.TryGetValue(serverId, out var uiSeat) && uiSeat != UiSeat.Yo)
-                {
                     StartTurnCountdown(uiSeat);
-                }
 
                 MostrarPopupDecision(serverId, mensaje);
             }
@@ -537,7 +548,10 @@ namespace MusRoyalePC.Views
                     ImgCarta1.Opacity = 1.0; ImgCarta2.Opacity = 1.0;
                     ImgCarta3.Opacity = 1.0; ImgCarta4.Opacity = 1.0;
                 }
-                catch (Exception ex) { Console.WriteLine("Error cargando imágenes: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error cargando imágenes: " + ex.Message);
+                }
             });
         }
 
@@ -569,19 +583,38 @@ namespace MusRoyalePC.Views
             OcultarTodosLosBotones();
         }
 
-        // --- HANDLERS RESTAURADOS (XAML los referencia) ---
-        private void BtnQuiero_Click(object sender, RoutedEventArgs e) => ResolverApuesta("quiero");
+        private void BtnQuiero_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_hayEnvidoActivo)
+                return;
+
+            ResolverApuesta("quiero");
+        }
 
         private void BtnApuesta_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag != null)
             {
-                string valor = btn.Tag.ToString();
+                _hayEnvidoActivo = true;
+                if (BtnQuiero != null && BtnQuiero.Visibility == Visibility.Visible)
+                    BtnQuiero.IsEnabled = true;
 
-                // Normalización visual/semántica:
-                // - Tag 2 => enviar "2" pero mostramos "ENVIDO 2" en burbujas (cuando venga del server)
-                // - Tag 5 => "5 GEHIAGO" (subir después de un 2)
+                string valor = btn.Tag.ToString();
                 ResolverApuesta(valor);
+            }
+        }
+
+        private void BtnMas_Click(object sender, RoutedEventArgs e)
+        {
+            if (PanelApuestasAltas.Visibility == Visibility.Collapsed)
+            {
+                PanelApuestasAltas.Visibility = Visibility.Visible;
+                BtnMas.Content = "➖";
+            }
+            else
+            {
+                PanelApuestasAltas.Visibility = Visibility.Collapsed;
+                BtnMas.Content = "➕";
             }
         }
 
@@ -590,7 +623,6 @@ namespace MusRoyalePC.Views
             _decisionTaskSource?.TrySetCanceled();
             _decisionTaskSource = new TaskCompletionSource<string>();
 
-            // Al empezar una fase de apuesta, todavía no hay envido.
             _hayEnvidoActivo = false;
 
             Dispatcher.Invoke(() =>
@@ -599,7 +631,6 @@ namespace MusRoyalePC.Views
 
                 BtnPaso.Visibility = Visibility.Visible;
 
-                // QUIERO visible, pero deshabilitado hasta que haya un envido.
                 BtnQuiero.Visibility = FaseConApuesta(fase) ? Visibility.Visible : Visibility.Collapsed;
                 if (BtnQuiero != null) BtnQuiero.IsEnabled = false;
 
@@ -622,20 +653,6 @@ namespace MusRoyalePC.Views
             Dispatcher.Invoke(() => OcultarTodosLosBotones());
         }
 
-        private void BtnMas_Click(object sender, RoutedEventArgs e)
-        {
-            if (PanelApuestasAltas.Visibility == Visibility.Collapsed)
-            {
-                PanelApuestasAltas.Visibility = Visibility.Visible;
-                BtnMas.Content = "➖";
-            }
-            else
-            {
-                PanelApuestasAltas.Visibility = Visibility.Collapsed;
-                BtnMas.Content = "➕";
-            }
-        }
-
         private void MostrarAccionJugador(string msg)
         {
             try
@@ -651,18 +668,6 @@ namespace MusRoyalePC.Views
             catch
             {
                 // ignore
-            }
-        }
-
-        private void DesvincularEventos()
-        {
-            if (_netService != null)
-            {
-                _netService.OnCartasRecibidas -= ActualizarMisCartas;
-                _netService.OnMiTurno -= ActivarControles;
-                _netService.OnComandoRecibido -= ProcesarMensajeServer;
-                _netService.OnPuntosRecibidos -= AlRecibirPuntos;
-                _netService.OnAsientosCalculados -= PintarAsientosAsync;
             }
         }
 
@@ -745,57 +750,60 @@ namespace MusRoyalePC.Views
             OcultarTodosLosBotones();
         }
 
-        private void BtnPaso_Click(object sender, RoutedEventArgs e)
-        {
-            ResolverApuesta("paso");
-        }
+        private void BtnPaso_Click(object sender, RoutedEventArgs e) => ResolverApuesta("paso");
 
-        private void EnviarAbandonoSiConectado()
+        private void ResolverApuesta(string comando)
         {
-            if (_abandonSent) return;
-            _abandonSent = true;
+            StopTurnCountdown();
 
-            try
+            if (_decisionTaskSource != null && !_decisionTaskSource.Task.IsCompleted)
             {
-                if (_netService?.IsConnected == true)
-                {
-                    _netService.EnviarComando("ABANDONO");
-                }
+                _decisionTaskSource.TrySetResult(comando);
             }
-            catch
+            else
             {
-                // ignore
+                _netService.EnviarComando(comando);
+                OcultarTodosLosBotones();
             }
         }
 
-        private void AbandonarPartida()
+        private void ActivarControles()
         {
-            try
+            Dispatcher.Invoke(() =>
             {
+                OcultarTodosLosBotones();
+                BtnMus.Visibility = Visibility.Visible;
+                BtnPaso.Visibility = Visibility.Visible;
+            });
+
+            StartTurnCountdown(UiSeat.Yo);
+        }
+
+        private void OcultarTodosLosBotones()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                BtnMus.Visibility = Visibility.Collapsed;
+                BtnPaso.Visibility = Visibility.Collapsed;
+                BtnQuiero.Visibility = Visibility.Collapsed;
+                BtnEnvido.Visibility = Visibility.Collapsed;
+                BtnMas.Visibility = Visibility.Collapsed;
+
+                if (PanelApuestasAltas != null)
+                    PanelApuestasAltas.Visibility = Visibility.Collapsed;
+
+                var descartes = PanelBotones.Children.OfType<Button>()
+                    .Where(b => b.Content?.ToString() == "DESCARTAR").ToList();
+                foreach (var d in descartes) PanelBotones.Children.Remove(d);
+
                 StopTurnCountdown();
-                EnviarAbandonoSiConectado();
-                DesvincularEventos();
-                _netService?.Desconectar();
-            }
-            catch
-            {
-                // ignore
-            }
+            });
         }
 
-        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        private static Point PointOnCircle(double cx, double cy, double r, double angleDegrees)
         {
-            if (oldParent != null && VisualParent == null)
-            {
-                AbandonarPartida();
-            }
-
-            base.OnVisualParentChanged(oldParent);
-        }
-
-        public void Abandonar()
-        {
-            AbandonarPartida();
+            double rad = angleDegrees * Math.PI / 180.0;
+            return new Point(cx + (r * Math.Cos(rad)), cy + (r * Math.Sin(rad)));
         }
 
         private Path? GetCountdownRing(UiSeat seat) => seat switch
@@ -856,138 +864,6 @@ namespace MusRoyalePC.Views
             ring.Data = geo;
         }
 
-        private async Task ManejarDecisionApuesta(string fase)
-        {
-            _decisionTaskSource?.TrySetCanceled();
-            _decisionTaskSource = new TaskCompletionSource<string>();
-
-            Dispatcher.Invoke(() =>
-            {
-                OcultarTodosLosBotones();
-
-                BtnPaso.Visibility = Visibility.Visible;
-
-                // QUIERO solo si estamos en fase de apuesta
-                BtnQuiero.Visibility = FaseConApuesta(fase) ? Visibility.Visible : Visibility.Collapsed;
-
-                BtnEnvido.Visibility = Visibility.Visible;
-                BtnMas.Visibility = Visibility.Visible;
-                BtnMas.Content = "➕";
-                PanelApuestasAltas.Visibility = Visibility.Collapsed;
-
-                BtnEnvido.Content = "ENVIDO 2";
-                if (BtnEnvido5 != null)
-                    BtnEnvido5.Content = "5 GEHIAGO";
-            });
-
-            StartTurnCountdown(UiSeat.Yo);
-
-            string respuesta = await _decisionTaskSource.Task;
-            StopTurnCountdown();
-
-            _netService.EnviarComando(respuesta);
-            Dispatcher.Invoke(() => OcultarTodosLosBotones());
-        }
-
-        private void ResolverApuesta(string comando)
-        {
-            StopTurnCountdown();
-
-            if (_decisionTaskSource != null && !_decisionTaskSource.Task.IsCompleted)
-            {
-                _decisionTaskSource.TrySetResult(comando);
-            }
-            else
-            {
-                _netService.EnviarComando(comando);
-                OcultarTodosLosBotones();
-            }
-        }
-
-        private void ActivarControles()
-        {
-            Dispatcher.Invoke(() =>
-            {
-                OcultarTodosLosBotones();
-                BtnMus.Visibility = Visibility.Visible;
-                BtnPaso.Visibility = Visibility.Visible;
-            });
-
-            StartTurnCountdown(UiSeat.Yo);
-        }
-
-        private void OcultarTodosLosBotones()
-        {
-            Dispatcher.Invoke(() =>
-            {
-                BtnMus.Visibility = Visibility.Collapsed;
-                BtnPaso.Visibility = Visibility.Collapsed;
-                BtnQuiero.Visibility = Visibility.Collapsed;
-                BtnEnvido.Visibility = Visibility.Collapsed;
-                BtnMas.Visibility = Visibility.Collapsed;
-
-                if (PanelApuestasAltas != null)
-                    PanelApuestasAltas.Visibility = Visibility.Collapsed;
-
-                var descartes = PanelBotones.Children.OfType<Button>()
-                    .Where(b => b.Content?.ToString() == "DESCARTAR").ToList();
-                foreach (var d in descartes) PanelBotones.Children.Remove(d);
-
-                StopTurnCountdown();
-            });
-        }
-
-        private static Point PointOnCircle(double cx, double cy, double r, double angleDegrees)
-        {
-            double rad = angleDegrees * Math.PI / 180.0;
-            return new Point(cx + (r * Math.Cos(rad)), cy + (r * Math.Sin(rad)));
-        }
-
-        private void MostrarPopupDecision(int serverSeat, string texto)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if (!_seatToUi.TryGetValue(serverSeat, out var uiSeat))
-                    return;
-
-                if (uiSeat == UiSeat.Yo)
-                {
-                    TxtMensajeYo.Text = texto;
-                    BubbleYo.Visibility = Visibility.Visible;
-
-                    var timerYo = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(5000) };
-                    timerYo.Tick += (s, e) =>
-                    {
-                        BubbleYo.Visibility = Visibility.Collapsed;
-                        timerYo.Stop();
-                    };
-                    timerYo.Start();
-                    return;
-                }
-
-                (Border bubble, TextBlock label) = uiSeat switch
-                {
-                    UiSeat.Front => (BubbleKidea, TxtMensajeKidea),
-                    UiSeat.Left => (BubbleAurkari1, TxtMensajeAurkari1),
-                    UiSeat.Right => (BubbleAurkari2, TxtMensajeAurkari2),
-                    _ => (null, null)
-                };
-
-                if (bubble == null || label == null) return;
-
-                label.Text = texto;
-                bubble.Visibility = Visibility.Visible;
-
-                var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(5000) };
-                timer.Tick += (s, e) =>
-                {
-                    bubble.Visibility = Visibility.Collapsed;
-                    timer.Stop();
-                };
-                timer.Start();
-            });
-        }
-
         private void StartTurnCountdown(UiSeat? seatOverride = null)
         {
             Dispatcher.Invoke(() =>
@@ -1003,7 +879,7 @@ namespace MusRoyalePC.Views
                 _turnCountdownStart = DateTime.UtcNow;
                 _turnCountdownFired = false;
 
-                UpdateTurnInfo(seatForThisTimer, secondsRemaining: 30, waitingDelay: false);
+                UpdateTurnInfo(seatForThisTimer, secondsRemaining: 30);
                 TurnInfoPanel.Visibility = Visibility.Visible;
 
                 foreach (var ring in new[] { AvatarCountdownRing, AvatarCountdownRingFront, AvatarCountdownRingLeft, AvatarCountdownRingRight })
@@ -1035,7 +911,7 @@ namespace MusRoyalePC.Views
                     }
 
                     int secondsLeft = (int)Math.Ceiling(Math.Max(0, (_turnCountdownDuration - elapsed).TotalSeconds));
-                    UpdateTurnInfo(seatForThisTimer, secondsRemaining: secondsLeft, waitingDelay: false);
+                    UpdateTurnInfo(seatForThisTimer, secondsRemaining: secondsLeft);
 
                     if (!_turnCountdownFired && elapsed >= _turnCountdownDuration)
                     {
@@ -1080,7 +956,7 @@ namespace MusRoyalePC.Views
             });
         }
 
-        private void UpdateTurnInfo(UiSeat seat, int? secondsRemaining, bool waitingDelay)
+        private void UpdateTurnInfo(UiSeat seat, int? secondsRemaining)
         {
             string nombre = seat switch
             {
@@ -1095,15 +971,7 @@ namespace MusRoyalePC.Views
                 nombre = nombre.Replace("(Tú)", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
 
             LblTurnoJugador.Text = string.IsNullOrWhiteSpace(nombre) ? "-" : nombre;
-
-            if (secondsRemaining is null)
-            {
-                LblTurnoTiempo.Text = string.Empty;
-            }
-            else
-            {
-                LblTurnoTiempo.Text = $"{secondsRemaining}s";
-            }
+            LblTurnoTiempo.Text = secondsRemaining is null ? string.Empty : $"{secondsRemaining}s";
         }
 
         private static bool FaseConApuesta(string fase)
@@ -1230,13 +1098,11 @@ namespace MusRoyalePC.Views
             _statsTargetUserId = null;
         }
 
-    // --- MODELOS DE DATOS ---
-    public class EstadoJuego
-    {
-        public int PuntosNosotros { get; set; } // Puntuación total partita
-        public int PuntosEllos { get; set; }
-        public string MensajeCentro { get; set; } // "MUS", "JUEGO", etc.
-        public string FaseActual { get; set; } // "Juego", "Resumen"
+        private static string NormalizeFaseEuskera(string fase)
+        {
+            if (string.IsNullOrWhiteSpace(fase)) return "DESKARTEAK";
+
+            string f = fase.Trim().ToUpperInvariant();
 
             return f switch
             {
@@ -1254,10 +1120,111 @@ namespace MusRoyalePC.Views
         // Handler de prueba (referenciado en XAML). Mantener por compatibilidad.
         private void TestResumen_Click(object sender, RoutedEventArgs e)
         {
-            // Mostrar un ejemplo rápido de LABURPENA para validar el overlay.
             AddLaburpenaLine("GRANDIAK", 2, _netService?.MiIdTaldea ?? 1);
             AddLaburpenaLine("PAREAK", 3, (_netService?.MiIdTaldea ?? 1) == 1 ? 2 : 1);
-            _ = MostrarLaburpenaPopupAsync();
+            _ = MostrarLaburmenaPopupAsync();
+        }
+
+        private void EnviarAbandonoSiConectado()
+        {
+            if (_abandonSent) return;
+            _abandonSent = true;
+
+            try
+            {
+                if (_netService?.IsConnected == true)
+                {
+                    _netService.EnviarComando("ABANDONO");
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        private void AbandonarPartida()
+        {
+            try
+            {
+                StopTurnCountdown();
+                EnviarAbandonoSiConectado();
+                DesvincularEventos();
+                _netService?.Desconectar();
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        private void DesvincularEventos()
+        {
+            if (_netService != null)
+            {
+                _netService.OnCartasRecibidas -= ActualizarMisCartas;
+                _netService.OnMiTurno -= ActivarControles;
+                _netService.OnComandoRecibido -= ProcesarMensajeServer;
+                _netService.OnPuntosRecibidos -= AlRecibirPuntos;
+                _netService.OnAsientosCalculados -= PintarAsientosAsync;
+            }
+        }
+
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            if (oldParent != null && VisualParent == null)
+            {
+                AbandonarPartida();
+            }
+
+            base.OnVisualParentChanged(oldParent);
+        }
+
+        public void Abandonar() => AbandonarPartida();
+
+        private void MostrarPopupDecision(int serverSeat, string texto)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (!_seatToUi.TryGetValue(serverSeat, out var uiSeat))
+                    return;
+
+                if (uiSeat == UiSeat.Yo)
+                {
+                    TxtMensajeYo.Text = texto;
+                    BubbleYo.Visibility = Visibility.Visible;
+
+                    var timerYo = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(5000) };
+                    timerYo.Tick += (s, e) =>
+                    {
+                        BubbleYo.Visibility = Visibility.Collapsed;
+                        timerYo.Stop();
+                    };
+                    timerYo.Start();
+                    return;
+                }
+
+                (Border bubble, TextBlock label) = uiSeat switch
+                {
+                    UiSeat.Front => (BubbleKidea, TxtMensajeKidea),
+                    UiSeat.Left => (BubbleAurkari1, TxtMensajeAurkari1),
+                    UiSeat.Right => (BubbleAurkari2, TxtMensajeAurkari2),
+                    _ => (null, null)
+                };
+
+                if (bubble == null || label == null) return;
+
+                label.Text = texto;
+                bubble.Visibility = Visibility.Visible;
+
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(5000) };
+                timer.Tick += (s, e) =>
+                {
+                    bubble.Visibility = Visibility.Collapsed;
+                    timer.Stop();
+                };
+                timer.Start();
+            });
         }
     }
 }
