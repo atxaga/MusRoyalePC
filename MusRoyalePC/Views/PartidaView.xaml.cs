@@ -224,43 +224,24 @@ namespace MusRoyalePC.Views
             var (gNos, cNos) = SplitPuntuacionMus(puntosNos);
             var (gEll, cEll) = SplitPuntuacionMus(puntosEllos);
 
-            try
+            Dispatcher.Invoke(() =>
             {
-                var t = GetType();
-
-                var etxG = t.GetField("LblPuntosEtxekoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-                var etxC = t.GetField("LblPuntosEtxekoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-                var kanG = t.GetField("LblPuntosKanpokoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-                var kanC = t.GetField("LblPuntosKanpokoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-
-                if (etxG != null && etxC != null && kanG != null && kanC != null)
-                {
-                    etxG.Text = gNos.ToString();
-                    etxC.Text = cNos.ToString();
-                    kanG.Text = gEll.ToString();
-                    kanC.Text = cEll.ToString();
-                }
-            }
-            catch
-            {
-                // ignore
-            }
+                // Directo a los controles del XAML
+                if (LblPuntosEtxekoakG != null) LblPuntosEtxekoakG.Text = gNos.ToString();
+                if (LblPuntosEtxekoakC != null) LblPuntosEtxekoakC.Text = cNos.ToString();
+                if (LblPuntosKanpokoakG != null) LblPuntosKanpokoakG.Text = gEll.ToString();
+                if (LblPuntosKanpokoakC != null) LblPuntosKanpokoakC.Text = cEll.ToString();
+            });
         }
 
         private (int Nosotros, int Ellos) GetPuntuacionPartidaActual()
         {
             try
             {
-                var t = GetType();
-                var etxG = t.GetField("LblPuntosEtxekoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-                var etxC = t.GetField("LblPuntosEtxekoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-                var kanG = t.GetField("LblPuntosKanpokoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-                var kanC = t.GetField("LblPuntosKanpokoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
-
-                int gNos = ParsePuntuacionMus(etxG?.Text);
-                int cNos = ParsePuntuacionMus(etxC?.Text);
-                int gEll = ParsePuntuacionMus(kanG?.Text);
-                int cEll = ParsePuntuacionMus(kanC?.Text);
+                int gNos = ParsePuntuacionMus(LblPuntosEtxekoakG?.Text);
+                int cNos = ParsePuntuacionMus(LblPuntosEtxekoakC?.Text);
+                int gEll = ParsePuntuacionMus(LblPuntosKanpokoakG?.Text);
+                int cEll = ParsePuntuacionMus(LblPuntosKanpokoakC?.Text);
 
                 int nosotros = Math.Max(0, (gNos * 5) + cNos);
                 int ellos = Math.Max(0, (gEll * 5) + cEll);
