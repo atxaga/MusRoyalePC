@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj": {}
+    "D:\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj": {
+    "D:\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj",
+        "projectUniqueName": "D:\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj",
         "projectName": "MusRoyalePC.Tests",
-        "projectPath": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj",
+        "projectPath": "D:\\MusRoyalePC\\MusRoyalePC.Tests\\MusRoyalePC.Tests.csproj",
         "packagesPath": "C:\\Users\\ik012982i18\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC.Tests\\obj\\",
+        "outputPath": "D:\\MusRoyalePC\\MusRoyalePC.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj": {
-                "projectPath": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj"
+              "D:\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj": {
+                "projectPath": "D:\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj"
               }
             }
           }
@@ -95,14 +95,14 @@
         }
       }
     },
-    "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj": {
+    "D:\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj",
+        "projectUniqueName": "D:\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj",
         "projectName": "MusRoyalePC",
-        "projectPath": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj",
+        "projectPath": "D:\\MusRoyalePC\\MusRoyalePC\\MusRoyalePC.csproj",
         "packagesPath": "C:\\Users\\ik012982i18\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ik012982i18\\Desktop\\musPc\\MusRoyalePC\\MusRoyalePC\\obj\\",
+        "outputPath": "D:\\MusRoyalePC\\MusRoyalePC\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
