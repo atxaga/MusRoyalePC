@@ -120,6 +120,12 @@ namespace MusRoyalePC.Views
             return $"{grandes}.{chicas}";
         }
 
+        private static (int Grandes, int Chicas) SplitPuntuacionMus(int puntos)
+        {
+            if (puntos < 0) puntos = 0;
+            return (puntos / 5, puntos % 5);
+        }
+
         private static int ParsePuntuacionMus(string? text)
         {
             if (string.IsNullOrWhiteSpace(text)) return 0;
@@ -139,13 +145,60 @@ namespace MusRoyalePC.Views
             return 0;
         }
 
+        private void SetMarcador(int puntosNos, int puntosEllos)
+        {
+            puntosNos = Math.Max(0, puntosNos);
+            puntosEllos = Math.Max(0, puntosEllos);
+
+            var (gNos, cNos) = SplitPuntuacionMus(puntosNos);
+            var (gEll, cEll) = SplitPuntuacionMus(puntosEllos);
+
+            try
+            {
+                var t = GetType();
+
+                var etxG = t.GetField("LblPuntosEtxekoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                var etxC = t.GetField("LblPuntosEtxekoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                var kanG = t.GetField("LblPuntosKanpokoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                var kanC = t.GetField("LblPuntosKanpokoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+
+                if (etxG != null && etxC != null && kanG != null && kanC != null)
+                {
+                    etxG.Text = gNos.ToString();
+                    etxC.Text = cNos.ToString();
+                    kanG.Text = gEll.ToString();
+                    kanC.Text = cEll.ToString();
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
         private (int Nosotros, int Ellos) GetPuntuacionPartidaActual()
         {
-            // Preferimos leer de los labels visibles (fuente de verdad actual en esta vista)
-            // Los labels pueden contener enteros ("16") o formato mus ("3.1").
-            int nosotros = ParsePuntuacionMus(LblPuntosEtxekoak?.Text);
-            int ellos = ParsePuntuacionMus(LblPuntosKanpokoak?.Text);
-            return (nosotros, ellos);
+            try
+            {
+                var t = GetType();
+                var etxG = t.GetField("LblPuntosEtxekoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                var etxC = t.GetField("LblPuntosEtxekoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                var kanG = t.GetField("LblPuntosKanpokoakG", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                var kanC = t.GetField("LblPuntosKanpokoakC", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+
+                int gNos = ParsePuntuacionMus(etxG?.Text);
+                int cNos = ParsePuntuacionMus(etxC?.Text);
+                int gEll = ParsePuntuacionMus(kanG?.Text);
+                int cEll = ParsePuntuacionMus(kanC?.Text);
+
+                int nosotros = Math.Max(0, (gNos * 5) + cNos);
+                int ellos = Math.Max(0, (gEll * 5) + cEll);
+                return (nosotros, ellos);
+            }
+            catch
+            {
+                return (0, 0);
+            }
         }
 
         private async Task MostrarLaburpenaPopupAsync()
@@ -642,9 +695,7 @@ namespace MusRoyalePC.Views
                 int totalNos = (e1i * 5) + e2i;
                 int totalEllos = (z1i * 5) + z2i;
 
-                // Mostrar en formato mus (grandes.chicas)
-                LblPuntosEtxekoak.Text = FormatPuntuacionMus(totalNos);
-                LblPuntosKanpokoak.Text = FormatPuntuacionMus(totalEllos);
+                SetMarcador(totalNos, totalEllos);
             });
         }
 
@@ -654,19 +705,14 @@ namespace MusRoyalePC.Views
             {
                 bool sonMios = (idTaldeaGanador == _netService.MiIdTaldea);
 
-                TextBlock marcadorDestino = sonMios ? LblPuntosEtxekoak : LblPuntosKanpokoak;
+                var (nos, ellos) = GetPuntuacionPartidaActual();
+                if (sonMios) nos += puntosNuevos; else ellos += puntosNuevos;
 
-                int puntosActuales = ParsePuntuacionMus(marcadorDestino.Text);
-                int total = puntosActuales + puntosNuevos;
+                SetMarcador(nos, ellos);
 
-                // Mostrar en formato mus (grandes.chicas)
-                marcadorDestino.Text = FormatPuntuacionMus(total);
-
-                int totalNos = ParsePuntuacionMus(LblPuntosEtxekoak.Text);
-                int totalEllos = ParsePuntuacionMus(LblPuntosKanpokoak.Text);
-                if (totalNos >= 40 || totalEllos >= 40)
+                if (nos >= 40 || ellos >= 40)
                 {
-                    string ganador = totalNos >= 40 ? "Etxekoak" : "Kanpokoak";
+                    string ganador = nos >= 40 ? "Etxekoak" : "Kanpokoak";
                     MostrarEndGame($"Partida amaituta! Irabazlea: {ganador}.");
                 }
             });
