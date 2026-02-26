@@ -67,7 +67,7 @@
         BorderBrush="#C79A58" BorderThickness="1" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
 
-                <TextBlock Text="Etxekoak" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock x:Name="LblEquipoNos" Text="Etxekoak" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
 
                 <!-- NUEVO: marcador con 2 huecos (grandes + chicas) -->
                 <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" MinWidth="70">
@@ -113,7 +113,7 @@
                     </StackPanel>
                 </Border>
 
-                <TextBlock Text="Kanpokoak" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock x:Name="LblEquipoEllos" Text="Kanpokoak" FontWeight="Bold" VerticalAlignment="Center"/>
 
             </StackPanel>
         </Border>

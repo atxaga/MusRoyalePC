@@ -58,12 +58,13 @@ namespace MusRoyalePC.Views
         // LABURPENA
         private readonly List<(string Item, int Total, int Talde)> _laburpenaBuffer = new();
 
-        // NUEVO: totales de puntuación en partida (para los dos equipos)
+        // Totales partida (nosotros/ellos)
         private int _totalNos;
         private int _totalEllos;
 
-        // NUEVO: indica si hay una apuesta/envido activo pendiente de aceptar
         private bool _hayEnvidoPendiente;
+
+        private const int PuntosVictoria = 40;
 
         public PartidaView(MusClientService servicioConectado)
         {
@@ -85,6 +86,30 @@ namespace MusRoyalePC.Views
             // Estado inicial
             SetQuieroVisible(false);
             ResetTotalesPartida();
+            ActualizarNombresEquipos();
+        }
+
+        private void ActualizarNombresEquipos()
+        {
+            int miTalde = _netService?.MiIdTaldea ?? 1;
+            bool soyEtxekoak = miTalde == 1;
+
+            Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    var t = GetType();
+                    var lblNos = t.GetField("LblEquipoNos", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                    var lblEll = t.GetField("LblEquipoEllos", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+
+                    if (lblNos != null) lblNos.Text = soyEtxekoak ? "Etxekoak" : "Kanpokoak";
+                    if (lblEll != null) lblEll.Text = soyEtxekoak ? "Kanpokoak" : "Etxekoak";
+                }
+                catch
+                {
+                    // ignore
+                }
+            });
         }
 
         private static bool EsAmaieraRondaRaw(string? rondaRaw)
@@ -122,6 +147,40 @@ namespace MusRoyalePC.Views
             });
         }
 
+        private void ResetTotalesPartida()
+        {
+            _totalNos = 0;
+            _totalEllos = 0;
+            SetMarcador(_totalNos, _totalEllos);
+        }
+
+        private void AplicarResumenRondaATotalesPartida()
+        {
+            int miTalde = _netService?.MiIdTaldea ?? 1;
+
+            foreach (var l in _laburpenaBuffer)
+            {
+                if (l.Total < 0) continue;
+                if (l.Talde == miTalde) _totalNos += l.Total;
+                else _totalEllos += l.Total;
+            }
+
+            SetMarcador(_totalNos, _totalEllos);
+            ComprobarFinPartida();
+        }
+
+        private void ComprobarFinPartida()
+        {
+            if (_totalNos < PuntosVictoria && _totalEllos < PuntosVictoria)
+                return;
+
+            bool heGanado = _totalNos >= PuntosVictoria && _totalNos >= _totalEllos;
+            if (_totalEllos >= PuntosVictoria && _totalEllos > _totalNos)
+                heGanado = false;
+
+            MostrarEndGame(heGanado ? "Partida amaituta! IRABAZI DUZU." : "Partida amaituta! GALDU DUZU.");
+        }
+
         private void AddLaburpenaLine(string item, int total, int talde)
             => _laburpenaBuffer.Add((item, total, talde));
 
@@ -144,7 +203,6 @@ namespace MusRoyalePC.Views
             if (string.IsNullOrWhiteSpace(text)) return 0;
             text = text.Trim();
 
-            // Acepta "3.1" o "16" (fallback)
             if (text.Contains('.'))
             {
                 var parts = text.Split('.', StringSplitOptions.TrimEntries);
@@ -222,7 +280,9 @@ namespace MusRoyalePC.Views
             // Total de la ronda: usar el último totala recibido (según tu formato LABURPENA)
             int totalRonda = lines.Count > 0 ? lines[^1].Total : 0;
 
-            var (pNos, pEll) = GetPuntuacionPartidaActual();
+            // Usamos los totales internos (ya actualizados al final de ronda)
+            int pNos = _totalNos;
+            int pEll = _totalEllos;
 
             Dispatcher.Invoke(() =>
             {
@@ -414,11 +474,7 @@ namespace MusRoyalePC.Views
                         string jokua = parts[0];
                         int totala = int.TryParse(parts[1], out var t) ? t : 0;
                         int talde = int.TryParse(parts[2], out var tal) ? tal : 0;
-
                         AddLaburpenaLine(jokua, totala, talde);
-
-                        // NUEVO: ir sumando el total de la partida en el marcador principal
-                        AddPuntosTotalesDesdeLaburpena(jokua, totala, talde);
                     }
                 }
                 catch
@@ -437,6 +493,7 @@ namespace MusRoyalePC.Views
                 // Asegurar que el popup sale cuando el server mande RONDA:AMAIERA
                 if (EsAmaieraRondaRaw(_ultimaRondaRaw) && _laburpenaBuffer.Count > 0)
                 {
+                    AplicarResumenRondaATotalesPartida();
                     await MostrarLaburpenaPopupAsync();
                 }
 
@@ -527,7 +584,7 @@ namespace MusRoyalePC.Views
                 Dispatcher.Invoke(() =>
                 {
                     LblInfoRonda.FontSize = RondaFontSizeNormal;
-                    LblInfoRonda.Text = NormalizeFaseEuskera(msg);
+                    LblInfoRonda.Text = msg; // tal cual
                 });
 
                 await Task.Delay(RoundSummaryDelay);
@@ -537,9 +594,8 @@ namespace MusRoyalePC.Views
 
             if (msg.StartsWith("PUNTOS|"))
             {
-                string[] partes = msg.Split('|');
-                if (partes.Length == 5)
-                    ActualizarMarcadorSimple(partes[1], partes[2], partes[3], partes[4]);
+                // ignoramos: el marcador se controla por LABURPENA
+                return;
             }
             else if (msg.StartsWith("ACCION:", StringComparison.Ordinal))
             {
@@ -584,7 +640,6 @@ namespace MusRoyalePC.Views
                     mensaje = apuesta == 2 ? "ENVIDO 2" : $"{apuesta} GEHIAGO";
                 }
 
-                // Si alguien ha apostado/envidado, marcamos que hay un QUIERO posible.
                 if (EsApuestaEnvido(mensaje))
                     _hayEnvidoPendiente = true;
 
@@ -706,37 +761,13 @@ namespace MusRoyalePC.Views
 
         private void ActualizarMarcadorSimple(string e1, string e2, string z1, string z2)
         {
-            Dispatcher.Invoke(() =>
-            {
-                int e1i = int.TryParse(e1, out var v1) ? v1 : 0;
-                int e2i = int.TryParse(e2, out var v2) ? v2 : 0;
-                int z1i = int.TryParse(z1, out var w1) ? w1 : 0;
-                int z2i = int.TryParse(z2, out var w2) ? w2 : 0;
-
-                int totalNos = (e1i * 5) + e2i;
-                int totalEllos = (z1i * 5) + z2i;
-
-                SetMarcador(totalNos, totalEllos);
-            });
+            // ignorado: marcador oficial por LABURPENA
         }
 
         private void AlRecibirPuntos(int idTaldeaGanador, int puntosNuevos)
         {
-            Dispatcher.Invoke(() =>
-            {
-                bool sonMios = (idTaldeaGanador == _netService.MiIdTaldea);
-
-                var (nos, ellos) = GetPuntuacionPartidaActual();
-                if (sonMios) nos += puntosNuevos; else ellos += puntosNuevos;
-
-                SetMarcador(nos, ellos);
-
-                if (nos >= 40 || ellos >= 40)
-                {
-                    string ganador = nos >= 40 ? "Etxekoak" : "Kanpokoak";
-                    MostrarEndGame($"Partida amaituta! Irabazlea: {ganador}.");
-                }
-            });
+            // ignorado: marcador oficial por LABURPENA
+            Dispatcher.Invoke(ComprobarFinPartida);
         }
 
         private void MostrarEndGame(string texto)
@@ -1155,7 +1186,25 @@ namespace MusRoyalePC.Views
 
             LblTurnoJugador.Text = string.IsNullOrWhiteSpace(nombre) ? "-" : nombre;
 
-            // Ya no mostramos segundos restantes.
+            try
+            {
+                var t = GetType();
+                var lblTiempo = t.GetField("LblTurnoTiempo", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(this) as TextBlock;
+                if (lblTiempo == null) return;
+
+                if (secondsRemaining is null)
+                {
+                    lblTiempo.Text = string.Empty;
+                }
+                else
+                {
+                    lblTiempo.Text = $"{secondsRemaining}s";
+                }
+            }
+            catch
+            {
+                // ignore
+            }
         }
 
         private static bool FaseConApuesta(string fase)
@@ -1282,52 +1331,13 @@ namespace MusRoyalePC.Views
             _statsTargetUserId = null;
         }
 
-        private static string NormalizeFaseEuskera(string fase)
-        {
-            if (string.IsNullOrWhiteSpace(fase)) return "DESKARTEAK";
-
-            string f = fase.Trim().ToUpperInvariant();
-
-            return f switch
-            {
-                "GRANDES" or "GRANDIAK" => "GRANDIAK",
-                "PEQUEÑAS" or "PEQUENAS" or "TXIKIAK" => "TXIKIAK",
-                "PARES" or "PAREAK" => "PAREAK",
-                "JUEGO" or "JOKUA" => "JOKUA",
-                "PUNTO" or "PUNTUA" => "PUNTUA",
-                "TURN" or "TURNO" or "TXANDA" => "TXANDA",
-                "ALL_MUS" or "MUS" or "DESKARTEAK" => "DESKARTEAK",
-                _ => f
-            };
-        }
-
-        // Handler de prueba (referenciado en XAML). Mantener por compatibilidad.
         private void TestResumen_Click(object sender, RoutedEventArgs e)
         {
             // Mostrar un ejemplo rápido de LABURPENA para validar el overlay.
             AddLaburpenaLine("GRANDIAK", 2, _netService?.MiIdTaldea ?? 1);
             AddLaburpenaLine("PAREAK", 3, (_netService?.MiIdTaldea ?? 1) == 1 ? 2 : 1);
+            AplicarResumenRondaATotalesPartida();
             _ = MostrarLaburpenaPopupAsync();
-        }
-
-        private void ResetTotalesPartida()
-        {
-            _totalNos = 0;
-            _totalEllos = 0;
-            SetMarcador(_totalNos, _totalEllos);
-        }
-
-        private void AddPuntosTotalesDesdeLaburpena(string item, int puntos, int talde)
-        {
-            // LABURPENA viene con el taldea que recibe los puntos.
-            if (puntos < 0) puntos = 0;
-
-            if (talde == (_netService?.MiIdTaldea ?? -1))
-                _totalNos += puntos;
-            else
-                _totalEllos += puntos;
-
-            SetMarcador(_totalNos, _totalEllos);
         }
 
         private static bool EsApuestaEnvido(string? mensaje)
