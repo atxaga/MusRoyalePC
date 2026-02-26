@@ -1,4 +1,6 @@
 [Bb]in/
 [Ob]j/
+*.json
+# OR specifically:
 MusRoyalePC/musroyale-488aa-267ecdd8a92b.json
 .vs/
