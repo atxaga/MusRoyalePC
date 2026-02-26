@@ -9,11 +9,6 @@
       "Castle.Core/5.1.1": {
         "dependencies": {
           "System.Diagnostics.EventLog": "6.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/Castle.Core.dll": {
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.1.1.0"
           }
         }
       },
@@ -21,10 +16,6 @@
         "dependencies": {
           "Google.Protobuf": "3.31.1"
         },
-        "runtime": {
-          "lib/netstandard2.0/Google.Api.CommonProtos.dll": {
-            "assemblyVersion": "2.17.0.0",
-            "fileVersion": "2.17.0.0"
           }
         }
       },
