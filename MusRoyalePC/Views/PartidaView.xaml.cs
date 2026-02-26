@@ -58,6 +58,10 @@ namespace MusRoyalePC.Views
         // LABURPENA
         private readonly List<(string Item, int Total, int Talde)> _laburpenaBuffer = new();
 
+        // NUEVO: totales de puntuación en partida (para los dos equipos)
+        private int _totalNos;
+        private int _totalEllos;
+
         public PartidaView(MusClientService servicioConectado)
         {
             InitializeComponent();
@@ -74,6 +78,10 @@ namespace MusRoyalePC.Views
 
             LblInfoRonda.Text = "DESKARTEAK";
             LblInfoRonda.FontSize = RondaFontSizeNormal;
+
+            // Estado inicial
+            SetQuieroVisible(false);
+            ResetTotalesPartida();
         }
 
         private static bool EsAmaieraRondaRaw(string? rondaRaw)
@@ -87,6 +95,7 @@ namespace MusRoyalePC.Views
                 if (TurnInfoPanel != null)
                     TurnInfoPanel.Visibility = Visibility.Collapsed;
 
+                // Mostrar tal cual lo manda el servidor
                 LblInfoRonda.Text = texto;
                 LblInfoRonda.FontSize = RondaFontSizeGrande;
             });
@@ -104,6 +113,7 @@ namespace MusRoyalePC.Views
 
             Dispatcher.Invoke(() =>
             {
+                // Mostrar tal cual lo manda el servidor
                 LblInfoRonda.Text = textoNormal;
                 LblInfoRonda.FontSize = RondaFontSizeNormal;
             });
@@ -401,7 +411,11 @@ namespace MusRoyalePC.Views
                         string jokua = parts[0];
                         int totala = int.TryParse(parts[1], out var t) ? t : 0;
                         int talde = int.TryParse(parts[2], out var tal) ? tal : 0;
+
                         AddLaburpenaLine(jokua, totala, talde);
+
+                        // NUEVO: ir sumando el total de la partida en el marcador principal
+                        AddPuntosTotalesDesdeLaburpena(jokua, totala, talde);
                     }
                 }
                 catch
@@ -883,7 +897,9 @@ namespace MusRoyalePC.Views
                 OcultarTodosLosBotones();
 
                 BtnPaso.Visibility = Visibility.Visible;
-                BtnQuiero.Visibility = FaseConApuesta(fase) ? Visibility.Visible : Visibility.Collapsed;
+
+                // QUIERO: por defecto invisible, solo se habilita si hay apuesta/envido.
+                BtnQuiero.Visibility = Visibility.Collapsed;
 
                 BtnEnvido.Visibility = Visibility.Visible;
                 BtnMas.Visibility = Visibility.Visible;
@@ -907,6 +923,19 @@ namespace MusRoyalePC.Views
         private void ResolverApuesta(string comando)
         {
             StopTurnCountdown();
+
+            // Si el usuario ha lanzado un envido, a partir de ahí QUIERO debe estar visible
+            // (porque ya hay apuesta activa).
+            if (!string.IsNullOrWhiteSpace(comando))
+            {
+                bool esEnvido = comando.Equals("2", StringComparison.OrdinalIgnoreCase)
+                                || comando.Equals("5", StringComparison.OrdinalIgnoreCase)
+                                || comando.Equals("ordago", StringComparison.OrdinalIgnoreCase)
+                                || comando.Contains("envido", StringComparison.OrdinalIgnoreCase);
+
+                if (esEnvido)
+                    SetQuieroVisible(true);
+            }
 
             if (_decisionTaskSource != null && !_decisionTaskSource.Task.IsCompleted)
             {
@@ -1271,6 +1300,35 @@ namespace MusRoyalePC.Views
             AddLaburpenaLine("GRANDIAK", 2, _netService?.MiIdTaldea ?? 1);
             AddLaburpenaLine("PAREAK", 3, (_netService?.MiIdTaldea ?? 1) == 1 ? 2 : 1);
             _ = MostrarLaburpenaPopupAsync();
+        }
+
+        private void ResetTotalesPartida()
+        {
+            _totalNos = 0;
+            _totalEllos = 0;
+            SetMarcador(_totalNos, _totalEllos);
+        }
+
+        private void AddPuntosTotalesDesdeLaburpena(string item, int puntos, int talde)
+        {
+            // LABURPENA viene con el taldea que recibe los puntos.
+            if (puntos < 0) puntos = 0;
+
+            if (talde == (_netService?.MiIdTaldea ?? -1))
+                _totalNos += puntos;
+            else
+                _totalEllos += puntos;
+
+            SetMarcador(_totalNos, _totalEllos);
+        }
+
+        private void SetQuieroVisible(bool visible)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (BtnQuiero != null)
+                    BtnQuiero.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            });
         }
     }
 }

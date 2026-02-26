@@ -112,17 +112,17 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             Margin="0"
-                            Padding="28,18"
-                            CornerRadius="18"
+                            Padding="18,10"
+                            CornerRadius="14"
                             Background="#E6000000"
                             BorderBrush="#FFFFD700"
                             BorderThickness="2"
                             Visibility="Collapsed">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="TXANDA: " Foreground="#FFFFD700" FontWeight="Black" FontSize="26"/>
-                            <TextBlock x:Name="LblTurnoJugador" Text="-" Foreground="#FF00E5FF" FontWeight="ExtraBold" FontSize="26"/>
-                            <TextBlock Text="   ·   " Foreground="#CCFFFFFF" FontSize="24"/>
-                            <TextBlock x:Name="LblTurnoTiempo" Text="-" Foreground="White" FontWeight="Bold" FontSize="24"/>
+                            <TextBlock Text="TXANDA: " Foreground="#FFFFD700" FontWeight="Black" FontSize="18"/>
+                            <TextBlock x:Name="LblTurnoJugador" Text="-" Foreground="#FF00E5FF" FontWeight="ExtraBold" FontSize="18"/>
+                            <TextBlock Text="   ·   " Foreground="#CCFFFFFF" FontSize="16"/>
+                            <TextBlock x:Name="LblTurnoTiempo" Text="-" Foreground="White" FontWeight="Bold" FontSize="16"/>
                         </StackPanel>
                     </Border>
 
