@@ -61,7 +61,7 @@ namespace MusRoyalePC.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/MusRoyalePC;component/views/pribatuaview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/MusRoyalePC;V1.0.0.0;component/views/pribatuaview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\PribatuaView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

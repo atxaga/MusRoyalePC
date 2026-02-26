@@ -186,6 +186,7 @@ namespace MusRoyalePC
                 case "Lagunak": CurrentView = new LagunakView(); break;
                 case "Perfila": CurrentView = new PerfilaView(); break;
                 case "Chat": CurrentView = new ChatView(); break;
+                case "Denda": CurrentView = new DendaView(); break;
                 case "Register": CurrentView = new RegisterView(); break;
                 case "Login": CurrentView = new LoginView(); break;
                 case "PartidaAzkarra": CurrentView = new PartidaAzkarraView(); break;

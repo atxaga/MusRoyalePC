@@ -1,0 +1,92 @@
+<UserControl x:Class="MusRoyalePC.Views.DendaView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:MusRoyalePC.Views"
+             xmlns:infra="clr-namespace:MusRoyalePC.Infrastructure"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <infra:AvatarFileToPackUriConverter x:Key="AvatarFileToPackUri"/>
+
+        <Style x:Key="RoundedButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="#AA000000" CornerRadius="14" Padding="16" Margin="0,0,0,12">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="DENDA" Foreground="Gold" FontSize="22" FontWeight="Black"/>
+                    <TextBlock Text="Avatarrak erosi eta hautatu" Foreground="#CCFFFFFF"/>
+                </StackPanel>
+
+                <Border DockPanel.Dock="Right" Background="#33222222" CornerRadius="20" Padding="10,6" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="??" Margin="0,0,6,0"/>
+                        <TextBlock Text="{Binding Oro}" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="190" Height="230" Margin="8" CornerRadius="16" Background="#2C3E50" BorderBrush="#445566" BorderThickness="1">
+                            <Grid Margin="12">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontWeight="Bold" FontSize="14" TextAlignment="Center"/>
+
+                                <Border Grid.Row="1" CornerRadius="16" Background="#112233" Margin="0,10,0,10">
+                                    <Image Source="{Binding File, Converter={StaticResource AvatarFileToPackUri}}" Stretch="Uniform"/>
+                                </Border>
+
+                                <Button Grid.Row="2"
+                                        Content="{Binding ActionLabel}"
+                                        Click="AvatarAction_Click"
+                                        Background="#3498DB"
+                                        Style="{StaticResource RoundedButton}"
+                                        Tag="{Binding}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

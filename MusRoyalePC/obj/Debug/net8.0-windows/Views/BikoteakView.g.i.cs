@@ -61,7 +61,7 @@ namespace MusRoyalePC.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/MusRoyalePC;component/views/bikoteakview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/MusRoyalePC;V1.0.0.0;component/views/bikoteakview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\BikoteakView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

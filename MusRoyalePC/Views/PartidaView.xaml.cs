@@ -6,12 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Cloud.Firestore;
-using System.Windows.Shapes;
 
 namespace MusRoyalePC.Views
 {
@@ -36,10 +37,7 @@ namespace MusRoyalePC.Views
 
         private UiSeat? _countdownSeat;
 
-        // NUEVO: delay entre turnos (según pedido)
         private static readonly TimeSpan TurnStartDelay = TimeSpan.Zero;
-
-        // Cooldown entre fases/ronda (solo cuando llega LABURPENA de JUEGO/PUNTO)
         private static readonly TimeSpan RoundSummaryDelay = TimeSpan.FromSeconds(5);
 
         private bool _abandonSent;
@@ -48,7 +46,6 @@ namespace MusRoyalePC.Views
 
         private string? _statsTargetUserId;
 
-        // Puntos globales (como Android) para controlar fin de partida por 40
         private int _puntosEquipo1;
         private int _puntosEquipo2;
 
@@ -65,14 +62,149 @@ namespace MusRoyalePC.Views
             _netService.OnMiTurno += ActivarControles;
             _netService.OnComandoRecibido += ProcesarMensajeServer;
             _netService.OnPuntosRecibidos += AlRecibirPuntos;
-
-            // CLAVE: sin esto nunca llegan los asientos a la UI
             _netService.OnAsientosCalculados += PintarAsientosAsync;
 
             LblNombreYo.Text = "(Tú)";
 
-            // Por defecto
             LblInfoRonda.Text = "DESKARTEAK";
+            LblInfoRonda.FontSize = RondaFontSizeNormal;
+        }
+
+        private static bool EsAmaieraRondaRaw(string? rondaRaw)
+            => string.Equals(rondaRaw?.Trim(), "AMAIERA", StringComparison.OrdinalIgnoreCase);
+
+        private void MostrarRondaGrandeDesdeServer(string texto)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // cuando llega la ronda, ocultar la info de txanda/turno
+                if (TurnInfoPanel != null)
+                    TurnInfoPanel.Visibility = Visibility.Collapsed;
+
+                LblInfoRonda.Text = texto;
+                LblInfoRonda.FontSize = RondaFontSizeGrande;
+            });
+        }
+
+        private void RestaurarRondaNormalSiHaceFalta()
+        {
+            if (!_rondaGrandePendiente)
+                return;
+
+            _rondaGrandePendiente = false;
+
+            // literal, sin normalizar
+            string textoNormal = string.IsNullOrWhiteSpace(_ultimaRondaRaw) ? "DESKARTEAK" : _ultimaRondaRaw;
+
+            Dispatcher.Invoke(() =>
+            {
+                LblInfoRonda.Text = textoNormal;
+                LblInfoRonda.FontSize = RondaFontSizeNormal;
+            });
+        }
+
+        private void AddLaburpenaLine(string item, int total, int talde)
+            => _laburpenaBuffer.Add((item, total, talde));
+
+        private static string FormatPuntuacionMus(int puntos)
+        {
+            if (puntos < 0) puntos = 0;
+            int grandes = puntos / 5;
+            int chicas = puntos % 5;
+            return $"{grandes}.{chicas}";
+        }
+
+        private static int ParsePuntuacionMus(string? text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return 0;
+            text = text.Trim();
+
+            // Acepta "3.1" o "16" (fallback)
+            if (text.Contains('.'))
+            {
+                var parts = text.Split('.', StringSplitOptions.TrimEntries);
+                if (parts.Length == 2 && int.TryParse(parts[0], out int g) && int.TryParse(parts[1], out int c))
+                    return Math.Max(0, (g * 5) + c);
+            }
+
+            if (int.TryParse(text, out int raw))
+                return Math.Max(0, raw);
+
+            return 0;
+        }
+
+        private (int Nosotros, int Ellos) GetPuntuacionPartidaActual()
+        {
+            // Preferimos leer de los labels visibles (fuente de verdad actual en esta vista)
+            int nosotros = ParsePuntuacionMus(LblPuntosEtxekoak?.Text);
+            int ellos = ParsePuntuacionMus(LblPuntosKanpokoak?.Text);
+            return (nosotros, ellos);
+        }
+
+        private async Task MostrarLaburpenaPopupAsync()
+        {
+            int miTalde = _netService?.MiIdTaldea ?? 0;
+            var lines = _laburpenaBuffer.ToList();
+
+            // Total de la ronda: usar el último totala recibido (según tu formato LABURPENA)
+            int totalRonda = lines.Count > 0 ? lines[^1].Total : 0;
+
+            var (pNos, pEll) = GetPuntuacionPartidaActual();
+
+            Dispatcher.Invoke(() =>
+            {
+                // Arriba: total de la ronda (en grande)
+                if (TxtLaburpenaTotala != null)
+                {
+                    TxtLaburpenaTotala.Text = $"TOTAL RONDA: {totalRonda}";
+                    TxtLaburpenaTotala.Foreground = Brushes.White;
+                }
+
+                if (TxtLaburpenaItems != null)
+                {
+                    TxtLaburpenaItems.Inlines.Clear();
+
+                    // Cada línea: NOMBRE_RONDA  +X (verde si es nuestro talde, rojo si otro)
+                    for (int i = 0; i < lines.Count; i++)
+                    {
+                        var l = lines[i];
+                        bool esMio = l.Talde == miTalde;
+                        Brush brush = esMio ? Brushes.LightGreen : Brushes.IndianRed;
+
+                        TxtLaburpenaItems.Inlines.Add(new Run(l.Item) { Foreground = Brushes.White });
+                        TxtLaburpenaItems.Inlines.Add(new Run("  ") { Foreground = Brushes.White });
+                        TxtLaburpenaItems.Inlines.Add(new Run($"+{l.Total}") { Foreground = brush, FontWeight = FontWeights.Black });
+
+                        if (i < lines.Count - 1)
+                            TxtLaburpenaItems.Inlines.Add(new LineBreak());
+                    }
+
+                    // Abajo: total de la partida en formato mus (grandes.chicas - grandes.chicas)
+                    TxtLaburpenaItems.Inlines.Add(new LineBreak());
+                    TxtLaburpenaItems.Inlines.Add(new LineBreak());
+
+                    string txtNos = FormatPuntuacionMus(pNos);
+                    string txtEll = FormatPuntuacionMus(pEll);
+
+                    TxtLaburpenaItems.Inlines.Add(new Run("PARTIDA: ") { Foreground = Brushes.White, FontWeight = FontWeights.Bold });
+                    TxtLaburpenaItems.Inlines.Add(new Run(txtNos) { Foreground = Brushes.LightGreen, FontWeight = FontWeights.Black });
+                    TxtLaburpenaItems.Inlines.Add(new Run("  -  ") { Foreground = Brushes.White, FontWeight = FontWeights.Bold });
+                    TxtLaburpenaItems.Inlines.Add(new Run(txtEll) { Foreground = Brushes.IndianRed, FontWeight = FontWeights.Black });
+                }
+
+                if (OverlayLaburpena != null)
+                    OverlayLaburpena.Visibility = Visibility.Visible;
+            });
+
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            Dispatcher.Invoke(() =>
+            {
+                if (OverlayLaburpena != null)
+                    OverlayLaburpena.Visibility = Visibility.Collapsed;
+            });
+
+            _laburpenaBuffer.Clear();
         }
 
         private enum UiSeat
@@ -132,13 +264,11 @@ namespace MusRoyalePC.Views
             }
         }
 
-        private void ApplyAvatarToEllipse(System.Windows.Shapes.Ellipse ellipse, string? avatarFile)
+        private void ApplyAvatarToEllipse(Ellipse ellipse, string? avatarFile)
         {
             try
             {
                 string file = string.IsNullOrWhiteSpace(avatarFile) ? "avadef.png" : avatarFile;
-
-                // Los assets en tu app se usan como pack URI: pack://application:,,,/Assets/{file}
                 var uri = new Uri($"pack://application:,,,/Assets/{file}", UriKind.Absolute);
                 var img = new BitmapImage(uri);
 
@@ -146,7 +276,7 @@ namespace MusRoyalePC.Views
             }
             catch
             {
-                // fallback: mantener el fill actual
+                // ignore
             }
         }
 
@@ -190,18 +320,8 @@ namespace MusRoyalePC.Views
             }
         }
 
-
-        private string EtiquetarEquipo(AsientosPartida a, InfoJugadorPartida j, string username)
-        {
-            // Si prefieres sin tags, quita esto.
-            string tag = a.EsMiEquipo(j) ? "" : "";
-            return string.IsNullOrWhiteSpace(tag) ? username : $"{username} {tag}";
-        }
-
-        // --- 1. LÓGICA DE MENSAJES DEL SERVIDOR ---
         private async void ProcesarMensajeServer(string msg)
         {
-            // NUEVO: fin de partida por abandono
             if (string.Equals(msg?.Trim(), "END_GAME", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(msg?.Trim(), "ENDGAME", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(msg?.Trim(), "end_game", StringComparison.OrdinalIgnoreCase))
@@ -210,18 +330,42 @@ namespace MusRoyalePC.Views
                 return;
             }
 
-            // Marcador superior: mostrar fase/ronda
-            if (msg.StartsWith("RONDA:", StringComparison.Ordinal))
+            if (msg.StartsWith("LABURPENA:", StringComparison.Ordinal))
             {
-                Dispatcher.Invoke(() =>
+                try
                 {
-                    var fase = msg.Substring("RONDA:".Length).Trim();
-                    LblInfoRonda.Text = fase;
-                });
+                    string payload = msg.Substring("LABURPENA:".Length).Trim();
+                    var parts = payload.Split(',', StringSplitOptions.TrimEntries);
+                    if (parts.Length >= 3)
+                    {
+                        string jokua = parts[0];
+                        int totala = int.TryParse(parts[1], out var t) ? t : 0;
+                        int talde = int.TryParse(parts[2], out var tal) ? tal : 0;
+                        AddLaburpenaLine(jokua, totala, talde);
+                    }
+                }
+                catch
+                {
+                    // ignore
+                }
                 return;
             }
 
-            // ERABAKIA enviada como: "ERABAKIA|uid;serverId;mensaje"
+            if (msg.StartsWith("RONDA:", StringComparison.Ordinal))
+            {
+                _ultimaRondaRaw = msg.Substring("RONDA:".Length).Trim();
+                _rondaGrandePendiente = true;
+                MostrarRondaGrandeDesdeServer(_ultimaRondaRaw);
+
+                // Asegurar que el popup sale cuando el server mande RONDA:AMAIERA
+                if (EsAmaieraRondaRaw(_ultimaRondaRaw) && _laburpenaBuffer.Count > 0)
+                {
+                    await MostrarLaburpenaPopupAsync();
+                }
+
+                return;
+            }
+
             if (msg.StartsWith("ERABAKIA|", StringComparison.Ordinal))
             {
                 var payload = msg.Substring("ERABAKIA|".Length);
@@ -230,37 +374,33 @@ namespace MusRoyalePC.Views
                 return;
             }
 
-            if (msg.StartsWith("TURN;", StringComparison.Ordinal))
+            if (msg.StartsWith("TURN;", StringComparison.Ordinal) || msg.StartsWith("TURN:", StringComparison.Ordinal))
             {
-                // Formato real observado: TURN;{firebaseId};{serverSeat}
+                RestaurarRondaNormalSiHaceFalta();
+
                 try
                 {
-                    var parts = msg.Split(';');
+                    char sep = msg.Contains(';') ? ';' : ':';
+                    var parts = msg.Split(sep);
                     string firebaseId = parts.Length >= 2 ? parts[1].Trim() : string.Empty;
                     int? serverSeat = null;
                     if (parts.Length >= 3 && int.TryParse(parts[2].Trim(), out int seatVal))
                         serverSeat = seatVal;
 
-                    // Preferimos serverSeat (0..3)
                     if (serverSeat.HasValue && _seatToUi.TryGetValue(serverSeat.Value, out var uiSeatBySeat))
                     {
-                        Debug.WriteLine($"[PartidaView] TURN seat={serverSeat.Value} -> ui={uiSeatBySeat}");
                         StartTurnCountdown(uiSeatBySeat);
                         return;
                     }
 
-                    // Fallback por firebaseId
                     if (!string.IsNullOrWhiteSpace(firebaseId) && _firebaseToUiSeat.TryGetValue(firebaseId, out var uiSeatByFirebase))
                     {
-                        Debug.WriteLine($"[PartidaView] TURN firebaseId={firebaseId} -> ui={uiSeatByFirebase}");
                         StartTurnCountdown(uiSeatByFirebase);
                         return;
                     }
 
-                    // Último fallback
                     if (!string.IsNullOrWhiteSpace(firebaseId) && firebaseId == _netService.MiIdFirestore)
                     {
-                        Debug.WriteLine($"[PartidaView] TURN para mi por firebaseId (fallback). firebaseId={firebaseId}");
                         StartTurnCountdown(UiSeat.Yo);
                         return;
                     }
@@ -271,13 +411,13 @@ namespace MusRoyalePC.Views
                 {
                     Debug.WriteLine($"[PartidaView] Error parse TURN: {ex.Message}. Raw='{msg}'");
                 }
+
                 return;
             }
 
             if (msg == "TURN")
             {
-                Dispatcher.Invoke(() => LblInfoRonda.Text = "TURNO");
-                StartTurnCountdown(UiSeat.Yo);
+                RestaurarRondaNormalSiHaceFalta();
                 return;
             }
 
@@ -285,6 +425,7 @@ namespace MusRoyalePC.Views
             {
                 Dispatcher.Invoke(() =>
                 {
+                    LblInfoRonda.FontSize = RondaFontSizeNormal;
                     LblInfoRonda.Text = "DESKARTEAK";
 
                     OcultarTodosLosBotones();
@@ -292,28 +433,36 @@ namespace MusRoyalePC.Views
                     {
                         Content = "DESCARTAR",
                         Style = (Style)this.Resources["RoundedButton"],
-                        Background = System.Windows.Media.Brushes.DarkGreen,
+                        Background = Brushes.DarkGreen,
                         Width = 150,
                         Height = 55,
                         FontWeight = FontWeights.Bold,
-                        Foreground = System.Windows.Media.Brushes.White
+                        Foreground = Brushes.White
                     };
                     btnDescarte.Click += (s, e) => EnviarDescarte(btnDescarte);
                     PanelBotones.Children.Add(btnDescarte);
                 });
+                return;
             }
-            else if (msg == "GRANDES" || msg == "PEQUEÑAS" || msg == "PARES" || msg == "JUEGO" || msg == "PUNTO")
+
+            if (msg == "GRANDES" || msg == "PEQUEÑAS" || msg == "PARES" || msg == "JUEGO" || msg == "PUNTO")
             {
-                Dispatcher.Invoke(() => LblInfoRonda.Text = msg);
+                Dispatcher.Invoke(() =>
+                {
+                    LblInfoRonda.FontSize = RondaFontSizeNormal;
+                    LblInfoRonda.Text = NormalizeFaseEuskera(msg);
+                });
+
+                await Task.Delay(RoundSummaryDelay);
                 await ManejarDecisionApuesta(msg);
+                return;
             }
-            else if (msg.StartsWith("PUNTOS|"))
+
+            if (msg.StartsWith("PUNTOS|"))
             {
                 string[] partes = msg.Split('|');
                 if (partes.Length == 5)
-                {
                     ActualizarMarcadorSimple(partes[1], partes[2], partes[3], partes[4]);
-                }
             }
             else if (msg.StartsWith("ACCION:", StringComparison.Ordinal))
             {
@@ -321,10 +470,8 @@ namespace MusRoyalePC.Views
             }
             else
             {
-                // fallback: si te llega algo tipo "uid;serverId;paso" sin encabezado, podríamos detectarlo
                 if (msg.Contains(';'))
                 {
-                    // Intento de parse ERABAKIA embebida
                     var parts = msg.Split(';');
                     if (parts.Length >= 3 && int.TryParse(parts[1].Trim(), out _))
                         ProcesarErabakia(msg);
@@ -342,17 +489,6 @@ namespace MusRoyalePC.Views
                 int serverId = int.TryParse(parts[1].Trim(), out var id) ? id : 0;
                 string mensaje = parts[2].Trim();
 
-                // Si llega una apuesta del server (número u órdago), ya existe envido activo -> habilitar QUIERO.
-                if (mensaje.Equals("ordago", StringComparison.OrdinalIgnoreCase) || int.TryParse(mensaje, out _))
-                {
-                    _hayEnvidoActivo = true;
-                    Dispatcher.Invoke(() =>
-                    {
-                        if (BtnQuiero != null && BtnQuiero.Visibility == Visibility.Visible)
-                            BtnQuiero.IsEnabled = true;
-                    });
-                }
-
                 // Normalización como Android
                 if (mensaje.EndsWith("PARES", StringComparison.OrdinalIgnoreCase))
                 {
@@ -367,15 +503,11 @@ namespace MusRoyalePC.Views
                         : "JOKUA EZ DUT";
                 }
 
-                // NUEVO: normalizar apuestas numéricas
-                // Si el server manda "2" => ENVIDO 2
-                // Si manda un número mayor => "{n} GEHIAGO"
                 if (int.TryParse(mensaje, out int apuesta))
                 {
                     mensaje = apuesta == 2 ? "ENVIDO 2" : $"{apuesta} GEHIAGO";
                 }
 
-                // Si el serverId corresponde a un rival, mostramos su anillo de forma visual (sin auto-comando)
                 if (_seatToUi.TryGetValue(serverId, out var uiSeat) && uiSeat != UiSeat.Yo)
                 {
                     StartTurnCountdown(uiSeat);
@@ -389,31 +521,18 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // --- 2. CONTROL DE TIEMPOS ---
-        // (Implementación única: StartTurnCountdown(UiSeat? seatOverride = null) / StopTurnCountdown()
-        //  con UpdateCountdownRing(Path ring, double fraction))
-
-        // Se ELIMINA el bloque duplicado que existía previamente:
-        //   - private void StartTurnCountdown()
-        //   - private void StopTurnCountdown()
-        //   - llamadas a UpdateCountdownRing(double)
-
-        // (fin control de tiempos)
-
-        // --- 3. LÓGICA DE LA VISTA (CARTAS, BOTONES, ETC.) ---
         private void ActualizarMisCartas(string[] cartas)
         {
             _misCartasActuales = cartas;
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 try
                 {
-                    // Asumiendo que las cartas están en Assets/Cartas/
                     ImgCarta1.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[0]}.png"));
                     ImgCarta2.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[1]}.png"));
                     ImgCarta3.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[2]}.png"));
                     ImgCarta4.Source = new BitmapImage(new Uri($"pack://application:,,,/Assets/Cartas/{cartas[3]}.png"));
 
-                    // Reset de selección
                     _cartasSeleccionadas.Clear();
                     ImgCarta1.Opacity = 1.0; ImgCarta2.Opacity = 1.0;
                     ImgCarta3.Opacity = 1.0; ImgCarta4.Opacity = 1.0;
@@ -451,24 +570,13 @@ namespace MusRoyalePC.Views
         }
 
         // --- HANDLERS RESTAURADOS (XAML los referencia) ---
-        private void BtnQuiero_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_hayEnvidoActivo)
-                return;
-
-            ResolverApuesta("quiero");
-        }
+        private void BtnQuiero_Click(object sender, RoutedEventArgs e) => ResolverApuesta("quiero");
 
         private void BtnApuesta_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag != null)
             {
                 string valor = btn.Tag.ToString();
-
-                // En cuanto apostamos, ya existe envido activo, por lo tanto se puede aceptar con QUIERO.
-                _hayEnvidoActivo = true;
-                if (BtnQuiero != null && BtnQuiero.Visibility == Visibility.Visible)
-                    BtnQuiero.IsEnabled = true;
 
                 // Normalización visual/semántica:
                 // - Tag 2 => enviar "2" pero mostramos "ENVIDO 2" en burbujas (cuando venga del server)
@@ -528,10 +636,8 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // --- ACCIONES / MENSAJES ---
         private void MostrarAccionJugador(string msg)
         {
-            // Formato: "ACCION:<seat>:<texto>"
             try
             {
                 var partes = msg.Split(':', 3);
@@ -548,29 +654,6 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // --- UI PRINCIPAL (restaurado) ---
-        public void ActualizarInterfaz(EstadoJuego estado)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                LblPuntosEtxekoak.Text = estado.PuntosNosotros.ToString();
-                LblPuntosKanpokoak.Text = estado.PuntosEllos.ToString();
-
-                if (!string.IsNullOrEmpty(estado.MensajeCentro))
-                    LblInfoRonda.Text = estado.MensajeCentro.ToUpperInvariant();
-
-                if (estado.FaseActual == "Resumen")
-                {
-                    MostrarResumen(estado);
-                }
-                else
-                {
-                    OverlayResumen.Visibility = Visibility.Collapsed;
-                }
-            });
-        }
-
-        // --- 5. UI HELPERS ---
         private void DesvincularEventos()
         {
             if (_netService != null)
@@ -583,13 +666,10 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // --- 6. RESUMEN Y MARCADOR ---
-
-        // Método antiguo para compatibilidad con strings crudos
-        private void ActualizarMarcadorSimple(String e1, String e2, String z1, String z2)
+        private void ActualizarMarcadorSimple(string e1, string e2, string z1, string z2)
         {
-            Dispatcher.Invoke(() => {
-                // Convertimos las piedras del mensaje antiguo al total
+            Dispatcher.Invoke(() =>
+            {
                 int totalNos = int.Parse(e1) * 5 + int.Parse(e2);
                 int totalEllos = int.Parse(z1) * 5 + int.Parse(z2);
 
@@ -598,62 +678,6 @@ namespace MusRoyalePC.Views
             });
         }
 
-        private void MostrarResumen(EstadoJuego estado)
-        {
-            // 1. Rellenar columna NOSOTROS (Etxekoak)
-            if (estado.PuntosNosotrosDetalle != null)
-            {
-                TxtG_Nos.Text = estado.PuntosNosotrosDetalle.Grandes.ToString();
-                TxtC_Nos.Text = estado.PuntosNosotrosDetalle.Chicas.ToString();
-                TxtP_Nos.Text = estado.PuntosNosotrosDetalle.Pares.ToString();
-                TxtJ_Nos.Text = estado.PuntosNosotrosDetalle.Juego.ToString();
-                TxtPt_Nos.Text = estado.PuntosNosotrosDetalle.Punto.ToString();
-            }
-
-            // 2. Rellenar columna ELLOS (Kanpokoak)
-            if (estado.PuntosEllosDetalle != null)
-            {
-                TxtG_Ellos.Text = estado.PuntosEllosDetalle.Grandes.ToString();
-                TxtC_Ellos.Text = estado.PuntosEllosDetalle.Chicas.ToString();
-                TxtP_Ellos.Text = estado.PuntosEllosDetalle.Pares.ToString();
-                TxtJ_Ellos.Text = estado.PuntosEllosDetalle.Juego.ToString();
-                TxtPt_Ellos.Text = estado.PuntosEllosDetalle.Punto.ToString();
-            }
-
-            // 3. Totales de la ronda
-            TxtTotalNos.Text = estado.TotalRondaNosotros.ToString();
-            TxtTotalEllos.Text = estado.TotalRondaEllos.ToString();
-
-            // 4. Mostrar Overlay
-            OverlayResumen.Visibility = Visibility.Visible;
-        }
-
-        // Evento para cerrar el resumen y seguir jugando
-        private void CerrarResumen_Click(object sender, RoutedEventArgs e)
-        {
-            OverlayResumen.Visibility = Visibility.Collapsed;
-            // Opcional: Avisar al server que estamos listos
-            // _netService.EnviarComando("LISTO_RONDA"); 
-        }
-
-        // Para pruebas rápidas
-        private void TestResumen_Click(object sender, RoutedEventArgs e)
-        {
-            var testState = new EstadoJuego
-            {
-                PuntosNosotros = 15,
-                PuntosEllos = 10,
-                MensajeCentro = "FINAL RONDA",
-                FaseActual = "Resumen",
-                TotalRondaNosotros = 5,
-                TotalRondaEllos = 0,
-                PuntosNosotrosDetalle = new DetallePuntos { Grandes = 2, Chicas = 0, Pares = 3, Juego = 0, Punto = 0 },
-                PuntosEllosDetalle = new DetallePuntos { Grandes = 0, Chicas = 0, Pares = 0, Juego = 0, Punto = 0 }
-            };
-            ActualizarInterfaz(testState);
-        }
-
-        // --- LÓGICA CLAVE: DISTINGUIR EQUIPOS ---
         private void AlRecibirPuntos(int idTaldeaGanador, int puntosNuevos)
         {
             Dispatcher.Invoke(() =>
@@ -714,7 +738,6 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // --- ACCIONES DE JUGADOR (MIS BOTONES) ---
         private void BtnMus_Click(object sender, RoutedEventArgs e)
         {
             StopTurnCountdown();
@@ -760,7 +783,6 @@ namespace MusRoyalePC.Views
             }
         }
 
-        // Asegurarnos de enviar ABANDONO y cerrar socket cuando se cierre la vista
         protected override void OnVisualParentChanged(DependencyObject oldParent)
         {
             if (oldParent != null && VisualParent == null)
@@ -786,9 +808,7 @@ namespace MusRoyalePC.Views
         };
 
         private static (double Cx, double Cy, double R) GetRingGeometryFor(UiSeat seat)
-        {
-            return seat == UiSeat.Yo ? (35d, 35d, 30d) : (30d, 30d, 25d);
-        }
+            => seat == UiSeat.Yo ? (35d, 35d, 30d) : (30d, 30d, 25d);
 
         private UiSeat SeatFromRing(Path ring)
         {
@@ -836,6 +856,39 @@ namespace MusRoyalePC.Views
             ring.Data = geo;
         }
 
+        private async Task ManejarDecisionApuesta(string fase)
+        {
+            _decisionTaskSource?.TrySetCanceled();
+            _decisionTaskSource = new TaskCompletionSource<string>();
+
+            Dispatcher.Invoke(() =>
+            {
+                OcultarTodosLosBotones();
+
+                BtnPaso.Visibility = Visibility.Visible;
+
+                // QUIERO solo si estamos en fase de apuesta
+                BtnQuiero.Visibility = FaseConApuesta(fase) ? Visibility.Visible : Visibility.Collapsed;
+
+                BtnEnvido.Visibility = Visibility.Visible;
+                BtnMas.Visibility = Visibility.Visible;
+                BtnMas.Content = "➕";
+                PanelApuestasAltas.Visibility = Visibility.Collapsed;
+
+                BtnEnvido.Content = "ENVIDO 2";
+                if (BtnEnvido5 != null)
+                    BtnEnvido5.Content = "5 GEHIAGO";
+            });
+
+            StartTurnCountdown(UiSeat.Yo);
+
+            string respuesta = await _decisionTaskSource.Task;
+            StopTurnCountdown();
+
+            _netService.EnviarComando(respuesta);
+            Dispatcher.Invoke(() => OcultarTodosLosBotones());
+        }
+
         private void ResolverApuesta(string comando)
         {
             StopTurnCountdown();
@@ -862,7 +915,7 @@ namespace MusRoyalePC.Views
 
             StartTurnCountdown(UiSeat.Yo);
         }
-    
+
         private void OcultarTodosLosBotones()
         {
             Dispatcher.Invoke(() =>
@@ -950,7 +1003,6 @@ namespace MusRoyalePC.Views
                 _turnCountdownStart = DateTime.UtcNow;
                 _turnCountdownFired = false;
 
-                // Mostrar directamente 30s al empezar
                 UpdateTurnInfo(seatForThisTimer, secondsRemaining: 30, waitingDelay: false);
                 TurnInfoPanel.Visibility = Visibility.Visible;
 
@@ -968,8 +1020,7 @@ namespace MusRoyalePC.Views
                 {
                     var sinceStart = DateTime.UtcNow - _turnCountdownStart;
 
-                    // como TurnStartDelay es 0, esto arranca al momento
-                    var elapsed = sinceStart;
+                    var elapsed = sinceStart; // TurnStartDelay es 0
                     double remainingFraction = Math.Max(0, 1.0 - (elapsed.TotalMilliseconds / _turnCountdownDuration.TotalMilliseconds));
 
                     var ring = GetCountdownRing(seatForThisTimer);
@@ -1051,10 +1102,7 @@ namespace MusRoyalePC.Views
             }
             else
             {
-                // Euskera (opcional): "hasiko da" en delay.
-                LblTurnoTiempo.Text = waitingDelay
-                    ? $"{secondsRemaining}s"
-                    : $"{secondsRemaining}s";
+                LblTurnoTiempo.Text = $"{secondsRemaining}s";
             }
         }
 
@@ -1142,7 +1190,6 @@ namespace MusRoyalePC.Views
 
         private string? GetFirestoreIdForSeat(UiSeat seat)
         {
-            // Recorremos el mapa firebase->seat calculado en PintarAsientosAsync
             foreach (var kv in _firebaseToUiSeat)
             {
                 if (kv.Value == seat)
@@ -1182,29 +1229,35 @@ namespace MusRoyalePC.Views
             OverlayPlayerStats.Visibility = Visibility.Collapsed;
             _statsTargetUserId = null;
         }
-    }
 
     // --- MODELOS DE DATOS ---
     public class EstadoJuego
     {
-        public int PuntosNosotros { get; set; } // Puntuación total partida
+        public int PuntosNosotros { get; set; } // Puntuación total partita
         public int PuntosEllos { get; set; }
         public string MensajeCentro { get; set; } // "MUS", "JUEGO", etc.
         public string FaseActual { get; set; } // "Juego", "Resumen"
 
-        // Datos para el Resumen
-        public int TotalRondaNosotros { get; set; }
-        public int TotalRondaEllos { get; set; }
-        public DetallePuntos PuntosNosotrosDetalle { get; set; }
-        public DetallePuntos PuntosEllosDetalle { get; set; }
-    }
+            return f switch
+            {
+                "GRANDES" or "GRANDIAK" => "GRANDIAK",
+                "PEQUEÑAS" or "PEQUENAS" or "TXIKIAK" => "TXIKIAK",
+                "PARES" or "PAREAK" => "PAREAK",
+                "JUEGO" or "JOKUA" => "JOKUA",
+                "PUNTO" or "PUNTUA" => "PUNTUA",
+                "TURN" or "TURNO" or "TXANDA" => "TXANDA",
+                "ALL_MUS" or "MUS" or "DESKARTEAK" => "DESKARTEAK",
+                _ => f
+            };
+        }
 
-    public class DetallePuntos
-    {
-        public int Grandes { get; set; }
-        public int Chicas { get; set; }
-        public int Pares { get; set; }
-        public int Juego { get; set; }
-        public int Punto { get; set; }
+        // Handler de prueba (referenciado en XAML). Mantener por compatibilidad.
+        private void TestResumen_Click(object sender, RoutedEventArgs e)
+        {
+            // Mostrar un ejemplo rápido de LABURPENA para validar el overlay.
+            AddLaburpenaLine("GRANDIAK", 2, _netService?.MiIdTaldea ?? 1);
+            AddLaburpenaLine("PAREAK", 3, (_netService?.MiIdTaldea ?? 1) == 1 ? 2 : 1);
+            _ = MostrarLaburpenaPopupAsync();
+        }
     }
 }

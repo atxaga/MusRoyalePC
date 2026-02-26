@@ -74,8 +74,18 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="46" Height="46" CornerRadius="23" Margin="0,0,12,0" Cursor="Hand"
+                            BorderBrush="#FFD700" BorderThickness="2"
+                            MouseLeftButtonUp="HeaderAvatar_Click">
+                        <Border.Background>
+                            <ImageBrush x:Name="HeaderAvatarBrush" ImageSource="/Assets/avadef.png" Stretch="UniformToFill"/>
+                        </Border.Background>
+                    </Border>
+
                     <StackPanel>
                         <TextBlock Text="{Binding UserName}" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource HeaderFg}"/>
                         <TextBlock Text="Online" FontSize="12" Foreground="{StaticResource OnlineBrush}"/>
@@ -217,6 +227,36 @@
                 <Button Style="{StaticResource NavButtonStyle}" Tag="🛒" Content="Denda" 
                         Command="{Binding NavigateCommand}" CommandParameter="Denda"/>
             </UniformGrid>
+        </Border>
+
+        <!-- Overlay Denda Avatares (por click en avatar del header) -->
+        <Border x:Name="OverlayAvatarShop"
+                Visibility="Collapsed"
+                Background="#CC000000"
+                Grid.RowSpan="3"
+                Panel.ZIndex="200">
+            <Border Background="#2C3E50" CornerRadius="16" Width="900" Height="620"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    BorderBrush="#F1C40F" BorderThickness="3">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.7"/>
+                </Border.Effect>
+
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel>
+                        <TextBlock Text="AVATAR DENDA" Foreground="#F1C40F" FontSize="22" FontWeight="Black"/>
+                        <Button DockPanel.Dock="Right" Content="ITXI" Click="CloseAvatarShop_Click"
+                                Background="#95A5A6" Foreground="White" BorderThickness="0" Padding="12,8"/>
+                    </DockPanel>
+
+                    <ContentControl Grid.Row="1" x:Name="AvatarShopHost" Margin="0,14,0,0"/>
+                </Grid>
+            </Border>
         </Border>
     </Grid>
 </Window>
