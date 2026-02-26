@@ -48,7 +48,11 @@ namespace MusRoyalePC.Views {
         /// InitializeComponent
         /// </summary>
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
+<<<<<<< HEAD
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.9.0")]
+=======
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.8.0")]
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
         public void InitializeComponent() {
             if (_contentLoaded) {
                 return;
@@ -64,7 +68,11 @@ namespace MusRoyalePC.Views {
         }
         
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
+<<<<<<< HEAD
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.9.0")]
+=======
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.8.0")]
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
@@ -74,7 +82,11 @@ namespace MusRoyalePC.Views {
         }
         
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
+<<<<<<< HEAD
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.9.0")]
+=======
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.8.0")]
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]

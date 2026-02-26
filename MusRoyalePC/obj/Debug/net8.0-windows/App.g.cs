@@ -45,7 +45,11 @@ namespace MusRoyalePC {
         /// InitializeComponent
         /// </summary>
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
+<<<<<<< HEAD
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.9.0")]
+=======
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.8.0")]
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
         public void InitializeComponent() {
             
             #line 5 "..\..\..\App.xaml"
@@ -60,7 +64,11 @@ namespace MusRoyalePC {
         /// </summary>
         [System.STAThreadAttribute()]
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
+<<<<<<< HEAD
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.9.0")]
+=======
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "9.0.8.0")]
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
         public static void Main() {
             MusRoyalePC.App app = new MusRoyalePC.App();
             app.InitializeComponent();

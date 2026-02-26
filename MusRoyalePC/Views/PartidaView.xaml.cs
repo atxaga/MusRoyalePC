@@ -155,6 +155,11 @@ namespace MusRoyalePC.Views
 
         private (int Nosotros, int Ellos) GetPuntuacionPartidaActual()
         {
+<<<<<<< HEAD
+=======
+            // Preferimos leer de los labels visibles (fuente de verdad actual en esta vista)
+            // Los labels pueden contener enteros ("16") o formato mus ("3.1").
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
             int nosotros = ParsePuntuacionMus(LblPuntosEtxekoak?.Text);
             int ellos = ParsePuntuacionMus(LblPuntosKanpokoak?.Text);
             return (nosotros, ellos);
@@ -675,11 +680,17 @@ namespace MusRoyalePC.Views
         {
             Dispatcher.Invoke(() =>
             {
-                int totalNos = int.Parse(e1) * 5 + int.Parse(e2);
-                int totalEllos = int.Parse(z1) * 5 + int.Parse(z2);
+                int e1i = int.TryParse(e1, out var v1) ? v1 : 0;
+                int e2i = int.TryParse(e2, out var v2) ? v2 : 0;
+                int z1i = int.TryParse(z1, out var w1) ? w1 : 0;
+                int z2i = int.TryParse(z2, out var w2) ? w2 : 0;
 
-                LblPuntosEtxekoak.Text = totalNos.ToString();
-                LblPuntosKanpokoak.Text = totalEllos.ToString();
+                int totalNos = (e1i * 5) + e2i;
+                int totalEllos = (z1i * 5) + z2i;
+
+                // Mostrar en formato mus (grandes.chicas)
+                LblPuntosEtxekoak.Text = FormatPuntuacionMus(totalNos);
+                LblPuntosKanpokoak.Text = FormatPuntuacionMus(totalEllos);
             });
         }
 
@@ -691,13 +702,14 @@ namespace MusRoyalePC.Views
 
                 TextBlock marcadorDestino = sonMios ? LblPuntosEtxekoak : LblPuntosKanpokoak;
 
-                int puntosActuales = int.TryParse(marcadorDestino.Text, out int val) ? val : 0;
+                int puntosActuales = ParsePuntuacionMus(marcadorDestino.Text);
                 int total = puntosActuales + puntosNuevos;
 
-                marcadorDestino.Text = total.ToString();
+                // Mostrar en formato mus (grandes.chicas)
+                marcadorDestino.Text = FormatPuntuacionMus(total);
 
-                int totalNos = int.TryParse(LblPuntosEtxekoak.Text, out var tn) ? tn : 0;
-                int totalEllos = int.TryParse(LblPuntosKanpokoak.Text, out var te) ? te : 0;
+                int totalNos = ParsePuntuacionMus(LblPuntosEtxekoak.Text);
+                int totalEllos = ParsePuntuacionMus(LblPuntosKanpokoak.Text);
                 if (totalNos >= 40 || totalEllos >= 40)
                 {
                     string ganador = totalNos >= 40 ? "Etxekoak" : "Kanpokoak";

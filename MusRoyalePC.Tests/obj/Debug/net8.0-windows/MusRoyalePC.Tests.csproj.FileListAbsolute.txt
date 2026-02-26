@@ -170,6 +170,7 @@ C:\Users\ik012982i18\Desktop\musPc\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.
 C:\Users\ik012982i18\Desktop\musPc\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\ref\MusRoyalePC.Tests.dll
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\.msCoverageSourceRootsMapping_MusRoyalePC.Tests
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\CoverletSourceRootsMapping_MusRoyalePC.Tests
+<<<<<<< HEAD
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.csproj.AssemblyReference.cache
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.GeneratedMSBuildEditorConfig.editorconfig
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.AssemblyInfoInputs.cache
@@ -179,6 +180,8 @@ D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.sour
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.dll
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\refint\MusRoyalePC.Tests.dll
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.pdb
+=======
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\testhost.dll
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\xunit.abstractions.dll
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\MusRoyalePC.deps.json
@@ -335,6 +338,19 @@ D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\runtimes\win\lib\net7.
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\MusRoyalePC.dll
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\MusRoyalePC.pdb
 D:\MusRoyalePC\MusRoyalePC.Tests\bin\Debug\net8.0-windows\MusRoyalePC.dll.config
+<<<<<<< HEAD
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyal.78FFE230.Up2Date
+=======
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.csproj.AssemblyReference.cache
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.AssemblyInfoInputs.cache
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.AssemblyInfo.cs
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.csproj.CoreCompileInputs.cache
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.sourcelink.json
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyal.78FFE230.Up2Date
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.dll
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\refint\MusRoyalePC.Tests.dll
+D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.pdb
+>>>>>>> 7db0b477b305e5772623f6b7a7d2aeac67d40546
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\MusRoyalePC.Tests.genruntimeconfig.cache
 D:\MusRoyalePC\MusRoyalePC.Tests\obj\Debug\net8.0-windows\ref\MusRoyalePC.Tests.dll

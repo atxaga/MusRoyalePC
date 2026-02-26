@@ -46,6 +46,8 @@
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="TextElement.FontSize" Value="22"/>
+            <Setter Property="TextElement.FontWeight" Value="ExtraBold"/>
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect BlurRadius="4" ShadowDepth="2" Opacity="0.2"/>
@@ -116,7 +118,7 @@
 
                     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0">
                         <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleKidea" Visibility="Collapsed" Margin="0,0,0,5">
-                            <TextBlock x:Name="TxtMensajeKidea" Text="" FontWeight="Bold" Foreground="#3A2C20"/>
+                            <TextBlock x:Name="TxtMensajeKidea" Text="" Foreground="#3A2C20" TextWrapping="Wrap" TextAlignment="Center"/>
                         </Border>
 
                         <!-- Avatar front + anillo (clicable) -->
@@ -148,7 +150,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0">
                         <StackPanel VerticalAlignment="Center">
                             <Border x:Name="BubbleAurkari1" Visibility="Collapsed" Style="{StaticResource SpeechBubble}">
-                                <TextBlock x:Name="TxtMensajeAurkari1" FontWeight="Bold"/>
+                                <TextBlock x:Name="TxtMensajeAurkari1" TextWrapping="Wrap" TextAlignment="Center"/>
                             </Border>
 
                             <!-- Avatar left + anillo (clicable) -->
@@ -186,7 +188,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,100,0">
                         <StackPanel VerticalAlignment="Center" Margin="0,0,15,0">
                             <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleAurkari2"  Margin="0,0,0,10" Visibility="Collapsed">
-                                <TextBlock Text="" x:Name="TxtMensajeAurkari2" FontWeight="Bold" Foreground="#3A2C20"/>
+                                <TextBlock Text="" x:Name="TxtMensajeAurkari2" Foreground="#3A2C20" TextWrapping="Wrap" TextAlignment="Center"/>
                             </Border>
                             <!-- Avatar right + anillo (clicable) -->
                             <Grid Width="60" Height="60">
@@ -210,7 +212,7 @@
                     <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20">
                         <!-- NUEVO: Bubble para el propio usuario (igual que los demás) -->
                         <Border x:Name="BubbleYo" Style="{StaticResource SpeechBubble}" Margin="0,0,0,10" Visibility="Collapsed">
-                            <TextBlock x:Name="TxtMensajeYo" Text="" FontWeight="Bold" Foreground="#3A2C20"/>
+                            <TextBlock x:Name="TxtMensajeYo" Text="" Foreground="#3A2C20" TextWrapping="Wrap" TextAlignment="Center"/>
                         </Border>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
