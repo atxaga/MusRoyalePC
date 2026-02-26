@@ -62,6 +62,9 @@ namespace MusRoyalePC.Views
         private int _totalNos;
         private int _totalEllos;
 
+        // NUEVO: indica si hay una apuesta/envido activo pendiente de aceptar
+        private bool _hayEnvidoPendiente;
+
         public PartidaView(MusClientService servicioConectado)
         {
             InitializeComponent();
@@ -581,6 +584,10 @@ namespace MusRoyalePC.Views
                     mensaje = apuesta == 2 ? "ENVIDO 2" : $"{apuesta} GEHIAGO";
                 }
 
+                // Si alguien ha apostado/envidado, marcamos que hay un QUIERO posible.
+                if (EsApuestaEnvido(mensaje))
+                    _hayEnvidoPendiente = true;
+
                 if (_seatToUi.TryGetValue(serverId, out var uiSeat) && uiSeat != UiSeat.Yo)
                 {
                     StartTurnCountdown(uiSeat);
@@ -772,6 +779,7 @@ namespace MusRoyalePC.Views
         private void BtnMus_Click(object sender, RoutedEventArgs e)
         {
             StopTurnCountdown();
+            _hayEnvidoPendiente = false;
             _netService.EnviarComando("mus");
             OcultarTodosLosBotones();
         }
@@ -898,8 +906,8 @@ namespace MusRoyalePC.Views
 
                 BtnPaso.Visibility = Visibility.Visible;
 
-                // QUIERO: por defecto invisible, solo se habilita si hay apuesta/envido.
-                BtnQuiero.Visibility = Visibility.Collapsed;
+                // QUIERO solo si hay una apuesta/envido pendiente.
+                BtnQuiero.Visibility = _hayEnvidoPendiente ? Visibility.Visible : Visibility.Collapsed;
 
                 BtnEnvido.Visibility = Visibility.Visible;
                 BtnMas.Visibility = Visibility.Visible;
@@ -915,6 +923,13 @@ namespace MusRoyalePC.Views
 
             string respuesta = await _decisionTaskSource.Task;
             StopTurnCountdown();
+
+            // Si respondemos QUIERO o PASO, ya se resuelve la apuesta
+            if (string.Equals(respuesta, "quiero", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(respuesta, "paso", StringComparison.OrdinalIgnoreCase))
+            {
+                _hayEnvidoPendiente = false;
+            }
 
             _netService.EnviarComando(respuesta);
             Dispatcher.Invoke(() => OcultarTodosLosBotones());
@@ -1320,6 +1335,28 @@ namespace MusRoyalePC.Views
                 _totalEllos += puntos;
 
             SetMarcador(_totalNos, _totalEllos);
+        }
+
+        private static bool EsApuestaEnvido(string? mensaje)
+        {
+            if (string.IsNullOrWhiteSpace(mensaje))
+                return false;
+
+            string m = mensaje.Trim();
+
+            // Casos típicos: "2", "5", "ENVIDO 2", "5 GEHIAGO", "ÓRDAGO"...
+            if (m.Contains("ORDAGO", StringComparison.OrdinalIgnoreCase) ||
+                m.Contains("ÓRDAGO", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (m.Contains("ENVIDO", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (int.TryParse(m, out _))
+                return true;
+
+            string? firstToken = m.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
+            return int.TryParse(firstToken, out _);
         }
 
         private void SetQuieroVisible(bool visible)

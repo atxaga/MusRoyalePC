@@ -109,9 +109,10 @@
                 <Grid>
                     <!-- NUEVO: indicador de turno + cuenta atrás -->
                     <Border x:Name="TurnInfoPanel"
-                            VerticalAlignment="Center"
+                            VerticalAlignment="Top"
                             HorizontalAlignment="Center"
-                            Margin="0"
+                            Panel.ZIndex="999"
+                            Margin="0,12,0,0"
                             Padding="18,10"
                             CornerRadius="14"
                             Background="#E6000000"
