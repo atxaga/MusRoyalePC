@@ -86,6 +86,24 @@
                            VerticalAlignment="Center"
                            TextAlignment="Center"/>
 
+                <!-- NUEVO: TXANDA en el header (junto al marcador) -->
+                <Border x:Name="TurnInfoPanel"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Panel.ZIndex="999"
+                        Margin="20,0"
+                        Padding="12,6"
+                        CornerRadius="12"
+                        Background="#E6000000"
+                        BorderBrush="#FFFFD700"
+                        BorderThickness="2"
+                        Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="TXANDA: " Foreground="#FFFFD700" FontWeight="Black" FontSize="16"/>
+                        <TextBlock x:Name="LblTurnoJugador" Text="-" Foreground="#FF00E5FF" FontWeight="ExtraBold" FontSize="16"/>
+                    </StackPanel>
+                </Border>
+
                 <!-- NUEVO: marcador con 2 huecos (grandes + chicas) -->
                 <Border Background="#5A3B26" CornerRadius="5" Padding="8,3" Margin="0,0,10,0" MinWidth="70">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -107,25 +125,7 @@
                 </Border.Background>
 
                 <Grid>
-                    <!-- NUEVO: indicador de turno + cuenta atrás -->
-                    <Border x:Name="TurnInfoPanel"
-                            VerticalAlignment="Top"
-                            HorizontalAlignment="Center"
-                            Panel.ZIndex="999"
-                            Margin="0,12,0,0"
-                            Padding="18,10"
-                            CornerRadius="14"
-                            Background="#E6000000"
-                            BorderBrush="#FFFFD700"
-                            BorderThickness="2"
-                            Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="TXANDA: " Foreground="#FFFFD700" FontWeight="Black" FontSize="18"/>
-                            <TextBlock x:Name="LblTurnoJugador" Text="-" Foreground="#FF00E5FF" FontWeight="ExtraBold" FontSize="18"/>
-                            <TextBlock Text="   ·   " Foreground="#CCFFFFFF" FontSize="16"/>
-                            <TextBlock x:Name="LblTurnoTiempo" Text="-" Foreground="White" FontWeight="Bold" FontSize="16"/>
-                        </StackPanel>
-                    </Border>
+                    <!-- TurnInfoPanel movido al header -->
 
                     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0">
                         <Border Style="{StaticResource SpeechBubble}" x:Name="BubbleKidea" Visibility="Collapsed" Margin="0,0,0,5">

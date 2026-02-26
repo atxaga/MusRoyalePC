@@ -1155,14 +1155,7 @@ namespace MusRoyalePC.Views
 
             LblTurnoJugador.Text = string.IsNullOrWhiteSpace(nombre) ? "-" : nombre;
 
-            if (secondsRemaining is null)
-            {
-                LblTurnoTiempo.Text = string.Empty;
-            }
-            else
-            {
-                LblTurnoTiempo.Text = $"{secondsRemaining}s";
-            }
+            // Ya no mostramos segundos restantes.
         }
 
         private static bool FaseConApuesta(string fase)
