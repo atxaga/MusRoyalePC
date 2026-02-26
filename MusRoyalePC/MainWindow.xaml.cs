@@ -8,6 +8,7 @@ using QuestPDF.Fluent;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -39,6 +40,45 @@ namespace MusRoyalePC
             ToastHost.ItemsSource = _toasts;
 
             DuoInviteCoordinator.Instance.OnInviteToastRequested += ShowDuoInviteToast;
+
+            Loaded += async (_, __) => await RefreshHeaderAvatarAsync();
+        }
+
+        private async Task RefreshHeaderAvatarAsync()
+        {
+            try
+            {
+                string uid = FirestoreService.Instance.CurrentUserId;
+                if (string.IsNullOrWhiteSpace(uid))
+                    uid = Properties.Settings.Default.savedId;
+
+                if (string.IsNullOrWhiteSpace(uid))
+                    return;
+
+                var doc = await FirestoreService.Instance.Db.Collection("Users").Document(uid).GetSnapshotAsync();
+                if (!doc.Exists) return;
+
+                string avatar = doc.ContainsField("avatarActual") ? doc.GetValue<string>("avatarActual") : "avadef.png";
+                if (string.IsNullOrWhiteSpace(avatar)) avatar = "avadef.png";
+
+                Dispatcher.Invoke(() =>
+                {
+                    HeaderAvatarBrush.ImageSource = new BitmapImage(new Uri($"pack://application:,,,/Assets/{avatar}", UriKind.Absolute));
+                });
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        private async void HeaderAvatar_Click(object sender, MouseButtonEventArgs e)
+        {
+            OpenAvatarShop();
+
+            // cuando se cierre/compre, el propio view actualiza BD, refrescamos avatar header después de un pequeño delay
+            await Task.Delay(500);
+            await RefreshHeaderAvatarAsync();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -73,7 +113,7 @@ namespace MusRoyalePC
 
                 // OHARRA: dinero/oro STRING badira, ordena lexikografikoa egingo du Firestore-k.
                 // Horregatik, hemen estrategia segurua erabiltzen dugu:
-                // - user guztiak ekarri (edo N handixka) eta lokalean ordenatu.
+                // - user tuttiak ekarri (edo N handixka) eta lokalean ordenatu.
                 // Zure user kopurua oso handia bada, gomendatua: dinero/oro Firestore-n number bezala gordetzea.
                 var allUsersTask = users.GetSnapshotAsync();
 
@@ -156,6 +196,28 @@ namespace MusRoyalePC
             {
                 _toasts.Add(toast);
             });
+        }
+
+        private void OpenAvatarShop()
+        {
+            try
+            {
+                // Reutilizar la Denda existente dentro del overlay
+                AvatarShopHost.Content = new MusRoyalePC.Views.DendaView();
+                OverlayAvatarShop.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Errorea: " + ex.Message);
+            }
+        }
+
+        private void CloseAvatarShop_Click(object sender, RoutedEventArgs e)
+        {
+            OverlayAvatarShop.Visibility = Visibility.Collapsed;
+            AvatarShopHost.Content = null;
+
+            _ = RefreshHeaderAvatarAsync();
         }
 
         /// <summary>
